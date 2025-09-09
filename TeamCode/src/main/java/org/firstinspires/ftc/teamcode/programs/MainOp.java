@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.programs;
 
-import com.arcrobotics.ftclib.command.CommandOpMode;
-import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -21,7 +19,7 @@ public class MainOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         this.drivePad = new GamepadEx(gamepad1);
-        this.bot = new ICBPL_robot(ICBPL_robot.OpModeType.TELEOP, hardwareMap, telemetry);
+        this.bot = new ICBPL_robot(ICBPL_robot.OpModeType.MainOP, hardwareMap, telemetry);
 
 
         telemetry.addData("ICBPL","Ready");
