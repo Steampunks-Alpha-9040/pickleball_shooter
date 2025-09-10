@@ -5,15 +5,15 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.Logger;
 
 public class IntakeProto extends SubsystemBase {
-    private Logger log;
+    private TelemetryImpl log;
 
     private final Motor intake;
 
-    public IntakeProto(final HardwareMap hardwareMap, Logger telemetry) {
+    public IntakeProto(final HardwareMap hardwareMap, TelemetryImpl telemetry) {
         this.intake = new Motor(hardwareMap, Constants.Intake.intakeName, Motor.GoBILDA.RPM_312);
         this.log = telemetry;
 
@@ -26,8 +26,8 @@ public class IntakeProto extends SubsystemBase {
 
     @Override
     public void periodic() {
-        log.addLogged("Flywheel/Master/DutyCycle", intake.motor.getPower());
-        log.addLogged("Flywheel/Master/Direction", intake.motor.getDirection());
+        log.addData("Flywheel/Master/DutyCycle", intake.motor.getPower());
+        log.addData("Flywheel/Master/Direction", intake.motor.getDirection());
     }
 
     public void spin(){

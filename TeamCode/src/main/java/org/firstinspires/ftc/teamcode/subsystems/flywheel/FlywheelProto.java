@@ -5,17 +5,18 @@ import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.internal.opmode.TelemetryImpl;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.Logger;
 
 public class FlywheelProto extends SubsystemBase {
 
-    private Logger log;
+    private TelemetryImpl log;
 
     private final Motor flywheel;
     private final Motor slaveFlywheel;
 
-    public FlywheelProto(final HardwareMap hardwareMap, Logger telemetry) {
+    public FlywheelProto(final HardwareMap hardwareMap, TelemetryImpl telemetry) {
         this.flywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.flywheelName, Motor.GoBILDA.RPM_1150);
         this.slaveFlywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.slaveFlywheelname, Motor.GoBILDA.RPM_1150);
         this.log = telemetry;
@@ -34,11 +35,11 @@ public class FlywheelProto extends SubsystemBase {
 
     @Override
     public void periodic() {
-        log.addLogged("Flywheel/Master/DutyCycle", flywheel.motor.getPower());
-        log.addLogged("Flywheel/Master/Direction", flywheel.motor.getDirection());
+        log.addData("Flywheel/Master/DutyCycle", flywheel.motor.getPower());
+        log.addData("Flywheel/Master/Direction", flywheel.motor.getDirection());
 
-        log.addLogged("Flywheel/Slave/DutyCycle", slaveFlywheel.motor.getPower());
-        log.addLogged("Flywheel/Slave/Direction", flywheel.motor.getDirection());
+        log.addData("Flywheel/Slave/DutyCycle", slaveFlywheel.motor.getPower());
+        log.addData("Flywheel/Slave/Direction", flywheel.motor.getDirection());
     }
 
     public void spinWheel(){

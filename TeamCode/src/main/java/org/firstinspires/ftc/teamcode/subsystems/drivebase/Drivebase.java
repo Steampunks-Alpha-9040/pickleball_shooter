@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems.drivebase;
 
 import com.arcrobotics.ftclib.command.SubsystemBase;
 import com.arcrobotics.ftclib.gamepad.GamepadEx;
+import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -35,20 +36,20 @@ public class Drivebase extends SubsystemBase {
     }
 
     public void drive(){
-        FL_motor.set(
 
-                gamepad.getLeftY()
-        );
-        BL_motor.set(
-                gamepad.getLeftY()
-        );
-        BR_motor.set(
-                gamepad.getLeftY()
-        );
-        FR_motor.set(
-                gamepad.getLeftY()
-        );
+        double vert = gamepad.getLeftY();
+        double strafe = gamepad.getLeftX() * 1.1;
+        double turn = gamepad.getTrigger(GamepadKeys.Trigger.LEFT_TRIGGER) - gamepad.getTrigger(GamepadKeys.Trigger.RIGHT_TRIGGER);
 
+        double fl = (turn)+(vert)+(-strafe);
+        double fr = (turn)+(-vert)+(strafe);
+        double bl = (turn)+(vert)+(strafe);
+        double br = (turn)+(-vert)+(-strafe);
+
+        FL_motor.set(fl);
+        BL_motor.set(bl);
+        BR_motor.set(br);
+        FR_motor.set(fr);
     }
 
 

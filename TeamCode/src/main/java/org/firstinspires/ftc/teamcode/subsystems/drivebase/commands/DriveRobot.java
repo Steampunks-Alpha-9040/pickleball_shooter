@@ -9,11 +9,8 @@ import org.firstinspires.ftc.teamcode.subsystems.drivebase.Drivebase;
 
 public class DriveRobot extends RunCommand {
 
-
-    public DriveRobot(Drivebase drive, GamepadEx gamepad){
+    public DriveRobot(Drivebase drive){
         super(drive::drive, drive);
     }
-
-
 
 }
