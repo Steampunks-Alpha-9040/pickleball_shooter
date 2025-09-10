@@ -17,8 +17,8 @@ public class FlywheelProto extends SubsystemBase {
 
     public FlywheelProto(final HardwareMap hardwareMap) {
         super();
-        this.flywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.flywheelName, Motor.GoBILDA.RPM_1150);
-        this.slaveFlywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.slaveFlywheelname, Motor.GoBILDA.RPM_1150);
+        this.flywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.flywheelName, Motor.GoBILDA.BARE);
+        this.slaveFlywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.slaveFlywheelname, Motor.GoBILDA.BARE);
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
         this.slaveFlywheel.setRunMode(Motor.RunMode.VelocityControl);
@@ -34,11 +34,11 @@ public class FlywheelProto extends SubsystemBase {
 
     @Override
     public void periodic() {
-        log.addLogged("Flywheel/Master/DutyCycle", flywheel.motor.getPower());
-        log.addLogged("Flywheel/Master/Direction", flywheel.motor.getDirection());
-
-        log.addLogged("Flywheel/Slave/DutyCycle", slaveFlywheel.motor.getPower());
-        log.addLogged("Flywheel/Slave/Direction", flywheel.motor.getDirection());
+//        log.addLogged("Flywheel/Master/DutyCycle", flywheel.motor.getPower());
+//        log.addLogged("Flywheel/Master/Direction", flywheel.motor.getDirection());
+//
+//        log.addLogged("Flywheel/Slave/DutyCycle", slaveFlywheel.motor.getPower());
+//        log.addLogged("Flywheel/Slave/Direction", flywheel.motor.getDirection());
     }
 
     public void spinWheel(){

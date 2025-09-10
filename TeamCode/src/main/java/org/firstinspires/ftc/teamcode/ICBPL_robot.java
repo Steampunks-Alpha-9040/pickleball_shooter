@@ -8,13 +8,14 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeProto;
+import org.firstinspires.ftc.teamcode.util.Logger;
 import org.firstinspires.ftc.teamcode.subsystems.flywheel.FlywheelProto;
 
 public class ICBPL_robot extends Robot {
 
     private static ICBPL_robot bot = null;
 
-//    private final  ;
+//    private final Logger logger;
 
     private FlywheelProto flywheelProto;
     private IntakeProto intakeProto;
@@ -29,27 +30,29 @@ public class ICBPL_robot extends Robot {
         if (mode == OpModeType.MainOP) initMainOp(hMap);
         else if (mode == OpModeType.AUTO) initAuto(hMap);
         else if (mode == OpModeType.INTAKEPROTO) initIntakeProto(hMap);
-        
-//         = new (log);
+
+
+//        logger = new Logger(log);
     }
 
     private void initAuto(HardwareMap hMap){
-        flywheelProto = new FlywheelProto(hMap );
-        intakeProto = new IntakeProto(hMap );
+
+        flywheelProto = new FlywheelProto(hMap);
+        intakeProto = new IntakeProto(hMap);
         this.schedule();
-        this.register(flywheelProto );
+        this.register(flywheelProto);
     }
 
     private void initMainOp(HardwareMap hMap){
-        flywheelProto = new FlywheelProto(hMap );
+        flywheelProto = new FlywheelProto(hMap);
         this.schedule();
-        this.register(flywheelProto );
+        this.register(flywheelProto);
     }
 
     private void initIntakeProto(HardwareMap hMap){
         intakeProto = new IntakeProto(hMap);
         this.schedule();
-        this.register(intakeProto );
+        this.register(intakeProto);
     }
 
 
