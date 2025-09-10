@@ -1,8 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
 
+import com.arcrobotics.ftclib.command.Command;
 import com.arcrobotics.ftclib.command.InstantCommand;
 import com.arcrobotics.ftclib.command.Robot;
+import com.arcrobotics.ftclib.gamepad.GamepadEx;
 import com.arcrobotics.ftclib.gamepad.GamepadKeys;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 
@@ -26,7 +28,7 @@ public class ICBPL_robot extends Robot {
         INTAKEPROTO
     }
 
-    public ICBPL_robot(OpModeType mode, HardwareMap hMap, Telemetry log){
+    public ICBPL_robot(OpModeType mode, HardwareMap hMap, Telemetry log, GamepadEx gP1){
         if (mode == OpModeType.MainOP) initMainOp();
         else if (mode == OpModeType.AUTO) initAuto();
         else if (mode == OpModeType.INTAKEPROTO) initIntakeProto();
@@ -69,5 +71,10 @@ public class ICBPL_robot extends Robot {
         return new InstantCommand(intakeProto::stop, intakeProto);
     }
 
+    /***Drive Commands***/
+
+    public Command driveRobot(){
+
+    }
 
 }

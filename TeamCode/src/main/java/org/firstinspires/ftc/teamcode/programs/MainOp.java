@@ -19,7 +19,7 @@ public class MainOp extends LinearOpMode {
     @Override
     public void runOpMode() throws InterruptedException {
         this.drivePad = new GamepadEx(gamepad1);
-        this.bot = new ICBPL_robot(ICBPL_robot.OpModeType.MainOP, hardwareMap, telemetry);
+        this.bot = new ICBPL_robot(ICBPL_robot.OpModeType.MainOP, hardwareMap, telemetry, drivePad);
 
 
         telemetry.addData("ICBPL","Ready");

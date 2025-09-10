@@ -17,7 +17,7 @@ public class IntakeProto extends LinearOpMode {
         @Override
         public void runOpMode() throws InterruptedException {
             this.drivePad = new GamepadEx(gamepad1);
-            this.bot = new ICBPL_robot(ICBPL_robot.OpModeType.INTAKEPROTO, hardwareMap, telemetry);
+            this.bot = new ICBPL_robot(ICBPL_robot.OpModeType.INTAKEPROTO, hardwareMap, telemetry, drivePad);
 
 
             telemetry.addData("ICBPL","Ready");
