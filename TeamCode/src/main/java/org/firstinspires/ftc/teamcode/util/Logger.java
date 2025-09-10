@@ -10,6 +10,7 @@ public class Logger extends SubsystemBase {
 
 
     public Logger(Telemetry log){
+        super();
         this.logger = log;
     }
 

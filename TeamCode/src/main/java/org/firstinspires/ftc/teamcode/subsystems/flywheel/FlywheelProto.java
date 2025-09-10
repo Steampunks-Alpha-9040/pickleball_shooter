@@ -15,10 +15,10 @@ public class FlywheelProto extends SubsystemBase {
     private final Motor flywheel;
     private final Motor slaveFlywheel;
 
-    public FlywheelProto(final HardwareMap hardwareMap, Logger telemetry) {
+    public FlywheelProto(final HardwareMap hardwareMap) {
+        super();
         this.flywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.flywheelName, Motor.GoBILDA.RPM_1150);
         this.slaveFlywheel = new Motor(hardwareMap, Constants.FlywheelVerticalTopOne.slaveFlywheelname, Motor.GoBILDA.RPM_1150);
-        this.log = telemetry;
 
         this.flywheel.setRunMode(Motor.RunMode.VelocityControl);
         this.slaveFlywheel.setRunMode(Motor.RunMode.VelocityControl);

@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 import org.firstinspires.ftc.teamcode.ICBPL_robot;
 
-@TeleOp(name = "Main_PickleTeleOp")
+@TeleOp(name = "intake")
 public class IntakeProto extends LinearOpMode {
 
         private ICBPL_robot bot;

@@ -13,9 +13,10 @@ public class IntakeProto extends SubsystemBase {
 
     private final Motor intake;
 
-    public IntakeProto(final HardwareMap hardwareMap, Logger telemetry) {
+    public IntakeProto(final HardwareMap hardwareMap) {
+        super();
         this.intake = new Motor(hardwareMap, Constants.Intake.intakeName, Motor.GoBILDA.RPM_312);
-        this.log = telemetry;
+//        this.log = telemetry;
 
         this.intake.setRunMode(Motor.RunMode.VelocityControl);
 
@@ -26,8 +27,8 @@ public class IntakeProto extends SubsystemBase {
 
     @Override
     public void periodic() {
-        log.addLogged("Flywheel/Master/DutyCycle", intake.motor.getPower());
-        log.addLogged("Flywheel/Master/Direction", intake.motor.getDirection());
+//        log.addLogged("Flywheel/Master/DutyCycle", intake.motor.getPower());
+//        log.addLogged("Flywheel/Master/Direction", intake.motor.getDirection());
     }
 
     public void spin(){

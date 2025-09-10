@@ -8,17 +8,16 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.subsystems.intake.IntakeProto;
-import org.firstinspires.ftc.teamcode.util.Logger;
 import org.firstinspires.ftc.teamcode.subsystems.flywheel.FlywheelProto;
 
 public class ICBPL_robot extends Robot {
 
     private static ICBPL_robot bot = null;
 
-    private final Logger logger;
+//    private final  ;
 
-    private final FlywheelProto flywheelProto;
-    private final IntakeProto intakeProto;
+    private FlywheelProto flywheelProto;
+    private IntakeProto intakeProto;
 
     public enum OpModeType{
         MainOP,
@@ -27,29 +26,30 @@ public class ICBPL_robot extends Robot {
     }
 
     public ICBPL_robot(OpModeType mode, HardwareMap hMap, Telemetry log){
-        if (mode == OpModeType.MainOP) initMainOp();
-        else if (mode == OpModeType.AUTO) initAuto();
-        else if (mode == OpModeType.INTAKEPROTO) initIntakeProto();
-
-
-        logger = new Logger(log);
-        flywheelProto = new FlywheelProto(hMap, logger);
-        intakeProto = new IntakeProto(hMap, logger);
+        if (mode == OpModeType.MainOP) initMainOp(hMap);
+        else if (mode == OpModeType.AUTO) initAuto(hMap);
+        else if (mode == OpModeType.INTAKEPROTO) initIntakeProto(hMap);
+        
+//         = new (log);
     }
 
-    private void initAuto(){
+    private void initAuto(HardwareMap hMap){
+        flywheelProto = new FlywheelProto(hMap );
+        intakeProto = new IntakeProto(hMap );
         this.schedule();
-        this.register(flywheelProto, logger);
+        this.register(flywheelProto );
     }
 
-    private void initMainOp(){
+    private void initMainOp(HardwareMap hMap){
+        flywheelProto = new FlywheelProto(hMap );
         this.schedule();
-        this.register(flywheelProto, logger);
+        this.register(flywheelProto );
     }
 
-    private void initIntakeProto(){
+    private void initIntakeProto(HardwareMap hMap){
+        intakeProto = new IntakeProto(hMap);
         this.schedule();
-        this.register(intakeProto, logger);
+        this.register(intakeProto );
     }
 
 
