@@ -25,14 +25,19 @@ public class ICBPL_robot extends Robot {
     public enum OpModeType{
         MainOP,
         AUTO,
-        INTAKEPROTO
+        INTAKEPROTO,
+        DRIVEPROTO
     }
 
+    /****TELEOP****/
     public ICBPL_robot(OpModeType mode, HardwareMap hMap, TelemetryImpl log, GamepadEx gP1){
         if (mode == OpModeType.MainOP) initMainOp(hMap, log);
-        else if (mode == OpModeType.AUTO) initAuto(hMap, log);
         else if (mode == OpModeType.INTAKEPROTO) initIntakeProto(hMap, log);
-
+        else if (mode == OpModeType.DRIVEPROTO) initDriveProto(hMap, log, gP1);
+    }
+    /****AUTO****/
+    public ICBPL_robot(OpModeType mode, HardwareMap hMap, TelemetryImpl log){
+        if (mode == OpModeType.AUTO) initAuto(hMap, log);
     }
 
     private void initAuto(HardwareMap hMap, TelemetryImpl telemetry){
@@ -53,7 +58,9 @@ public class ICBPL_robot extends Robot {
 
     private void initDriveProto(HardwareMap hMap, TelemetryImpl telemetry, GamepadEx gamepad){
         drivebaseProto = new Drivebase(hMap, telemetry, gamepad);
-        this.schedule(new DriveRobot(drivebaseProto));
+        this.schedule(
+                new DriveRobot(drivebaseProto)
+        );
     }
 
 

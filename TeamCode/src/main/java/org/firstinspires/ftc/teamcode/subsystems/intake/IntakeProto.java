@@ -14,6 +14,7 @@ public class IntakeProto extends SubsystemBase {
     private final Motor intake;
 
     public IntakeProto(final HardwareMap hardwareMap, TelemetryImpl telemetry) {
+        super();
         this.intake = new Motor(hardwareMap, Constants.Intake.intakeName, Motor.GoBILDA.RPM_312);
         this.log = telemetry;
 
