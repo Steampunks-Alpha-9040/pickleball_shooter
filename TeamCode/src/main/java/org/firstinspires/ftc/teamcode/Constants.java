@@ -2,9 +2,11 @@ package org.firstinspires.ftc.teamcode;
 
 public class Constants {
 
-    public static class FlywheelVerticalTopOne{
-        public static final String flywheelName = "masterWheel";
-        public static final String slaveFlywheelname = "slaveWheel";
+    public static class Flywheel{
+        public static final String flywheelName = "flywheel";
+
+        public static final String turretMasterName = "turretM";
+        public static final String turretSlaveName = "turrentS";
 
         public static final double spinSpeed_DUTYCYCLE = 0.5;
 

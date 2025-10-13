@@ -25,9 +25,7 @@ public class MainOp extends LinearOpMode {
         telemetry.addData("ICBPL","Ready");
         telemetry.update();
 
-        drivePad.getGamepadButton(GamepadKeys.Button.A)
-                .whileHeld(bot.spinFlywheel())
-                .whenReleased(bot.stopFlywheel());
+        drivePad.getGamepadButton(GamepadKeys.Button.A);
 
         waitForStart();
 
