@@ -1,9 +1,11 @@
 package org.firstinspires.ftc.teamcode.programs;
 
-import com.arcrobotics.ftclib.gamepad.GamepadEx;
-import com.arcrobotics.ftclib.gamepad.GamepadKeys;
+
+import com.bylazar.ftcontrol.panels.Panels;
+import com.bylazar.ftcontrol.panels.integration.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+
 
 import org.firstinspires.ftc.teamcode.ICBPL_robot;
 
@@ -13,7 +15,9 @@ public class MainOp extends LinearOpMode {
 
     private ICBPL_robot bot;
 
-    private GamepadEx drivePad;
+
+    private TelemetryManager panelsTelemetry = Panels.getTelemetry();
+
 
 
     @Override
