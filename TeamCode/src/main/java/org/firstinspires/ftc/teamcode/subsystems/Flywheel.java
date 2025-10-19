@@ -5,7 +5,6 @@ import androidx.annotation.NonNull;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.SubsystemBase;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -19,11 +18,12 @@ import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Command;
 import dev.frozenmilk.mercurial.commands.Lambda;
+import dev.frozenmilk.mercurial.subsystems.SDKSubsystem;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
 import kotlin.annotation.MustBeDocumented;
 
-public class Flywheel extends SubsystemBase {
+public class Flywheel extends SDKSubsystem {
     private static Flywheel INSTANCE;
 
     private final SubsystemObjectCell<DcMotorEx> turretFlywheelMotor =
@@ -82,5 +82,24 @@ public class Flywheel extends SubsystemBase {
         getFlywheel().setPower(power);
     }
 
+    // the annotation class we use to attach this subsystem
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @MustBeDocumented
+    @Inherited
+    public @interface Attach{}
+    private Dependency<?> dependency =
+            Subsystem.DEFAULT_DEPENDENCY
+                    .and(new SingleAnnotation<>(Turret.Attach.class));
 
+    @NonNull
+    @Override
+    public Dependency<?> getDependency() {
+        return dependency;
+    }
+
+    @Override
+    public void setDependency(@NonNull Dependency<?> dependency) {
+        this.dependency = dependency;
+    }
 }

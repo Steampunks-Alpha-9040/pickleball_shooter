@@ -6,33 +6,41 @@ import androidx.annotation.NonNull;
 import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.SubsystemBase;
-import org.firstinspires.ftc.teamcode.util.Util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
-import java.lang.annotation.Target;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 
 import dev.frozenmilk.dairy.core.FeatureRegistrar;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
+import dev.frozenmilk.dairy.core.util.controller.calculation.pid.DoubleComponent;
+import dev.frozenmilk.dairy.core.util.controller.implementation.DoubleController;
+import dev.frozenmilk.dairy.core.util.supplier.numeric.CachedMotionComponentSupplier;
+import dev.frozenmilk.dairy.core.util.supplier.numeric.MotionComponents;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Command;
 import dev.frozenmilk.mercurial.commands.Lambda;
+import dev.frozenmilk.mercurial.subsystems.SDKSubsystem;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
-import dev.frozenmilk.util.modifier.Modifier;
+import dev.frozenmilk.util.cell.Cell;
 import kotlin.annotation.MustBeDocumented;
 
 
-public class Turret extends SubsystemBase {
+public class Turret extends SDKSubsystem {
 
     private static Turret INSTANCE;
+
+
+    private double previousAbsolutePosition= 0.0;
+    private double currentAbsolutePosition = 0.0;
+    private double currentPos = 0.0;
+    private double setpointPos = 0.0;
 
     private final SubsystemObjectCell<CRServo> turretServoM =
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.TurretConstants.turretMasterName));
@@ -43,12 +51,43 @@ public class Turret extends SubsystemBase {
     private final SubsystemObjectCell<AnalogInput> encoder =
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(AnalogInput.class, Constants.TurretConstants.encoderName));
 
-    private final PIDFController turretPIDController = Constants.TurretConstants.turretPID;
+    private final CachedMotionComponentSupplier<Double> targetPosSupplier = new CachedMotionComponentSupplier<>(motionComponents -> {
+        if (motionComponents == MotionComponents.STATE) {
+            return setpointPos;
+        }
+        return Double.NaN;
+    });
 
-    private double previousAbsolutePosition;
-    private double currentAbsolutePosition;
-    private double currentPosition;
-    private double setpointPosition;
+    private final CachedMotionComponentSupplier<Double> currentPosSupplier = new CachedMotionComponentSupplier<>(motionComponents -> {
+        if (motionComponents == MotionComponents.STATE) {
+            return currentPos;
+        }
+        return Double.NaN;
+    });
+
+    private final CachedMotionComponentSupplier<Double> tolerancePosSupplier = new CachedMotionComponentSupplier<>(motionComponents -> {
+        if (motionComponents == MotionComponents.STATE) {
+            return Constants.TurretConstants.turretTolerance;
+        }
+        return Double.NaN;
+    });
+
+
+    private final Cell<DoubleController> turretPIDController = subsystemCell(() ->
+            new DoubleController(
+                    targetPosSupplier,
+                    currentPosSupplier,
+                    tolerancePosSupplier,
+                    (Double power) -> {
+                        getTurretMaster().setPower(power);
+                        getTurretSlave().setPower(power);
+                    },
+                    new DoubleComponent.P(MotionComponents.STATE, Constants.TurretConstants.turret_kP)
+                            .plus(new DoubleComponent.I(MotionComponents.STATE, Constants.TurretConstants.turret_kI))
+                            .plus(new DoubleComponent.D(MotionComponents.STATE, Constants.TurretConstants.turret_kD))
+                            .plus(new DoubleComponent.FF(MotionComponents.STATE, Constants.TurretConstants.turret_kF))
+            )
+    );
 
 
     public Turret() {
@@ -67,8 +106,6 @@ public class Turret extends SubsystemBase {
         return INSTANCE.encoder.get();
     }
 
-
-
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
         setDefaultCommand(doNothing());
@@ -86,12 +123,10 @@ public class Turret extends SubsystemBase {
 
 
     @NonNull
-    public Command aimTurret(double angle){
+    public Command setTurretAngle(double angle){
         return new Lambda("turretFollowTag")
                 .addRequirements(INSTANCE)
-                .setInit(() -> setTurretTarget(angle))
-                .setExecute(this::moveToTurretTarget)
-                .setFinish(this::isTurretInTolerance);
+                .setInit(() -> setTurretTarget(angle));
     }
 
     @NonNull
@@ -100,31 +135,41 @@ public class Turret extends SubsystemBase {
     }
 
     public void setTurretTarget(double turretTarget){
-        setpointPosition = turretTarget;
-        turretPIDController.setSetPoint(turretTarget);
-    }
-
-    public void moveToTurretTarget(){
-        double pidTarget = turretPIDController.calculate(getCurrentPosition());
+        setpointPos = turretTarget;
     }
 
     public void updateTurretPosition(){
         currentAbsolutePosition = getEncoder().getVoltage() / 3.2 * 360; // checks current pos before the check if we changed a rotation
         if (Math.abs(previousAbsolutePosition - currentAbsolutePosition) > 355){
-            currentPosition++;
+            currentPos++;
         }
         previousAbsolutePosition = currentAbsolutePosition; //sets the previous after
-        currentPosition += currentAbsolutePosition;
+        currentPos += currentAbsolutePosition;
     }
 
     public double getCurrentPosition(){
-        return currentPosition * Constants.TurretConstants.servoToTurret;
-    }
-
-    public boolean isTurretInTolerance(){
-        return Util.isBetween(getCurrentPosition(), setpointPosition, Constants.TurretConstants.turretTolerance);
+        return currentPos * Constants.TurretConstants.servoToTurret;
     }
 
 
+    // the annotation class we use to attach this subsystem
+    @Retention(RetentionPolicy.RUNTIME)
+    @Target(ElementType.TYPE)
+    @MustBeDocumented
+    @Inherited
+    public @interface Attach{}
+    private Dependency<?> dependency =
+            Subsystem.DEFAULT_DEPENDENCY
+                    .and(new SingleAnnotation<>(Turret.Attach.class));
 
+    @NonNull
+    @Override
+    public Dependency<?> getDependency() {
+        return dependency;
+    }
+
+    @Override
+    public void setDependency(@NonNull Dependency<?> dependency) {
+        this.dependency = dependency;
+    }
 }
