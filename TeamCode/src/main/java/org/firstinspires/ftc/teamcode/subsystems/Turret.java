@@ -3,12 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import androidx.annotation.NonNull;
 
-import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 
 import java.lang.annotation.ElementType;
@@ -50,7 +47,7 @@ public class Turret extends SDKSubsystem {
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.TurretConstants.turretSlaveName));
 
     private final SubsystemObjectCell<AnalogInput> encoder =
-            subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(AnalogInput.class, Constants.TurretConstants.encoderName));
+            subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(AnalogInput.class, Constants.TurretConstants.turretEncoder));
 
     private final Cell<EnhancedDoubleSupplier> currentAbsolutePosition = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getEncoder().getVoltage() / 3.2 * 360));
 
