@@ -7,6 +7,8 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.CRServo;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 
 import java.lang.annotation.ElementType;
@@ -21,6 +23,7 @@ import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
 import dev.frozenmilk.dairy.core.util.controller.calculation.pid.DoubleComponent;
 import dev.frozenmilk.dairy.core.util.controller.implementation.DoubleController;
 import dev.frozenmilk.dairy.core.util.supplier.numeric.CachedMotionComponentSupplier;
+import dev.frozenmilk.dairy.core.util.supplier.numeric.EnhancedDoubleSupplier;
 import dev.frozenmilk.dairy.core.util.supplier.numeric.MotionComponents;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Command;
@@ -37,8 +40,6 @@ public class Turret extends SDKSubsystem {
     private static Turret INSTANCE;
 
 
-    private double previousAbsolutePosition= 0.0;
-    private double currentAbsolutePosition = 0.0;
     private double currentPos = 0.0;
     private double setpointPos = 0.0;
 
@@ -50,6 +51,11 @@ public class Turret extends SDKSubsystem {
 
     private final SubsystemObjectCell<AnalogInput> encoder =
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(AnalogInput.class, Constants.TurretConstants.encoderName));
+
+    private final Cell<EnhancedDoubleSupplier> currentAbsolutePosition = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getEncoder().getVoltage() / 3.2 * 360));
+
+    private double previousAbsolutePosition = 0.0;
+
 
     private final CachedMotionComponentSupplier<Double> targetPosSupplier = new CachedMotionComponentSupplier<>(motionComponents -> {
         if (motionComponents == MotionComponents.STATE) {
@@ -139,12 +145,11 @@ public class Turret extends SDKSubsystem {
     }
 
     public void updateTurretPosition(){
-        currentAbsolutePosition = getEncoder().getVoltage() / 3.2 * 360; // checks current pos before the check if we changed a rotation
-        if (Math.abs(previousAbsolutePosition - currentAbsolutePosition) > 355){
+        if (Math.abs((currentAbsolutePosition.get().state() - previousAbsolutePosition)) > 355){ //if we changed by 355 deg in one tick, that means we probably went a revolution
             currentPos++;
         }
-        previousAbsolutePosition = currentAbsolutePosition; //sets the previous after
-        currentPos += currentAbsolutePosition;
+        previousAbsolutePosition = currentAbsolutePosition.get().state(); //sets the previous after
+        currentPos += currentAbsolutePosition.get().state();
     }
 
     public double getCurrentPosition(){

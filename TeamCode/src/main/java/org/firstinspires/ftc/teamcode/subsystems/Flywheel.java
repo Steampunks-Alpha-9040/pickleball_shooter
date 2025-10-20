@@ -4,6 +4,8 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 
 import java.lang.annotation.ElementType;
@@ -15,35 +17,33 @@ import java.lang.annotation.Target;
 import dev.frozenmilk.dairy.core.FeatureRegistrar;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
+import dev.frozenmilk.dairy.core.util.supplier.numeric.EnhancedDoubleSupplier;
 import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Command;
 import dev.frozenmilk.mercurial.commands.Lambda;
 import dev.frozenmilk.mercurial.subsystems.SDKSubsystem;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
 import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
+import dev.frozenmilk.util.cell.Cell;
 import kotlin.annotation.MustBeDocumented;
 
 public class Flywheel extends SDKSubsystem {
-    private static Flywheel INSTANCE;
+    private static final Flywheel INSTANCE = new Flywheel();
 
     private final SubsystemObjectCell<DcMotorEx> turretFlywheelMotor =
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.TurretConstants.flywheelName));
 
 
-    public static Flywheel getTurretInstance(){
-        if (INSTANCE == null){
-            INSTANCE = new Flywheel();
-        }
-        return INSTANCE;
-    }
-
     public static DcMotorEx getFlywheel() {
         return INSTANCE.turretFlywheelMotor.get();
     }
 
-    public Flywheel(){
 
-    }
+    private final Cell<EnhancedDoubleSupplier> current = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getCurrent(CurrentUnit.AMPS)));
+    private final Cell<EnhancedDoubleSupplier> velocity = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getVelocity(AngleUnit.DEGREES)));
+
+
+    private Flywheel(){}
 
     @Override
     public void postUserInitHook(@NonNull Wrapper opMode) {
