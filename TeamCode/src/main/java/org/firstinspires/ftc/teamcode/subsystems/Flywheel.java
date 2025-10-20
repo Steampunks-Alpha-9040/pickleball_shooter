@@ -90,7 +90,7 @@ public class Flywheel extends SDKSubsystem {
     public @interface Attach{}
     private Dependency<?> dependency =
             Subsystem.DEFAULT_DEPENDENCY
-                    .and(new SingleAnnotation<>(Feeder.Attach.class));
+                    .and(new SingleAnnotation<>(Flywheel.Attach.class));
 
     @NonNull
     @Override
