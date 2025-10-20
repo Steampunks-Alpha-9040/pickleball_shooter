@@ -7,21 +7,29 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
-import org.firstinspires.ftc.teamcode.ICBPL_robot;
+import org.firstinspires.ftc.teamcode.subsystems.Feeder;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
+
+import dev.frozenmilk.mercurial.commands.groups.Parallel;
 
 
 @TeleOp(name = "Main_PickleTeleOp")
-public class MainOp extends LinearOpMode {
-
-    private ICBPL_robot bot;
+public class MainOp extends BaseOpMode {
 
 
     private TelemetryManager panelsTelemetry = Panels.getTelemetry();
 
-
+    private final Parallel runOuttake = new Parallel(
+        Feeder.getInstance().startFeeder()
+    );
 
     @Override
-    public void runOpMode() throws InterruptedException {
+    public void init() {
+
+    }
+
+    @Override
+    public void loop() {
 
     }
 }

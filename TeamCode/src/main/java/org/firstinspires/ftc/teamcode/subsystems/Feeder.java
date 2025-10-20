@@ -37,7 +37,12 @@ import kotlin.annotation.MustBeDocumented;
 
 public class Feeder extends SDKSubsystem {
 
-    private static Feeder INSTANCE;
+    private static final Feeder INSTANCE = new Feeder();
+
+    public static Feeder getInstance(){
+        return INSTANCE;
+    }
+
 
     private final SubsystemObjectCell<CRServo> omniFeeder = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.FeederConstants.feederArm));
     private final SubsystemObjectCell<CRServo> topFeeder = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.FeederConstants.feederBottomOmni));
@@ -45,11 +50,11 @@ public class Feeder extends SDKSubsystem {
     private final SubsystemObjectCell<Servo> arm = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(Servo.class, Constants.FeederConstants.feederTopWheel));
     private final SubsystemObjectCell<AnalogInput> armEncoder = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(AnalogInput.class, Constants.FeederConstants.feederArmEncoder));
 
-    public static Servo getArm() {return INSTANCE.arm.get();}
-    public static AnalogInput getArmEncoder() {return INSTANCE.armEncoder.get();}
+    private static Servo getArm() {return INSTANCE.arm.get();}
+    private static AnalogInput getArmEncoder() {return INSTANCE.armEncoder.get();}
 
-    public static CRServo getOmniFeeder() {return INSTANCE.omniFeeder.get();}
-    public static CRServo getTopFeeder() {return INSTANCE.topFeeder.get();}
+    private static CRServo getOmniFeeder() {return INSTANCE.omniFeeder.get();}
+    private static CRServo getTopFeeder() {return INSTANCE.topFeeder.get();}
 
     private final Cell<EnhancedDoubleSupplier> armPosition = subsystemCell(
             () -> new EnhancedDoubleSupplier(() -> (double) getArmEncoder().getVoltage() * 3.2 * 360)
