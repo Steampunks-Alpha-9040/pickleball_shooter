@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
@@ -33,6 +34,10 @@ public class Flywheel extends SDKSubsystem {
     private final SubsystemObjectCell<DcMotorEx> turretFlywheelMotor =
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.TurretConstants.flywheelName));
 
+    private final SubsystemObjectCell<Telemetry> telemetry = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().telemetry); //dairy my goat
+
+
+
 
     public static DcMotorEx getFlywheel() {
         return INSTANCE.turretFlywheelMotor.get();
@@ -49,6 +54,14 @@ public class Flywheel extends SDKSubsystem {
     public void postUserInitHook(@NonNull Wrapper opMode) {
         setDefaultCommand(doNothing());
     }
+
+
+    @Override
+    public void postUserLoopHook(@NonNull Wrapper opMode){
+        telemetry.get().addData(this.getClass().toString() + "/Speed_DegPerS", velocity.get().state());
+        telemetry.get().addData(this.getClass().toString() + "/Speed_DegPerS", velocity.get().state());
+    }
+
 
     // see the feature dev notes on when to use cleanup vs postStop
     @Override

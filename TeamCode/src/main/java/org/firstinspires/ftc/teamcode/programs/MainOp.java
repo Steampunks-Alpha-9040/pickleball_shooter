@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
+import com.bylazar.ftcontrol.LoopTimer;
 import com.bylazar.ftcontrol.panels.Panels;
 import com.bylazar.ftcontrol.panels.integration.TelemetryManager;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -17,7 +18,8 @@ import dev.frozenmilk.mercurial.commands.groups.Parallel;
 public class MainOp extends BaseOpMode {
 
 
-    private TelemetryManager panelsTelemetry = Panels.getTelemetry();
+    private final TelemetryManager panelsTelemetry = Panels.getTelemetry();
+    private LoopTimer timer = new LoopTimer();
 
     private final Parallel runOuttake = new Parallel(
         Feeder.getInstance().startFeeder()
@@ -25,11 +27,17 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void init() {
-
+        panelsTelemetry.debug("Init ran");
+        panelsTelemetry.update(telemetry);
     }
 
     @Override
     public void loop() {
+        timer.start();
 
+
+
+        panelsTelemetry.update(telemetry);
+        timer.end();
     }
 }
