@@ -34,7 +34,6 @@ public class Flywheel extends SDKSubsystem {
     private final SubsystemObjectCell<DcMotorEx> turretFlywheelMotor =
             subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.TurretConstants.flywheelName));
 
-    private final SubsystemObjectCell<Telemetry> telemetry = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().telemetry); //dairy my goat
 
 
 
@@ -58,8 +57,7 @@ public class Flywheel extends SDKSubsystem {
 
     @Override
     public void postUserLoopHook(@NonNull Wrapper opMode){
-        telemetry.get().addData(this.getClass().toString() + "/Speed_DegPerS", velocity.get().state());
-        telemetry.get().addData(this.getClass().toString() + "/Speed_DegPerS", velocity.get().state());
+
     }
 
 

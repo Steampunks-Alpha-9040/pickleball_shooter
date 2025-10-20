@@ -9,6 +9,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
 import org.firstinspires.ftc.teamcode.subsystems.Feeder;
+import org.firstinspires.ftc.teamcode.subsystems.LoggingPanels;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 
 import dev.frozenmilk.mercurial.commands.groups.Parallel;
@@ -17,8 +18,8 @@ import dev.frozenmilk.mercurial.commands.groups.Parallel;
 @TeleOp(name = "Main_PickleTeleOp")
 public class MainOp extends BaseOpMode {
 
+    private final TelemetryManager telemetryManager = LoggingPanels.getTelemetryManager();
 
-    private final TelemetryManager panelsTelemetry = Panels.getTelemetry();
     private LoopTimer timer = new LoopTimer();
 
     private final Parallel runOuttake = new Parallel(
@@ -27,8 +28,7 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void init() {
-        panelsTelemetry.debug("Init ran");
-        panelsTelemetry.update(telemetry);
+
     }
 
     @Override
@@ -37,7 +37,7 @@ public class MainOp extends BaseOpMode {
 
 
 
-        panelsTelemetry.update(telemetry);
+
         timer.end();
     }
 }
