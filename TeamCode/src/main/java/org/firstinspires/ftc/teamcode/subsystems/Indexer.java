@@ -121,7 +121,7 @@ public class Indexer extends SDKSubsystem {
 
     @Override
     public void postUserLoopHook(@NonNull Wrapper opMode){
-
+        updateBallMap();
     }
 
     @Override
@@ -157,7 +157,7 @@ public class Indexer extends SDKSubsystem {
     }
 
     /**
-     * updates the hashmap with the latest results from the
+     * updates the hashmap with the latest results from the color sensors
      */
     private void updateBallMap(){
         if (getColor(getArmColor()) != BallColor.NONE) {
@@ -171,7 +171,12 @@ public class Indexer extends SDKSubsystem {
         }
     }
 
-    private BallColor getColor(ColorSensor sensor){
+    private BallColor getColor(ColorSensor sensor){ //todo: replace if statement with argb or get actual sensor values of ball
+        if (sensor.green() > 0.6){
+            return BallColor.GREEN;
+        } else if (sensor.blue() > 0.5){
+            return BallColor.PURPLE;
+        }
         return BallColor.NONE;
     }
 
