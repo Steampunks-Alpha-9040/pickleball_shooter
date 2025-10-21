@@ -49,6 +49,6 @@ dependencies {
     implementation "dev.frozenmilk.mercurial:Mercurial:1.0.3"
     implementation "dev.frozenmilk:Sinister:2.2.0"
     implementation 'org.ftclib.ftclib:core:2.1.1' // core
-    implementation 'org.ftclib.ftclib:vision:2.1.0'
-    implementation 'androidx.core:core-ktx:1.17.0'// vision
+    implementation 'org.ftclib.ftclib:vision:2.1.0'// vision
+    implementation 'androidx.core:core-ktx:1.17.0'
 }

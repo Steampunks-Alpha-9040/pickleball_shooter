@@ -71,14 +71,21 @@ public class Flywheel extends SDKSubsystem {
     public Command runShooter() {
         return new Lambda("runShooter")
                 .addRequirements(INSTANCE)
-                .setInit(() -> getFlywheel().setPower(0.4));
+                .setInit(() -> getFlywheel().setPower(0.9));
     }
 
     @NonNull
     public Command stopShooter(){
-        return new Lambda("Stop Shooter")
+        return new Lambda("stopShooter")
                 .addRequirements(INSTANCE)
                 .setInit(() -> setFlywheelPower(0.0));
+    }
+
+    @NonNull
+    public Command ejectBall(){
+        return new Lambda("ejectBall")
+                .addRequirements(INSTANCE)
+                .setInit(() -> setFlywheelPower(0.1));
     }
 
     @NonNull
@@ -91,7 +98,7 @@ public class Flywheel extends SDKSubsystem {
     /**
      * @param power is in duty cycle (range 0.0-1.0)
      */
-    public void setFlywheelPower(double power){
+    private void setFlywheelPower(double power){
         getFlywheel().setPower(power);
     }
 

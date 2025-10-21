@@ -137,11 +137,11 @@ public class Turret extends SDKSubsystem {
         return new Lambda("doNothingTurret");
     }
 
-    public void setTurretTarget(double turretTarget){
+    private void setTurretTarget(double turretTarget){
         setpointPos = turretTarget;
     }
 
-    public void updateTurretPosition(){
+    private void updateTurretPosition(){
         if (Math.abs((currentAbsolutePosition.get().state() - previousAbsolutePosition)) > 355){ //if we changed by 355 deg in one tick, that means we probably went a revolution
             currentPos++;
         }
@@ -149,7 +149,7 @@ public class Turret extends SDKSubsystem {
         currentPos += currentAbsolutePosition.get().state();
     }
 
-    public double getCurrentPosition(){
+    private double getCurrentPosition(){
         return currentPos * Constants.TurretConstants.servoToTurret;
     }
 
