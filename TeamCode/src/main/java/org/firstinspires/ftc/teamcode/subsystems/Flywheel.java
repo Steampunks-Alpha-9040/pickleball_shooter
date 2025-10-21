@@ -36,7 +36,9 @@ public class Flywheel extends SDKSubsystem {
 
 
 
-
+    public static Flywheel getInstance(){
+        return INSTANCE;
+    }
 
     public static DcMotorEx getFlywheel() {
         return INSTANCE.turretFlywheelMotor.get();

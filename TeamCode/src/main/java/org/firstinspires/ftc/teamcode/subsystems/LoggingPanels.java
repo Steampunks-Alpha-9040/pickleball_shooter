@@ -2,11 +2,8 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import androidx.annotation.NonNull;
 
-import com.bylazar.ftcontrol.panels.Panels;
 import com.bylazar.ftcontrol.panels.integration.TelemetryManager;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import com.bylazar.telemetry.PanelsTelemetry;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -14,13 +11,10 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import dev.frozenmilk.dairy.core.FeatureRegistrar;
 import dev.frozenmilk.dairy.core.dependency.Dependency;
 import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
-import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.subsystems.SDKSubsystem;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
-import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
 import dev.frozenmilk.util.cell.Cell;
 import kotlin.annotation.MustBeDocumented;
 
@@ -28,11 +22,8 @@ public class LoggingPanels extends SDKSubsystem {
 
     private static final LoggingPanels INSTANCE = new LoggingPanels();
 
-    private final Cell<TelemetryManager> panelsManager = subsystemCell(Panels::getTelemetry);
-    private final SubsystemObjectCell<Telemetry> telemetry = subsystemCell(() -> FeatureRegistrar.getActiveOpMode().telemetry); //dairy my goat
-
-
-    public static TelemetryManager getTelemetryManager() {
+    private final Cell<PanelsTelemetry> panelsManager = subsystemCell(() -> PanelsTelemetry.INSTANCE);
+    public static PanelsTelemetry getPanelsManager() {
         return INSTANCE.panelsManager.get();
     }
 
