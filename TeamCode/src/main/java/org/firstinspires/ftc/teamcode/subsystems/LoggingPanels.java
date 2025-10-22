@@ -22,6 +22,8 @@ public class LoggingPanels extends SDKSubsystem {
 
     private static final LoggingPanels INSTANCE = new LoggingPanels();
 
+
+
     private final Cell<PanelsTelemetry> panelsManager = subsystemCell(() -> PanelsTelemetry.INSTANCE);
     public static PanelsTelemetry getPanelsManager() {
         return INSTANCE.panelsManager.get();
