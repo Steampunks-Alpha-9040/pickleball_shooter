@@ -91,8 +91,6 @@ public class Flywheel extends SDKSubsystem {
         return new Lambda("doNothingShooter")
                 .addRequirements(INSTANCE);
     }
-
-
     /**
      * @param power is in duty cycle (range 0.0-1.0)
      */

@@ -1,9 +1,8 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
-import com.bylazar.ftcontrol.LoopTimer;
-import com.bylazar.ftcontrol.panels.integration.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.utils.LoopTimer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
 
@@ -30,8 +29,8 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void init() {
-        telemetryManager.debug("hi world");
-        telemetryManager.update(telemetry);
+        panelsManager.getTelemetry().debug("hi world");
+        panelsManager.getTelemetry().update(telemetry);
     }
 
     @Override
