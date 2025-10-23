@@ -2,7 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import androidx.annotation.NonNull;
 
-import com.bylazar.ftcontrol.panels.integration.TelemetryManager;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 import java.lang.annotation.ElementType;
