@@ -2,7 +2,10 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import androidx.annotation.NonNull;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.Servo;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
@@ -31,9 +34,11 @@ public class Flywheel extends SDKSubsystem {
     private static final Flywheel INSTANCE = new Flywheel();
 
     private final SubsystemObjectCell<DcMotorEx> turretFlywheelMotor =
-            subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.TurretConstants.flywheelName));
-
-
+            subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.FlywheelConstants.flywheelName));
+    private final SubsystemObjectCell<CRServo> hoodServo =
+            subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.FlywheelConstants.hoodName));
+    private final SubsystemObjectCell<AnalogInput> hoodEncoder =
+            subsystemCell(() -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(AnalogInput.class, Constants.FlywheelConstants.hoodEncoderName));
     public static DcMotorEx getFlywheel() {
         return INSTANCE.turretFlywheelMotor.get();
     }
@@ -41,7 +46,7 @@ public class Flywheel extends SDKSubsystem {
 
     private final Cell<EnhancedDoubleSupplier> current = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getCurrent(CurrentUnit.AMPS)));
     private final Cell<EnhancedDoubleSupplier> velocity = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getVelocity(AngleUnit.DEGREES)));
-
+    private final Cell<EnhancedDoubleSupplier>
 
     private Flywheel(){}
 
@@ -82,6 +87,9 @@ public class Flywheel extends SDKSubsystem {
         getFlywheel().setPower(power);
     }
 
+    public void setHoodPosition(){
+
+    }
     // the annotation class we use to attach this subsystem
     @Retention(RetentionPolicy.RUNTIME)
     @Target(ElementType.TYPE)

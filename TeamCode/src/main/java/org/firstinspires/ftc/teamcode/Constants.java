@@ -4,8 +4,12 @@ import com.arcrobotics.ftclib.controller.PIDFController;
 
 public class Constants {
 
-    public static class TurretConstants {
+    public static class FlywheelConstants{
+        public static final String hoodName = "hood";
         public static final String flywheelName = "flywheel";
+        public static final String hoodEncoderName = "hoodEncoder";
+    }
+    public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turrentS";
         public static final String encoderName = "turretEncoder";
