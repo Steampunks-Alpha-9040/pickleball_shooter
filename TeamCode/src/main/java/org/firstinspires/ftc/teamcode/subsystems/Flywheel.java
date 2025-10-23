@@ -8,6 +8,7 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.CurrentUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Inherited;
@@ -46,7 +47,7 @@ public class Flywheel extends SDKSubsystem {
 
 
     private final Cell<EnhancedDoubleSupplier> current = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getCurrent(CurrentUnit.AMPS)));
-    private final Cell<EnhancedDoubleSupplier> velocity = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getVelocity(AngleUnit.DEGREES)));
+    private final Cell<EnhancedDoubleSupplier> position = subsystemCell(() -> new EnhancedDoubleSupplier(() -> (double) getFlywheel().getCurrentPosition() * Util.GoBILDA.BARE.getCPR()));
 
 
     private Flywheel(){}
@@ -62,6 +63,10 @@ public class Flywheel extends SDKSubsystem {
 
     }
 
+    public void logFlywheel(){
+        LoggingPanels.getPanelsManager().getTelemetry().addData("Flywheel/Velo", position.get().velocity());
+        LoggingPanels.getPanelsManager().getTelemetry().addData("Flywheel/Current", current.get().state());
+    }
 
     // see the feature dev notes on when to use cleanup vs postStop
     @Override

@@ -37,15 +37,17 @@ public class MainOp extends BaseOpMode {
     @Override
     public void loop() {
         loopTimer.start();
+        updateLogging();
 
 
+        panelsManager.getTelemetry().addData("LoopTime", panelsManager.getTelemetry().getTimeSinceLastUpdate());
 
 
 
         loopTimer.end();
     }
 
-    public void logFlywheel(){
-        panelsManager.getTelemetry().addData("Flywheel/Velo", Flywheel.getInstance());
+    public void updateLogging(){
+        Flywheel.getInstance().logFlywheel();
     }
 }
