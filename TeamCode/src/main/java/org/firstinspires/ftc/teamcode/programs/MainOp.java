@@ -1,31 +1,26 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.sin;
+
 import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.utils.LoopTimer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-import org.firstinspires.ftc.teamcode.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-import org.firstinspires.ftc.teamcode.subsystems.LoggingPanels;
-import org.firstinspires.ftc.teamcode.util.Drawer;
-
-import dev.frozenmilk.mercurial.commands.groups.Parallel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @TeleOp(name = "Main_PickleTeleOp")
 public class MainOp extends BaseOpMode {
 
-    private final PanelsTelemetry panelsManager = LoggingPanels.getPanelsManager();
+    private static final Logger log = LoggerFactory.getLogger(MainOp.class);
+    private final PanelsTelemetry panelsManager = PanelsTelemetry.INSTANCE;
 
-    private final LoopTimer loopTimer = new LoopTimer();
+    private ElapsedTime timer = new ElapsedTime();
 
-    private final Drawer field = new Drawer();
-
-    private final Parallel runOuttake = new Parallel(
-        Feeder.getInstance().startFeeder()
-    );
 
     @Override
     public void init() {
@@ -35,18 +30,18 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void loop() {
-        loopTimer.start();
-        updateLogging();
+        logFlywheel();
 
+        panelsManager.getTelemetry().update(telemetry);
 
-        panelsManager.getTelemetry().addData("LoopTime", panelsManager.getTelemetry().getTimeSinceLastUpdate());
-
-
-
-        loopTimer.end();
     }
 
-    public void updateLogging(){
-        Flywheel.getInstance().logFlywheel();
+    public void logFlywheel(){
+        double t = timer.seconds();
+        double sinVariable = sin(t);
+        double lissajous = sin(3 * t + Math.PI / 2) * cos(2 * t);
+
+        panelsManager.getTelemetry().addData("sin", sinVariable);
+        panelsManager.getTelemetry().addData("lissajous", lissajous);
     }
 }
