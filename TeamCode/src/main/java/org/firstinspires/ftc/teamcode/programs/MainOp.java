@@ -6,6 +6,7 @@ import static java.lang.Math.exp;
 import static java.lang.Math.sin;
 
 import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.utils.LoopTimer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -20,7 +21,7 @@ public class MainOp extends BaseOpMode {
     private final PanelsTelemetry panelsManager = PanelsTelemetry.INSTANCE;
 
     private ElapsedTime timer = new ElapsedTime();
-
+    private LoopTimer loopTimer = new LoopTimer();
 
     @Override
     public void init() {
@@ -30,18 +31,10 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void loop() {
-        logFlywheel();
-
-        panelsManager.getTelemetry().update(telemetry);
 
     }
 
     public void logFlywheel(){
-        double t = timer.seconds();
-        double sinVariable = sin(t);
-        double lissajous = sin(3 * t + Math.PI / 2) * cos(2 * t);
 
-        panelsManager.getTelemetry().addData("sin", sinVariable);
-        panelsManager.getTelemetry().addData("lissajous", lissajous);
     }
 }
