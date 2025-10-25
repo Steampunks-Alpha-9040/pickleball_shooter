@@ -25,8 +25,7 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void init() {
-        panelsManager.getTelemetry().debug("hi world");
-        panelsManager.getTelemetry().update(telemetry);
+
     }
 
     @Override
