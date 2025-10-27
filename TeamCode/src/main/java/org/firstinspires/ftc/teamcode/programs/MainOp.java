@@ -1,43 +1,39 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
-import com.bylazar.ftcontrol.LoopTimer;
-import com.bylazar.ftcontrol.panels.Panels;
-import com.bylazar.ftcontrol.panels.integration.TelemetryManager;
-import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import static java.lang.Math.cos;
+import static java.lang.Math.exp;
+import static java.lang.Math.sin;
+
+import com.bylazar.telemetry.PanelsTelemetry;
+import com.bylazar.utils.LoopTimer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
+import com.qualcomm.robotcore.util.ElapsedTime;
 
-
-import org.firstinspires.ftc.teamcode.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.subsystems.Turret;
-
-import dev.frozenmilk.mercurial.commands.groups.Parallel;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 
 @TeleOp(name = "Main_PickleTeleOp")
 public class MainOp extends BaseOpMode {
 
+    private static final Logger log = LoggerFactory.getLogger(MainOp.class);
+    private final PanelsTelemetry panelsManager = PanelsTelemetry.INSTANCE;
 
-    private final TelemetryManager panelsTelemetry = Panels.getTelemetry();
-    private LoopTimer timer = new LoopTimer();
-
-    private final Parallel runOuttake = new Parallel(
-        Feeder.getInstance().startFeeder()
-    );
+    private ElapsedTime timer = new ElapsedTime();
+    private LoopTimer loopTimer = new LoopTimer();
 
     @Override
     public void init() {
-        panelsTelemetry.debug("Init ran");
-        panelsTelemetry.update(telemetry);
+
     }
 
     @Override
     public void loop() {
-        timer.start();
 
+    }
 
+    public void logFlywheel(){
 
-        panelsTelemetry.update(telemetry);
-        timer.end();
     }
 }
