@@ -10,8 +10,11 @@ import com.bylazar.utils.LoopTimer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
+import org.firstinspires.ftc.teamcode.subsystem.Flywheel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import dev.frozenmilk.mercurial.Mercurial;
 
 
 @TeleOp(name = "Main_PickleTeleOp")
@@ -25,7 +28,8 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void init() {
-
+        Mercurial.gamepad1().x().onTrue(Flywheel.INSTANCE.runFlywheel());
+        Mercurial.gamepad1().y().onTrue(Flywheel.INSTANCE.stopFlywheel());
     }
 
     @Override
