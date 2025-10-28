@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 import org.firstinspires.ftc.teamcode.Constants;
 
@@ -21,6 +22,7 @@ import dev.frozenmilk.dairy.core.util.controller.implementation.DoubleController
 import dev.frozenmilk.dairy.core.util.supplier.numeric.CachedMotionComponentSupplier;
 import dev.frozenmilk.dairy.core.util.supplier.numeric.MotionComponentSupplier;
 import dev.frozenmilk.dairy.core.util.supplier.numeric.MotionComponents;
+import dev.frozenmilk.dairy.core.wrapper.Wrapper;
 import dev.frozenmilk.mercurial.commands.Command;
 import dev.frozenmilk.mercurial.commands.Lambda;
 import dev.frozenmilk.mercurial.subsystems.Subsystem;
@@ -30,6 +32,10 @@ import dev.frozenmilk.util.cell.Cell;
 public class Indexer implements Subsystem {
 
     public static final Indexer INSTANCE = new Indexer();
+
+    public enum IndexerState{ // this is based off of where the green ball is
+        RIGHT, LEFT, CENTER
+    }
 
     private final SubsystemObjectCell<DcMotorEx> indexer = subsystemCell(
             () -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.IndexerConstants.indexer)
@@ -63,11 +69,41 @@ public class Indexer implements Subsystem {
 
     );
 
+    @Override
+    public void preUserInitHook(@NonNull Wrapper opMode){
+        INSTANCE.indexer.get().setDirection(DcMotorSimple.Direction.REVERSE);
+        indexerPIDF.get().setEnabled(false);
+    }
+
+    @Override
+    public void preUserStartHook(@NonNull Wrapper opMode){
+        indexerPIDF.get().setEnabled(true);
+    }
 
 
     public Command spinIndexer(){
-        return new Lambda("spinIndexer").
-                setInit(() -> spinIndexer(1));
+        return new Lambda("spinIndexer")
+                .setInit(() -> spinIndexer(1));
+    }
+
+    public Command setIndexerPos(IndexerState greenPos){
+        switch(greenPos){
+            case RIGHT:
+                return new Lambda("setIndexerPos")
+                        .setInit(() -> setIndexerPosition(0.5))
+                        .addRequirements(this);
+            case LEFT:
+                return new Lambda("setIndexerPos")
+                        .setInit(() -> setIndexerPosition(0.2))
+                        .addRequirements(this);
+            case CENTER:
+                return new Lambda("setIndexerPos")
+                        .setInit(() -> setIndexerPosition(-0.2))
+                        .addRequirements(this);
+            default:
+                return new Lambda("EMPTY");
+        }
+
     }
 
     private void spinIndexer(double power){
@@ -81,7 +117,6 @@ public class Indexer implements Subsystem {
             }
             return Double.NaN;
          });
-
 
     }
 
