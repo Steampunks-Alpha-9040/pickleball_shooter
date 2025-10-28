@@ -8,6 +8,13 @@ public class Constants {
         public static final String hoodName = "hood";
         public static final String flywheelName = "flywheel";
         public static final String hoodEncoderName = "hoodEncoder";
+
+        public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
+
+        public static final double kP = 10.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kF = 0.0;
     }
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
