@@ -2,12 +2,16 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
 
+import org.firstinspires.ftc.teamcode.util.Util;
+
 public class Constants {
 
     public static class FlywheelConstants{
         public static final String hoodName = "hood";
         public static final String flywheelName = "flywheel";
         public static final String hoodEncoderName = "hoodEncoder";
+
+        public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
 
         public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
 

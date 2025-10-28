@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 
 import java.lang.annotation.ElementType;
@@ -31,6 +32,9 @@ import dev.frozenmilk.util.cell.Cell;
 public class Flywheel implements Subsystem {
 
     public static final Flywheel INSTANCE = new Flywheel();
+
+
+    private Telemetry telemetry;
 
     private final SubsystemObjectCell<DcMotorEx> flywheel = subsystemCell(
             () -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.FlywheelConstants.flywheelName)
@@ -67,6 +71,7 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void preUserInitHook(@NonNull Wrapper opMode) {
+        telemetry = opMode.getOpMode().telemetry;
         flywheel.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
         flywheel.get().setDirection(DcMotorSimple.Direction.FORWARD);
         flywheelPID.get().setEnabled(false);
@@ -75,6 +80,11 @@ public class Flywheel implements Subsystem {
     @Override
     public void preUserStartHook(@NonNull Wrapper opMode) {
         flywheelPID.get().setEnabled(true);
+    }
+
+    @Override
+    public void postUserLoopHook(@NonNull Wrapper opMode){
+        telemetry.addData("Flywheel/Velo", flywheel.get().getVelocity() / Constants.FlywheelConstants.flywheelMotor.getCPR()); //logging rotations per second
     }
 
     public Command runFlywheel(){
