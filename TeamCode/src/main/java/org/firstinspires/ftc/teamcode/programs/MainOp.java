@@ -17,12 +17,6 @@ import org.slf4j.LoggerFactory;
 @TeleOp(name = "Main_PickleTeleOp")
 public class MainOp extends BaseOpMode {
 
-    private static final Logger log = LoggerFactory.getLogger(MainOp.class);
-    private final PanelsTelemetry panelsManager = PanelsTelemetry.INSTANCE;
-
-    private ElapsedTime timer = new ElapsedTime();
-    private LoopTimer loopTimer = new LoopTimer();
-
     @Override
     public void init() {
 
