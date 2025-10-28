@@ -45,8 +45,9 @@ public class Constants {
 
     public static class IndexerConstants{
         public static final String indexer = "indexer";
-        public static final String armColor = "armColor";
-
+        public static final String feederSensor = "feederSensor";
+        public static final String rampRightSensor = "rampRightSensor";
+        public static final String rampLeftSensor = "rampLeftSensor";
         public static final double motorToIndexer = 0.0;
 
         public static final double indexer_kP = 10.0; //The like main pushing force, the constant :)
