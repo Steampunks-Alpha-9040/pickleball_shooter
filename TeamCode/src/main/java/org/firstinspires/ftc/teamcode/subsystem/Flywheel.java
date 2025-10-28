@@ -33,8 +33,6 @@ public class Flywheel implements Subsystem {
 
     public static final Flywheel INSTANCE = new Flywheel();
 
-
-
     private final SubsystemObjectCell<DcMotorEx> flywheel = subsystemCell(
             () -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.FlywheelConstants.flywheelName)
     );
@@ -108,7 +106,7 @@ public class Flywheel implements Subsystem {
     @Inherited
     public @interface Attach{}
     //Dependencies for Mercurial
-    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Attach.class));
+    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Flywheel.Attach.class));
     @NonNull
     @Override
     public Dependency<?> getDependency() {
