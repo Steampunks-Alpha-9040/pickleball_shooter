@@ -1,51 +1,68 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
-
 import com.pedropathing.follower.Follower;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.pedropathing.follower.FollowerConstants;
 
+import org.firstinspires.ftc.robotcore.external.Supplier;
+import org.firstinspires.ftc.teamcode.util.Mecanum;
+import com.pedropathing.ftc.localization.constants.PinpointConstants;
+
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
-
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import org.firstinspires.ftc.teamcode.programs.MainOp;
+import org.firstinspires.ftc.teamcode.util.PinpointLocalizer;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
+import dev.nextftc.ftc.GamepadEx;
 import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.hardware.driving.FieldCentric;
-import dev.nextftc.hardware.driving.HolonomicMode;
-import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.IMUEx;
 
 
-public class Drivebase implements Subsystem {
+public class Drivebase extends Mecanum implements Subsystem {
 
     public static final Drivebase INSTANCE = new Drivebase();
-    private Drivebase() { }
-    public static Follower follower;
-
-    private MotorEx FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
-    private MotorEx FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
-    private MotorEx BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
-    private MotorEx BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
-    private IMUEx imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
-
-
-    public MecanumDriverControlled getMecanumDriver(){
-        return new MecanumDriverControlled(
-            FL, FR, BL, BR,
-            Gamepads.gamepad1().leftStickY().negate(),
-            Gamepads.gamepad1().leftStickX(),
-            Gamepads.gamepad1().rightStickX(),
-            new FieldCentric(imu)
-        );
+    private Drivebase() {
+        super(ActiveOpMode.hardwareMap());
     }
+    private static Follower follower;
+    private Telemetry telemetry;
+
+    private IMUEx imu;
+
+    private Supplier<Boolean> isSlowed = () -> ActiveOpMode.gamepad1().a;
+
+
+    @Override
+    public void initialize(){
+        imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
+        telemetry = ActiveOpMode.telemetry();
+        follower = new Follower(new FollowerConstants(),
+                                new PinpointLocalizer(ActiveOpMode.hardwareMap()),
+                                this
+                );
+    }
+
+    public void drive(GamepadEx gamepadEx) {
+        follower.setTeleOpDrive(
+                gamepadEx.leftStickX().get() * (isSlowed.get() ? Constants.DrivebaseConstants.slowScalar : 1),
+                gamepadEx.leftStickY().get() * (isSlowed.get() ? Constants.DrivebaseConstants.slowScalar : 1),
+                gamepadEx.rightStickX().get() * (isSlowed.get() ? Constants.DrivebaseConstants.slowScalar : 1),
+                false
+        );
+        follower.update();
+    }
+
+    public Command controllerDrive(){
+        return new LambdaCommand("DriveController")
+                .requires(this)
+                .setStart(() -> drive(Gamepads.gamepad1()))
+                .setIsDone(() -> false);
+
+    }
+
 }

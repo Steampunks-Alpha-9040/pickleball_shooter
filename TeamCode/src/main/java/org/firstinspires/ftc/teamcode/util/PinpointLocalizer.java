@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Constants;
 
 import java.util.Objects;
 
@@ -31,7 +32,7 @@ public class PinpointLocalizer implements Localizer {
      *
      * @param map the HardwareMap
      */
-    public PinpointLocalizer(HardwareMap map, PinpointConstants constants){ this(map, constants, new Pose());}
+    public PinpointLocalizer(HardwareMap map){ this(map, new Pose());}
 
     /**
      * This creates a new PinpointLocalizer from a HardwareMap and a Pose, with the Pose
@@ -41,22 +42,18 @@ public class PinpointLocalizer implements Localizer {
      * @param setStartPose the Pose to start from
      */
     @SuppressLint("NewApi")
-    public PinpointLocalizer(HardwareMap map, PinpointConstants constants, Pose setStartPose){
+    public PinpointLocalizer(HardwareMap map, Pose setStartPose){
 
-        odo = map.get(GoBildaPinpointDriver.class,constants.hardwareMapName);
-        setOffsets(constants.strafePodX, constants.forwardPodY, constants.distanceUnit);
+        odo = map.get(GoBildaPinpointDriver.class, Constants.ImuConstants.imuName);
 
-        if(constants.yawScalar.isPresent()) {
-            odo.setYawScalar(constants.yawScalar.getAsDouble());
-        }
+        setOffsets(
+                Constants.ImuConstants.podOffsets.getX(),
+                Constants.ImuConstants.podOffsets.getY(),
+                Constants.ImuConstants.distanceUnit);
 
-        if(constants.customEncoderResolution.isPresent()) {
-            odo.setEncoderResolution(constants.customEncoderResolution.getAsDouble(), constants.distanceUnit);
-        } else {
-            odo.setEncoderResolution(constants.encoderResolution);
-        }
+        odo.setEncoderResolution(Constants.ImuConstants.podType);
 
-        odo.setEncoderDirections(constants.forwardEncoderDirection, constants.strafeEncoderDirection);
+        odo.setEncoderDirections(Constants.ImuConstants.xEncoderDirection, Constants.ImuConstants.yEncoderDirection);
 
         setStartPose(setStartPose);
         totalHeading = 0;
