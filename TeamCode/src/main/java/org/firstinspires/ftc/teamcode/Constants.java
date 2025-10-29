@@ -20,6 +20,7 @@ public class Constants {
 
     public static class FlywheelConstants{
         public static final String flywheelName = "flywheel";
+        public static final String hoodName = "hood";
 
         public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
 
