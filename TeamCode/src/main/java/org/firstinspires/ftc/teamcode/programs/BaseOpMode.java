@@ -4,9 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 
+import dev.nextftc.ftc.NextFTCOpMode;
 
 
-
-@Flywheel.Attach
-public abstract class BaseOpMode extends OpMode {
+public abstract class BaseOpMode extends NextFTCOpMode {
 }
