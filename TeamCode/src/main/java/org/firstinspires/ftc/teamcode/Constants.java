@@ -6,6 +6,18 @@ import org.firstinspires.ftc.teamcode.util.Util;
 
 public class Constants {
 
+
+    public static class DrivebaseConstants {
+        public static final String FR = "fr";
+        public static final String FL = "fl";
+        public static final String BR = "br";
+        public static final String BL = "bl";
+        public static final String IMU = "imu";
+
+        public static final double slowScalar = 0.5;
+
+    }
+
     public static class FlywheelConstants{
         public static final String hoodName = "hood";
         public static final String flywheelName = "flywheel";
