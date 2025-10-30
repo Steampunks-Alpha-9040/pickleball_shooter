@@ -108,9 +108,4 @@ public class Flywheel implements Subsystem {
         return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
     }
 
-
-
-
-
-
 }

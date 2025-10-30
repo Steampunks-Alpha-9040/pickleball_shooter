@@ -1,29 +1,18 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
-
 import com.pedropathing.follower.Follower;
-import com.qualcomm.hardware.bosch.BNO055IMU;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.IMU;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
-import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.core.units.Angle;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
-import dev.nextftc.hardware.driving.HolonomicMode;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
-import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.MotorEx;
-import dev.nextftc.hardware.impl.IMUEx;
 
 
 public class Drivebase implements Subsystem {
@@ -32,20 +21,37 @@ public class Drivebase implements Subsystem {
     private Drivebase() { }
     public static Follower follower;
 
-    private MotorEx FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
-    private MotorEx FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
-    private MotorEx BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
-    private MotorEx BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
-    private IMUEx imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
+    private MotorEx FL;
+    private MotorEx FR;
+    private MotorEx BL;
+    private MotorEx BR;
+    private GoBildaPinpointDriver imu;
 
 
-    public MecanumDriverControlled getMecanumDriver(){
+    @Override
+    public void initialize(){
+        FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
+        FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
+        BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
+        BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
+        imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
+    }
+
+    public MecanumDriverControlled getFieldMecanumDriver(){
         return new MecanumDriverControlled(
             FL, FR, BL, BR,
             Gamepads.gamepad1().leftStickY().negate(),
             Gamepads.gamepad1().leftStickX(),
             Gamepads.gamepad1().rightStickX(),
-            new FieldCentric(imu)
+            new FieldCentric(() -> Angle.fromDeg(imu.getHeading(AngleUnit.DEGREES)))
         );
+    }
+    public MecanumDriverControlled getRobotMecanumDriver(){
+        return new MecanumDriverControlled(
+                FL, FR, BL, BR,
+                Gamepads.gamepad1().leftStickY().negate(),
+                Gamepads.gamepad1().leftStickX(),
+                Gamepads.gamepad1().rightStickX()
+            );
     }
 }

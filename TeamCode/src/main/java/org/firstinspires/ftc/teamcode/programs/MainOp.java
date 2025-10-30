@@ -3,8 +3,6 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
@@ -20,7 +18,8 @@ public class MainOp extends BaseOpMode {
                 new SubsystemComponent(
                         super.flywheel,
                         super.drivebase,
-                        super.indexer
+                        super.indexer,
+                        super.feeder
                 ),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -29,7 +28,11 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void onInit() {
-        drivebase.getMecanumDriver().schedule();
+
+
+        drivebase.getRobotMecanumDriver().schedule();
+
+
 
         Gamepads.gamepad1().a().whenBecomesTrue(
                 flywheel.shootFlywheelFar()
@@ -41,8 +44,15 @@ public class MainOp extends BaseOpMode {
                 flywheel.stopFlywheel()
         );
 
+
         Gamepads.gamepad2().b().whenTrue(
                 indexer.spinIndexer()
+        );
+        Gamepads.gamepad2().a().whenTrue(
+                feeder.transfer()
+        );
+        Gamepads.gamepad2().x().whenTrue(
+                feeder.store()
         );
 
     }

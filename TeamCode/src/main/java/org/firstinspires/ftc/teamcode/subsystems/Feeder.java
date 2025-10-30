@@ -1,72 +1,78 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
-
-import com.qualcomm.robotcore.hardware.CRServo;
-
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.BulkReads;
+import org.firstinspires.ftc.teamcode.util.Util;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
+import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.hardware.impl.MotorEx;
+import dev.nextftc.hardware.impl.ServoEx;
 
-import dev.frozenmilk.dairy.core.Feature;
-import dev.frozenmilk.dairy.core.FeatureRegistrar;
-import dev.frozenmilk.dairy.core.dependency.Dependency;
-import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
-import dev.frozenmilk.mercurial.commands.Command;
-import dev.frozenmilk.mercurial.subsystems.Subsystem;
-import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
 
 public class Feeder implements Subsystem {
 
-    public static Feature INSTANCE = new Feeder();
-    
-    private SubsystemObjectCell<CRServo> bottomOmni = subsystemCell(
-            () -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.FeederConstants.feederBottomOmni)
-    );
+    public static Feeder INSTANCE = new Feeder();
 
-    private SubsystemObjectCell<CRServo> topOmni = subsystemCell(
-            () -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(CRServo.class, Constants.FeederConstants.feederTopWheel)
-    );
+    private MotorEx feederWheel;
+    private ServoEx feederArm;
 
 
-
-    public
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    private Dependency<?> dependency = new SingleAnnotation<>(Feeder.Attach.class);
-    @NonNull
-    @Override
-    public Dependency<?> getDependency() { return dependency; }
 
     @Override
-    public void setDependency(@NonNull Dependency<?> dependency) {
-        this.dependency = dependency;
+    public void initialize(){
+        feederWheel = new MotorEx(Constants.FeederConstants.feederWheel);
+        feederArm = new ServoEx(Constants.FeederConstants.feederArm);
     }
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @Inherited
-    public @interface Attach {}
+    @Override
+    public void periodic(){
+
+
+    }
+
+
+
+
+    public Command transfer(){
+        return new ParallelGroup(
+                setArmDown(),
+                turnWheelsOn()
+        );
+    }
+
+    public Command store(){
+        return new ParallelGroup(
+                setArmUp(),
+                turnWheelsOff()
+        );
+    }
+
+    public Command setArmDown(){
+        return new LambdaCommand()
+                .requires(this)
+                .setStart(() -> feederArm.setPosition(0.5))
+                .setIsDone(() -> Util.isAtTarget(feederArm.getPosition(), 0.5, 0.05));
+    }
+
+    public Command setArmUp(){
+        return new LambdaCommand()
+                .requires(this)
+                .setStart(() -> feederArm.setPosition(0))
+                .setIsDone(() -> Util.isAtTarget(feederArm.getPosition(), 0.0, 0.05));
+    }
+
+    public Command turnWheelsOn(){
+        return new LambdaCommand()
+                .requires(this)
+                .setStart(() -> feederWheel.setPower(1));
+    }
+
+    public Command turnWheelsOff(){
+        return new LambdaCommand()
+                .requires(this)
+                .setStart(() -> feederWheel.setPower(0));
+    }
+
 }
