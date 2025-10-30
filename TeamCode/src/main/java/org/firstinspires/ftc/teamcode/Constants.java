@@ -81,6 +81,8 @@ public class Constants {
         public static final double indexer_kD = 0.0; //slows down/speeds up the closer/farther away u are
         public static final double indexer_kF = 0.0; //friction, tune so when the turret barely moves
 
+        public static final double indexer_DutyCycle = 0.2;
+
         public static final double indexerTolerance = 3.0;
 
     }
