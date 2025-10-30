@@ -8,4 +8,5 @@ import dev.nextftc.ftc.NextFTCOpMode;
 
 
 public abstract class BaseOpMode extends NextFTCOpMode {
+
 }

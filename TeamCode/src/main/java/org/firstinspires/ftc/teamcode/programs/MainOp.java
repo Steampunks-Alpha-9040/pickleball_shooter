@@ -9,17 +9,15 @@ import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 @TeleOp(name = "Main_PickleTeleOp")
 public class MainOp extends BaseOpMode {
 
-    @Override
-    public void init() {
-
-    }
 
     @Override
-    public void loop() {
+    public void onInit() {
 
     }
 
-    public void logFlywheel(){
+    @Override
+    public void onUpdate(){
 
     }
+
 }
