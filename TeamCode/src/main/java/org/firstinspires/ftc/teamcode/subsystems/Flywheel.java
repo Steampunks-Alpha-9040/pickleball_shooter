@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.Constants;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
@@ -74,10 +75,10 @@ public class Flywheel implements Subsystem {
         return new KineticState(getEncoderRotations());
     }
     private void updateHoodPos(){
-        curEncoder = (encoder.readRawVoltage() * 3.2)/ 360;
+        curEncoder = (encoder.readRawVoltage() * 3.2);
         if (prevEncoder - curEncoder > 0.97){
             encoderRotations++;
-        } else if (prevEncoder - curEncoder < 355){
+        } else if (prevEncoder - curEncoder < 0.97){
             encoderRotations--;
         }
         prevEncoder = curEncoder;
@@ -88,20 +89,24 @@ public class Flywheel implements Subsystem {
     }
 
 
+    //Commands
+    public Command shootFlywheelFar(){
+        return new ParallelGroup(
+                new RunToPosition(hoodCalculator, 0.5),
+                new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
+        ).named("farFlywheel");
+    }
 
-    public Command spinFlywheelFast(){
-        return new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this).named("fastFlywheel");
+    public Command shootFlywheelClose(){
+        return new ParallelGroup(
+            new RunToPosition(hoodCalculator, 1.5),
+            new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
+        ).named("closeFlywheel");
     }
-    public Command spinFlywheelSlow(){
-        return new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this).named("slowFlywheel");
-    }
+
     public Command stopFlywheel(){
         return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
     }
-    public Command farShooting(){
-        return new RunToPosition(hoodCalculator, 1.5)
-    }
-
 
 
 
