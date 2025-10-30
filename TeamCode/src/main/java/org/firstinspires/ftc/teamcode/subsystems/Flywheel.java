@@ -1,130 +1,116 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
+import com.qualcomm.robotcore.hardware.AnalogSensor;
 
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
+import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
+import dev.nextftc.hardware.controllable.RunToPosition;
+import dev.nextftc.hardware.controllable.RunToVelocity;
+import dev.nextftc.hardware.impl.CRServoEx;
+import dev.nextftc.hardware.impl.MotorEx;
 
-import dev.frozenmilk.dairy.core.FeatureRegistrar;
-import dev.frozenmilk.dairy.core.dependency.Dependency;
-import dev.frozenmilk.dairy.core.dependency.annotation.SingleAnnotation;
-import dev.frozenmilk.dairy.core.util.controller.calculation.pid.DoubleComponent;
-import dev.frozenmilk.dairy.core.util.controller.implementation.DoubleController;
-import dev.frozenmilk.dairy.core.util.supplier.numeric.MotionComponentSupplier;
-import dev.frozenmilk.dairy.core.util.supplier.numeric.MotionComponents;
-import dev.frozenmilk.dairy.core.wrapper.Wrapper;
-import dev.frozenmilk.mercurial.commands.Command;
-import dev.frozenmilk.mercurial.commands.Lambda;
-import dev.frozenmilk.mercurial.subsystems.Subsystem;
-import dev.frozenmilk.mercurial.subsystems.SubsystemObjectCell;
-import dev.frozenmilk.util.cell.Cell;
 
 public class Flywheel implements Subsystem {
 
     public static final Flywheel INSTANCE = new Flywheel();
 
+    private MotorEx flywheel;
 
-    private Telemetry telemetry;
+    private CRServoEx hood;
 
-    private final SubsystemObjectCell<DcMotorEx> flywheel = subsystemCell(
-            () -> FeatureRegistrar.getActiveOpMode().hardwareMap.get(DcMotorEx.class, Constants.FlywheelConstants.flywheelName)
-    );
+    private AnalogSensor encoder;
 
-    private MotionComponentSupplier<Double> targetVelocity;
+    private double encoderRotations;
 
-    private final MotionComponentSupplier<Double> curretVelocity = (motionComponents -> {
-        if (motionComponents == MotionComponents.STATE){
-            return INSTANCE.flywheel.get().getVelocity();
-        }
-        return Double.NaN;
-    });
-    private final MotionComponentSupplier<Double> toleranceVelocity = (motionComponents -> {
-        if (motionComponents == MotionComponents.STATE){
-            return Constants.FlywheelConstants.flywheelVelocityTolerance;
-        }
-        return Double.NaN;
-    });
+    private double curEncoder = 0.0;
+    private double prevEncoder = 0.0;
 
-
-    private Cell<DoubleController> flywheelPID = subsystemCell(
-            () -> new DoubleController(
-                    targetVelocity,
-                    curretVelocity,
-                    toleranceVelocity,
-                    INSTANCE::setFlywheelPower,
-                    new DoubleComponent.P(MotionComponents.STATE, Constants.FlywheelConstants.kP)
-                            .plus(new DoubleComponent.I(MotionComponents.STATE, Constants.FlywheelConstants.kI))
-                            .plus(new DoubleComponent.D(MotionComponents.STATE, Constants.FlywheelConstants.kD))
-                            .plus(new DoubleComponent.FF(MotionComponents.STATE, Constants.FlywheelConstants.kF))
+    private final ControlSystem flywheelCalculator = ControlSystem.builder()
+            .velPid(
+                    Constants.FlywheelConstants.flywheel_kP,
+                    Constants.FlywheelConstants.flywheel_kI,
+                    Constants.FlywheelConstants.flywheel_kD
             )
-    );
+            .basicFF(
+                    Constants.FlywheelConstants.flywheel_kF
+            )
+            .build();
+
+    private final ControlSystem hoodCalculator = ControlSystem.builder()
+            .posPid(
+                    Constants.FlywheelConstants.hood_kP,
+                    Constants.FlywheelConstants.hood_kI,
+                    Constants.FlywheelConstants.hood_kD
+            )
+            .basicFF(
+                    Constants.FlywheelConstants.hood_kF
+            )
+            .build();
+
+
+    private Flywheel(){}
 
     @Override
-    public void preUserInitHook(@NonNull Wrapper opMode) {
-        telemetry = opMode.getOpMode().telemetry;
-        flywheel.get().setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.FLOAT);
-        flywheel.get().setDirection(DcMotorSimple.Direction.FORWARD);
-        flywheelPID.get().setEnabled(false);
+    public void initialize(){
+        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
+        hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
+        encoder = ActiveOpMode.hardwareMap().get(AnalogSensor.class, "hoodEnc");
     }
 
     @Override
-    public void preUserStartHook(@NonNull Wrapper opMode) {
-        flywheelPID.get().setEnabled(true);
+    public void periodic(){
+        updateHoodPos();
+        flywheel.setPower(flywheelCalculator.calculate(flywheel.getState()));
+        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
     }
 
-    @Override
-    public void postUserLoopHook(@NonNull Wrapper opMode){
-        telemetry.addData("Flywheel/Velo", flywheel.get().getVelocity() / Constants.FlywheelConstants.flywheelMotor.getCPR()); //logging rotations per second
+    //jank asf code for axon abs encoders... probably doesn't work.
+    private KineticState getHoodPhysicalState(){
+        return new KineticState(getEncoderRotations());
+    }
+    private void updateHoodPos(){
+        curEncoder = (encoder.readRawVoltage() * 3.2);
+        if (prevEncoder - curEncoder > 0.97){
+            encoderRotations++;
+        } else if (prevEncoder - curEncoder < 0.97){
+            encoderRotations--;
+        }
+        prevEncoder = curEncoder;
     }
 
-    public Command runFlywheel(){
-        return new Lambda("runFlywheel")
-                .setInit(() -> INSTANCE.flywheel.get().setPower(1.0));
+    private double getEncoderRotations(){
+        return curEncoder + encoderRotations;
+    }
+
+
+    //Commands
+    public Command shootFlywheelFar(){
+        return new ParallelGroup(
+                new RunToPosition(hoodCalculator, 0.5),
+                new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
+        ).named("farFlywheel");
+    }
+
+    public Command shootFlywheelClose(){
+        return new ParallelGroup(
+            new RunToPosition(hoodCalculator, 1.5),
+            new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
+        ).named("closeFlywheel");
     }
 
     public Command stopFlywheel(){
-        return new Lambda("stopFlywheel")
-                .setInit(() -> INSTANCE.flywheel.get().setPower(0.0));
-    }
-
-    private void setFlywheelPower(double power){
-        flywheelPID.get().setEnabled(true);
-        targetVelocity = (motionComponents) -> {
-            if (motionComponents == MotionComponents.STATE){
-                return power;
-            }
-            return Double.NaN;
-        };
+        return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
     }
 
 
 
 
-    @Retention(RetentionPolicy.RUNTIME)
-    @Target(ElementType.TYPE)
-    @Inherited
-    public @interface Attach{}
-    //Dependencies for Mercurial
-    private Dependency<?> dependency = Subsystem.DEFAULT_DEPENDENCY.and(new SingleAnnotation<>(Flywheel.Attach.class));
-    @NonNull
-    @Override
-    public Dependency<?> getDependency() {
-        return dependency;
-    }
-    @Override
-    public void setDependency(@NonNull Dependency<?> dependency) {
-        this.dependency = dependency;
-    }
 
 
 }
