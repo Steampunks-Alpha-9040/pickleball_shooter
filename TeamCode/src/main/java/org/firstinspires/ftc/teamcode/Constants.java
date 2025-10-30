@@ -2,12 +2,35 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.controller.PIDFController;
 
+import org.firstinspires.ftc.teamcode.util.Util;
+
 public class Constants {
+
+
+    public static class DrivebaseConstants {
+        public static final String FR = "fr";
+        public static final String FL = "fl";
+        public static final String BR = "br";
+        public static final String BL = "bl";
+        public static final String IMU = "imu";
+
+        public static final double slowScalar = 0.5;
+
+    }
 
     public static class FlywheelConstants{
         public static final String hoodName = "hood";
         public static final String flywheelName = "flywheel";
         public static final String hoodEncoderName = "hoodEncoder";
+
+        public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
+
+        public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
+
+        public static final double kP = 10.0;
+        public static final double kI = 0.0;
+        public static final double kD = 0.0;
+        public static final double kF = 0.0;
     }
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
