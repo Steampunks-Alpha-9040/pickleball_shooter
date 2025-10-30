@@ -1,39 +1,55 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
-import static java.lang.Math.cos;
-import static java.lang.Math.exp;
-import static java.lang.Math.sin;
-
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.bylazar.utils.LoopTimer;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
+
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.ftc.Gamepads;
+import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 @TeleOp(name = "Main_PickleTeleOp")
 public class MainOp extends BaseOpMode {
 
-    private static final Logger log = LoggerFactory.getLogger(MainOp.class);
-    private final PanelsTelemetry panelsManager = PanelsTelemetry.INSTANCE;
 
-    private ElapsedTime timer = new ElapsedTime();
-    private LoopTimer loopTimer = new LoopTimer();
-
-    @Override
-    public void init() {
-
+    public MainOp(){
+        addComponents(
+                new SubsystemComponent(
+                        super.flywheel,
+                        super.drivebase,
+                        super.indexer
+                ),
+                BulkReadComponent.INSTANCE,
+                BindingsComponent.INSTANCE
+        );
     }
 
     @Override
-    public void loop() {
+    public void onInit() {
+        drivebase.getMecanumDriver().schedule();
+
+        Gamepads.gamepad1().a().whenBecomesTrue(
+                flywheel.shootFlywheelFar()
+        );
+        Gamepads.gamepad1().b().whenBecomesTrue(
+                flywheel.shootFlywheelClose()
+        );
+        Gamepads.gamepad1().x().whenBecomesTrue(
+                flywheel.stopFlywheel()
+        );
+
+        Gamepads.gamepad2().b().whenTrue(
+                indexer.spinIndexer()
+        );
 
     }
 
-    public void logFlywheel(){
+    @Override
+    public void onUpdate(){
 
     }
+
 }
