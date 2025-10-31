@@ -1,7 +1,5 @@
 package org.firstinspires.ftc.teamcode.util;
 
-import com.arcrobotics.ftclib.hardware.motors.Motor;
-
 public class Util {
 
     public enum GoBILDA {
@@ -37,8 +35,10 @@ public class Util {
      * @param tolerance the tolerance value
      * @return if current is within +tolerance or -tolerance of target
      */
-    public static boolean isBetween(double current, double target, double tolerance){
+    public static boolean isAtTarget(double current, double target, double tolerance){
         double difference = Math.abs(current - target);
         return tolerance > difference;
     }
+
+
 }

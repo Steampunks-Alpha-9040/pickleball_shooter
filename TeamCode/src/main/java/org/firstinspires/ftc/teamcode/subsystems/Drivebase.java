@@ -1,68 +1,57 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.follower.FollowerConstants;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
-import org.firstinspires.ftc.robotcore.external.Supplier;
-import org.firstinspires.ftc.teamcode.util.Mecanum;
-import com.pedropathing.ftc.localization.constants.PinpointConstants;
-
-import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.programs.MainOp;
-import org.firstinspires.ftc.teamcode.util.PinpointLocalizer;
 
-import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.core.units.Angle;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.ftc.GamepadEx;
 import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.hardware.impl.Direction;
+import dev.nextftc.hardware.driving.FieldCentric;
+import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.MotorEx;
-import dev.nextftc.hardware.impl.IMUEx;
 
 
-public class Drivebase extends Mecanum implements Subsystem {
+public class Drivebase implements Subsystem {
 
     public static final Drivebase INSTANCE = new Drivebase();
-    private Drivebase() {
-        super(ActiveOpMode.hardwareMap());
-    }
-    private static Follower follower;
-    private Telemetry telemetry;
+    private Drivebase() { }
+    public static Follower follower;
 
-    private IMUEx imu;
-
-    private Supplier<Boolean> isSlowed = () -> ActiveOpMode.gamepad1().a;
+    private MotorEx FL;
+    private MotorEx FR;
+    private MotorEx BL;
+    private MotorEx BR;
+    private GoBildaPinpointDriver imu;
 
 
     @Override
     public void initialize(){
-        imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
-        telemetry = ActiveOpMode.telemetry();
-        follower = new Follower(new FollowerConstants(),
-                                new PinpointLocalizer(ActiveOpMode.hardwareMap()),
-                                this
-                );
+        FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
+        FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
+        BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
+        BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
+        imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
     }
 
-    public void drive(GamepadEx gamepadEx) {
-        follower.setTeleOpDrive(
-                gamepadEx.leftStickX().get() * (isSlowed.get() ? Constants.DrivebaseConstants.slowScalar : 1),
-                gamepadEx.leftStickY().get() * (isSlowed.get() ? Constants.DrivebaseConstants.slowScalar : 1),
-                gamepadEx.rightStickX().get() * (isSlowed.get() ? Constants.DrivebaseConstants.slowScalar : 1),
-                false
+    public MecanumDriverControlled getFieldMecanumDriver(){
+        return new MecanumDriverControlled(
+            FL, FR, BL, BR,
+            Gamepads.gamepad1().leftStickY().negate(),
+            Gamepads.gamepad1().leftStickX(),
+            Gamepads.gamepad1().rightStickX(),
+            new FieldCentric(() -> Angle.fromDeg(imu.getHeading(AngleUnit.DEGREES)))
         );
-        follower.update();
     }
-
-    public Command controllerDrive(){
-        return new LambdaCommand("DriveController")
-                .requires(this)
-                .setStart(() -> drive(Gamepads.gamepad1()))
-                .setIsDone(() -> false);
-
+    public MecanumDriverControlled getRobotMecanumDriver(){
+        return new MecanumDriverControlled(
+                FL, FR, BL, BR,
+                Gamepads.gamepad1().leftStickY().negate(),
+                Gamepads.gamepad1().leftStickX(),
+                Gamepads.gamepad1().rightStickX()
+            );
     }
-
 }
