@@ -20,7 +20,8 @@ public class MainOp extends BaseOpMode {
                         super.drivebase,
                         super.indexer,
                         super.feeder,
-                        super.flywheel
+                        super.flywheel,
+                        super.intake
                 ),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -57,6 +58,12 @@ public class MainOp extends BaseOpMode {
                         flywheel.shootFlywheelFar()
                 ).whenBecomesFalse(
                         flywheel.stopFlywheel()
+                );
+        Gamepads.gamepad1().a().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        intake.spinIntake()
+                ).whenBecomesFalse(
+                        intake.stopIntake()
                 );
     }
 

@@ -16,18 +16,18 @@ private MotorEx intakeMotor;
 
 private final ControlSystem intakeCalculator = ControlSystem.builder()
         .velPid(
-                Constants.Intake.intake_kP,
-                Constants.Intake.intake_kI,
-                Constants.Intake.intake_kD
+                Constants.IntakeConstants.intake_kP,
+                Constants.IntakeConstants.intake_kI,
+                Constants.IntakeConstants.intake_kD
         )
-        .basicFF(Constants.Intake.intake_kF)
+        .basicFF(Constants.IntakeConstants.intake_kF)
         .build();
 
 private Intake() {}
 
 @Override
 public void initialize() {
-    intakeMotor = new MotorEx(Constants.Intake.intakeName).brakeMode().zeroed();
+    intakeMotor = new MotorEx(Constants.IntakeConstants.intakeName).brakeMode().zeroed();
 }
 
 @Override
@@ -36,7 +36,7 @@ public void periodic() {
 }
 
 public Command spinIntake() {
-    return new RunToVelocity(intakeCalculator, Constants.Intake.intakeSpeed).addRequirements(this);
+    return new RunToVelocity(intakeCalculator, Constants.IntakeConstants.intakeSpeed).addRequirements(this);
 }
 
 public Command stopIntake() {
