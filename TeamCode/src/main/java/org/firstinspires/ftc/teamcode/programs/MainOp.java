@@ -76,6 +76,17 @@ public class MainOp extends BaseOpMode {
                 flywheel.stopHood()
         );
 
+        Gamepads.gamepad1().dpadRight().whenBecomesTrue(
+                turret.spinTurretRight()
+        ).whenBecomesFalse(
+                turret.stopTurret()
+        );
+        Gamepads.gamepad1().dpadDown().whenBecomesTrue(
+                turret.spinTurretLeft()
+        ).whenBecomesFalse(
+                turret.stopTurret()
+        );
+
     }
 
     @Override
