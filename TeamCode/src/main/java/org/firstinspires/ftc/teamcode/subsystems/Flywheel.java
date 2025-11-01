@@ -11,6 +11,7 @@ import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
@@ -70,10 +71,11 @@ public class Flywheel implements Subsystem {
     public void periodic(){
         updateHoodPos();
         flywheel.setPower(flywheelCalculator.calculate(flywheel.getState()));
-        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
+//        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
     }
 
     public void log(Telemetry telemetry){
+//        telemetry.addData("testEncoder:", encoder.getVoltage());
         telemetry.addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
     }
 
@@ -90,23 +92,22 @@ public class Flywheel implements Subsystem {
         }
         prevEncoder = curEncoder;
     }
-
     private double getEncoderRotations(){
         return curEncoder + encoderRotations;
     }
 
 
+
+
     //Commands
     public Command shootFlywheelFar(){
         return new ParallelGroup(
-                new RunToPosition(hoodCalculator, 0.5),
                 new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
         ).named("farFlywheel");
     }
 
     public Command shootFlywheelClose(){
         return new ParallelGroup(
-            new RunToPosition(hoodCalculator, 1.5),
             new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
         ).named("closeFlywheel");
     }
@@ -114,6 +115,25 @@ public class Flywheel implements Subsystem {
     public Command stopFlywheel(){
         return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
     }
+
+    public Command spinHoodUp(){
+        return new LambdaCommand()
+                .setStart(() -> hood.setPower(1))
+                .requires(this);
+    }
+
+    public Command spinHoodDown(){
+        return new LambdaCommand()
+                .setStart(() -> hood.setPower(-1))
+                .requires(this);
+    }
+
+    public Command stopHood(){
+        return new LambdaCommand()
+                .setStart(() -> hood.setPower(0.0))
+                .requires(this);
+    }
+
 
 
 
