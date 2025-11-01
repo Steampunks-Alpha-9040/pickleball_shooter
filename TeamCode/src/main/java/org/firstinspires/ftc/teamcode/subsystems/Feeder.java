@@ -22,7 +22,7 @@ public class Feeder implements Subsystem {
 
     @Override
     public void initialize(){
-        feederWheel = new MotorEx(Constants.FeederConstants.feederWheel);
+        feederWheel = new MotorEx(Constants.FeederConstants.feederWheel).brakeMode().reversed();
         feederArm = new ServoEx(Constants.FeederConstants.feederArm);
     }
 
@@ -52,7 +52,7 @@ public class Feeder implements Subsystem {
     public Command setArmDown(){
         return new LambdaCommand()
                 .requires(this)
-                .setStart(() -> feederArm.setPosition(0.5));
+                .setStart(() -> feederArm.setPosition(0.75));
     }
 
     public Command setArmUp(){

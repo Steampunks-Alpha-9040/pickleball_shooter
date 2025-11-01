@@ -28,9 +28,13 @@ public class MainOp extends BaseOpMode {
 
 
 
-        Gamepads.gamepad2().b().whenBecomesTrue(
-                feeder.setArmUp()
-        );
+        Gamepads.gamepad2().b().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        feeder.transfer()
+                )
+                .whenBecomesFalse(
+                        feeder.store()
+                );
 
     }
 
