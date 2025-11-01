@@ -19,8 +19,8 @@ public class MainOp extends BaseOpMode {
     public MainOp(){
         addComponents(
                 new SubsystemComponent(
-//                        super.flywheel,
-//                        super.drivebase,
+                        super.flywheel,
+                        super.drivebase,
                         super.indexer
                 ),
                 BulkReadComponent.INSTANCE,
@@ -30,17 +30,17 @@ public class MainOp extends BaseOpMode {
 
     @Override
     public void onInit() {
-//        drivebase.getMecanumDriver().schedule();
-//
-//        Gamepads.gamepad1().a().whenBecomesTrue(
-//                flywheel.shootFlywheelFar()
-//        );
-//        Gamepads.gamepad1().b().whenBecomesTrue(
-//                flywheel.shootFlywheelClose()
-//        );
-//        Gamepads.gamepad1().x().whenBecomesTrue(
-//                flywheel.stopFlywheel()
-//        );
+        drivebase.getMecanumDriver().schedule();
+
+        Gamepads.gamepad1().a().whenBecomesTrue(
+                flywheel.shootFlywheelFar()
+        );
+        Gamepads.gamepad1().b().whenBecomesTrue(
+                flywheel.shootFlywheelClose()
+        );
+        Gamepads.gamepad1().x().whenBecomesTrue(
+                flywheel.stopFlywheel()
+        );
 
         Gamepads.gamepad2().b().toggleOnBecomesTrue().whenTrue(
                 indexer.spinIndexer()
