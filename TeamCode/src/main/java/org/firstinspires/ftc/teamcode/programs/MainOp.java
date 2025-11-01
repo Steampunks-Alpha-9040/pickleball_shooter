@@ -19,7 +19,8 @@ public class MainOp extends BaseOpMode {
                 new SubsystemComponent(
                         super.drivebase,
                         super.indexer,
-                        super.feeder
+                        super.feeder,
+                        super.flywheel
                 ),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -51,11 +52,18 @@ public class MainOp extends BaseOpMode {
                 .whenBecomesFalse(
                         feeder.store()
                 );
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.shootFlywheelFar()
+                ).whenBecomesFalse(
+                        flywheel.stopFlywheel()
+                );
     }
 
     @Override
     public void onUpdate(){
-
+        flywheel.log(telemetry);
+        telemetry.update();
     }
 
 }

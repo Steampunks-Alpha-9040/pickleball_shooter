@@ -4,6 +4,7 @@ import com.bylazar.telemetry.PanelsTelemetry;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.subsystems.Feeder;
+import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 
 import dev.nextftc.ftc.NextFTCOpMode;
@@ -12,7 +13,7 @@ import dev.nextftc.ftc.NextFTCOpMode;
 public abstract class BaseOpMode extends NextFTCOpMode {
 
     protected PanelsTelemetry panels = PanelsTelemetry.INSTANCE;
-//    protected Flywheel flywheel = Flywheel.INSTANCE;
+    protected Flywheel flywheel = Flywheel.INSTANCE;
     protected Drivebase drivebase = Drivebase.INSTANCE;
     protected Indexer indexer = Indexer.INSTANCE;
     protected Feeder feeder = Feeder.INSTANCE;

@@ -24,7 +24,7 @@ public class Constants {
 
         public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
 
-        public static final double flywheel_kP = 10.0;
+        public static final double flywheel_kP = 2.0;
         public static final double flywheel_kI = 0.0;
         public static final double flywheel_kD = 0.0;
         public static final double flywheel_kF = 0.0;
@@ -80,17 +80,12 @@ public class Constants {
         public static final double indexer_kD = 0.0; //slows down/speeds up the closer/farther away u are
         public static final double indexer_kF = 0.0; //friction, tune so when the turret barely moves
 
-        public static final double indexer_DutyCycle = 0.5;
+        public static final double indexer_DutyCycle = 0.35;
 
         public static final double indexerTolerance = 3.0;
 
     }
 
-    public static class Intake{
-        public static final String intakeName = "intake";
-
-        public static final double spinSpeed_DUTYCYCLE = 0.5;
-    }
 
 
 

@@ -1,8 +1,11 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -24,7 +27,7 @@ public class Flywheel implements Subsystem {
 
     private CRServoEx hood;
 
-    private AnalogSensor encoder;
+    private AnalogInput encoder;
 
     private double encoderRotations;
 
@@ -58,9 +61,9 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void initialize(){
-        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
+        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed().reversed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
-        encoder = ActiveOpMode.hardwareMap().get(AnalogSensor.class, "hoodEnc");
+        encoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, "hoodEnc");
     }
 
     @Override
@@ -70,15 +73,19 @@ public class Flywheel implements Subsystem {
         hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
     }
 
+    public void log(Telemetry telemetry){
+        telemetry.addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
+    }
+
     //jank asf code for axon abs encoders... probably doesn't work.
     private KineticState getHoodPhysicalState(){
         return new KineticState(getEncoderRotations());
     }
     private void updateHoodPos(){
-        curEncoder = (encoder.readRawVoltage() * 3.2);
-        if (prevEncoder - curEncoder > 0.97){
+        curEncoder = (encoder.getVoltage() / 3.3);
+        if (prevEncoder - curEncoder > 0.8){
             encoderRotations++;
-        } else if (prevEncoder - curEncoder < 0.97){
+        } else if (prevEncoder - curEncoder < -0.8){
             encoderRotations--;
         }
         prevEncoder = curEncoder;
@@ -93,7 +100,7 @@ public class Flywheel implements Subsystem {
     public Command shootFlywheelFar(){
         return new ParallelGroup(
                 new RunToPosition(hoodCalculator, 0.5),
-                new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
+                new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
         ).named("farFlywheel");
     }
 
