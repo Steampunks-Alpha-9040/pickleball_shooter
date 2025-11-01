@@ -11,6 +11,7 @@ import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
@@ -113,6 +114,21 @@ public class Flywheel implements Subsystem {
 
     public Command stopFlywheel(){
         return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
+    }
+
+    private void moveHood(double power){
+        hood.setPower(power);
+    }
+
+    public Command hoodmoveUp() {
+        return new LambdaCommand("moveHoodup")
+                .setStart(() -> moveHood(1))
+                .addRequirements(this);
+    }
+    public Command hoodmoveDown() {
+        return new LambdaCommand("moveHooddown")
+                .setStart(() -> moveHood(-1))
+                .addRequirements(this);
     }
 
 

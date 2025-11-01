@@ -16,6 +16,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.Delay;
+import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
@@ -47,6 +50,27 @@ public class Drivebase implements Subsystem {
             Gamepads.gamepad1().rightStickX()
 //                ,
 //            new FieldCentric(imu)
+        );
+    }
+
+    public Command driveForwardSimple(double power, double seconds) {
+        return new SequentialGroup(
+                new LambdaCommand("driveForward")
+                        .requires(this)
+                        .setStart(() -> {
+                            FL.setPower(power);
+                            FR.setPower(power);
+                            BL.setPower(power);
+                            BR.setPower(power);
+                        }),
+                new Delay(seconds),
+                new LambdaCommand("stopDrive")
+                        .setStart(() -> {
+                            FL.setPower(0);
+                            FR.setPower(0);
+                            BL.setPower(0);
+                            BR.setPower(0);
+                        })
         );
     }
 
