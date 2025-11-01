@@ -32,9 +32,6 @@ public class Feeder implements Subsystem {
 
     }
 
-
-
-
     public Command transfer(){
         return new ParallelGroup(
                 setArmDown(),
