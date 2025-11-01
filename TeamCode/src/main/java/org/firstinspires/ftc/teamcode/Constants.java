@@ -19,18 +19,23 @@ public class Constants {
     }
 
     public static class FlywheelConstants{
-        public static final String hoodName = "hood";
         public static final String flywheelName = "flywheel";
-        public static final String hoodEncoderName = "hoodEncoder";
+        public static final String hoodName = "hood";
 
         public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
 
         public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
 
-        public static final double kP = 10.0;
-        public static final double kI = 0.0;
-        public static final double kD = 0.0;
-        public static final double kF = 0.0;
+        public static final double flywheel_kP = 10.0;
+        public static final double flywheel_kI = 0.0;
+        public static final double flywheel_kD = 0.0;
+        public static final double flywheel_kF = 0.0;
+
+        public static final double hood_kP = 10.0;
+        public static final double hood_kI = 0.0;
+        public static final double hood_kD = 0.0;
+        public static final double hood_kF = 0.0;
+
     }
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
@@ -65,6 +70,7 @@ public class Constants {
         public static final double feederArmTolerance = 3.0;
 
     }
+
     public static class IndexerConstants{
         public static final String indexer = "indexer";
         public static final String feederSensor = "feederSensor";
@@ -88,5 +94,7 @@ public class Constants {
 
         public static final double spinSpeed_DUTYCYCLE = 0.5;
     }
+
+
 
 }
