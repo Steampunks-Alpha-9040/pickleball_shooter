@@ -49,7 +49,7 @@ public class Feeder implements Subsystem {
     public Command setArmDown(){
         return new LambdaCommand()
                 .requires(this)
-                .setStart(() -> feederArm.setPosition(0.75));
+                .setStart(() -> feederArm.setPosition(0.85));
     }
 
     public Command setArmUp(){

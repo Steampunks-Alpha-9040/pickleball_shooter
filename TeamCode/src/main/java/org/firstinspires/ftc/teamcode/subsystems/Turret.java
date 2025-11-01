@@ -10,13 +10,12 @@ import dev.nextftc.hardware.impl.CRServoEx;
 public class Turret implements Subsystem {
     public static final Turret INSTANCE = new Turret();
 
-    private CRServoEx turretM;
-    private CRServoEx turretS;
+    private CRServoEx turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
+    private CRServoEx turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
 
     @Override
     public void initialize(){
-        turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
-        turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
+
     }
 
     public Command spinTurretRight(){

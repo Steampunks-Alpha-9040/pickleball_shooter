@@ -64,11 +64,11 @@ public class AutoOp extends BaseOpMode{
 
         // 2) do the actual auto: shoot -> drive
         new SequentialGroup(
-                new Delay(7.0),          // let flywheel get up to speed
+                new Delay(5.0),          // let flywheel get up to speed
                 feeder.setArmDown(),
                 feeder.turnWheelsOn(),
                 indexer.spinIndexer(),
-                new Delay(5.0),          // enough time to feed
+                new Delay(10),          // enough time to feed
                 feeder.turnWheelsOff(),
                 indexer.stopIndexer(),
                 flywheel.stopFlywheel(),

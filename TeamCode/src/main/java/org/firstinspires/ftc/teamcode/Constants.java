@@ -38,7 +38,7 @@ public class Constants {
 
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
-        public static final String turretSlaveName = "turrentS";
+        public static final String turretSlaveName = "turretS";
         public static final String turretEncoder = "turretEncoder";
 
         public static final double servoToTurret = 10.0 / 29.0;
