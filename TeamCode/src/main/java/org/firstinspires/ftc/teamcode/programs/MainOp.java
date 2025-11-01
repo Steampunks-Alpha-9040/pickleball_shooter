@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
@@ -16,6 +17,8 @@ public class MainOp extends BaseOpMode {
     public MainOp(){
         addComponents(
                 new SubsystemComponent(
+                        super.drivebase,
+                        super.indexer,
                         super.feeder
                 ),
                 BulkReadComponent.INSTANCE,
@@ -26,7 +29,20 @@ public class MainOp extends BaseOpMode {
     @Override
     public void onInit() {
 
+        drivebase.getMecanumDriver().schedule();
 
+        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        new ParallelGroup(
+                                indexer.spinIndexer(),
+                                feeder.transfer()
+                        )
+                ).whenBecomesFalse(
+                        new ParallelGroup(
+                                indexer.stopIndexer(),
+                                feeder.store()
+                        )
+                );
 
         Gamepads.gamepad2().b().toggleOnBecomesTrue()
                 .whenBecomesTrue(
@@ -35,7 +51,6 @@ public class MainOp extends BaseOpMode {
                 .whenBecomesFalse(
                         feeder.store()
                 );
-
     }
 
     @Override
