@@ -35,6 +35,7 @@ public class Constants {
         public static final double hood_kF = 0.0;
 
     }
+
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turrentS";
@@ -54,9 +55,7 @@ public class Constants {
 
     public static class FeederConstants{
         public static final String feederArm = "feederArm";
-        public static final String feederBottomOmni = "feederBot";
-        public static final String feederTopWheel = "feederTop";
-        public static final String feederArmEncoder = "feederArmEncoder";
+        public static final String feederWheel = "feederWheel";
 
         public static final double servoToArm = 48.0 / 30.0;
 
@@ -81,7 +80,7 @@ public class Constants {
         public static final double indexer_kD = 0.0; //slows down/speeds up the closer/farther away u are
         public static final double indexer_kF = 0.0; //friction, tune so when the turret barely moves
 
-        public static final double indexer_DutyCycle = 0.4;
+        public static final double indexer_DutyCycle = 0.5;
 
         public static final double indexerTolerance = 3.0;
 
