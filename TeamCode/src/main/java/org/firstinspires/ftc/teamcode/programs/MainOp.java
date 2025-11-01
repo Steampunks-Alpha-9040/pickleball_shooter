@@ -55,9 +55,9 @@ public class MainOp extends BaseOpMode {
                 );
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.shootFlywheelFar()
-                ).whenBecomesFalse(
                         flywheel.stopFlywheel()
+                ).whenBecomesFalse(
+                        flywheel.shootFlywheelFar()
                 );
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(

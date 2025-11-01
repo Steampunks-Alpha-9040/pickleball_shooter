@@ -32,10 +32,9 @@ public class AutoOp extends BaseOpMode{
 
     public Command autonomousRoutine() {
         return new SequentialGroup(
-                new ParallelGroup(
-                        Feeder.INSTANCE.transfer(),
-                        Flywheel.INSTANCE.shootFlywheelFar()
-                ),
+                flywheel.shootFlywheelFar(),
+                feeder.setArmDown(),
+                feeder.turnWheelsOn(),
                 new Delay(10)
         );
     }

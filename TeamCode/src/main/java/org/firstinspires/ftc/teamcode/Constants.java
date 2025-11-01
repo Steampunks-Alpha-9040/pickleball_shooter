@@ -89,13 +89,13 @@ public class Constants {
 
     public static class IntakeConstants {
         // PID coefficients for NextFTC velocity control
-        public static final double intake_kP = 0.1;  // tweak as needed
+        public static final double intake_kP = 2;  // tweak as needed
         public static final double intake_kI = 0.0;
         public static final double intake_kD = 0.0;
         public static final double intake_kF = 0.05; // feedforward, tweak if needed
 
         // target speed for intake (can be 0.5 or whatever works for your motor)
-        public static final double intakeSpeed = 0.5;
+        public static final double intakeSpeed = 0.6;
 
         // name of the motor in the hardware map
         public static final String intakeName = "intake";
