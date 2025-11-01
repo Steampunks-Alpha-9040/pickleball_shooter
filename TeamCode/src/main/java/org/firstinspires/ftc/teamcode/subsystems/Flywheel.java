@@ -75,7 +75,6 @@ public class Flywheel implements Subsystem {
     }
 
     public void log(Telemetry telemetry){
-//        telemetry.addData("testEncoder:", encoder.getVoltage());
         telemetry.addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
     }
 
@@ -95,8 +94,6 @@ public class Flywheel implements Subsystem {
     private double getEncoderRotations(){
         return curEncoder + encoderRotations;
     }
-
-
 
 
     //Commands
