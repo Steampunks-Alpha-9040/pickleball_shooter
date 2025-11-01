@@ -100,7 +100,6 @@ public class Flywheel implements Subsystem {
     //Commands
     public Command shootFlywheelFar(){
         return new ParallelGroup(
-                new RunToPosition(hoodCalculator, 0.5),
                 new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
         ).named("farFlywheel");
     }
@@ -116,20 +115,26 @@ public class Flywheel implements Subsystem {
         return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
     }
 
-    private void moveHood(double power){
-        hood.setPower(power);
-    }
-
-    public Command hoodmoveUp() {
-        return new LambdaCommand("moveHoodup")
-                .setStart(() -> moveHood(1))
-                .addRequirements(this);
-    }
-    public Command hoodmoveDown() {
-        return new LambdaCommand("moveHooddown")
-                .setStart(() -> moveHood(-1))
-                .addRequirements(this);
-    }
+//    private void moveHood(double power){
+//        hood.setPower(power);
+//    }
+//
+//    public Command hoodmoveUp() {
+//        return new LambdaCommand("moveHoodup")
+//                .setStart(() -> moveHood(1))
+//                .addRequirements(this);
+//    }
+//    public Command hoodmoveDown() {
+//        return new LambdaCommand("moveHooddown")
+//                .setStart(() -> moveHood(-1))
+//                .addRequirements(this);
+//    }
+//
+//    public Command stopHood() {
+//        return new LambdaCommand("stophood")
+//                .setStart(() -> moveHood(0))
+//                .addRequirements(this);
+//    }
 
 
 

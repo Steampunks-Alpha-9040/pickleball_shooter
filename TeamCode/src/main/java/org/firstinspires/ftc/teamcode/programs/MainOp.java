@@ -65,14 +65,16 @@ public class MainOp extends BaseOpMode {
                 ).whenBecomesFalse(
                         intake.stopIntake()
                 );
-        Gamepads.gamepad1().dpadUp()
-                .whenTrue(
-                        flywheel.hoodmoveUp()
-                );
-        Gamepads.gamepad1().dpadDown()
-                .whenTrue(
-                        flywheel.hoodmoveDown()
-                );
+//        Gamepads.gamepad1().dpadUp()
+//                .whenTrue(
+//                        flywheel.hoodmoveUp()
+//                );
+//        Gamepads.gamepad1().dpadDown()
+//                .whenTrue(
+//                        flywheel.hoodmoveDown()
+//                );
+//        Gamepads.gamepad1().dpadDown().and(Gamepads.gamepad1().dpadUp())
+//                .whenFalse(flywheel.stopHood());
     }
 
     @Override
