@@ -10,11 +10,11 @@ import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 
-@TeleOp(name = "Main_PickleTeleOp")
-public class MainOp extends BaseOpMode {
+@TeleOp(name = "BLUE_PickleOp")
+public class BLUE_TeleOp extends BaseOpMode {
 
 
-    public MainOp(){
+    public BLUE_TeleOp(){
         addComponents(
                 new SubsystemComponent(
                         super.drivebase,

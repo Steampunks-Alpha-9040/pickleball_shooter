@@ -49,7 +49,7 @@ public class Constants {
         public static final double turret_kF = 0.0; //friction, tune so when the turret barely moves
 
 
-        public static final double turretTolerance = 3.0;
+        public static final double turretTolerance_VisionAngleDeg = 0.5;
 
     }
 
@@ -99,6 +99,16 @@ public class Constants {
 
         // name of the motor in the hardware map
         public static final String intakeName = "intake";
+    }
+
+    public static class VisionConstants{
+        public static final String limelight = "limelight";
+        public static final double accepted_y_offset = 0.1;
+        public static final double accepted_pipeline_latency_ms = 200;
+        public static final double kTagAreaThresholdForYawCheck = 2.0;
+        public static final double kDefaultYawDiffThreshold = 5.0;
+
+        public static final double tagTargetTolerance = 0.5;
     }
 
 }
