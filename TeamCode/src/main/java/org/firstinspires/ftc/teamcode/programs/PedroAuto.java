@@ -4,6 +4,8 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
+import dev.nextftc.extensions.pedro.FollowPath;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 import com.pedropathing.follower.Follower;
@@ -42,8 +44,10 @@ public class PedroAuto extends BaseOpMode {
                         super.feeder,
                         super.flywheel
                 ),
+                new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
+
         );
     }
 
@@ -199,72 +203,113 @@ public class PedroAuto extends BaseOpMode {
     double delay2 = 1.0;
     double delay3 = 1.0;
     double delay4 = 1.0;
-    double delay5 = 1.0; //Gate delay, very important
+    double delay5 = 2.0; //Gate delay, very important
 
-    public int autonomousPathUpdate() {
-        flywheel.shootFlywheelFar().schedule();
-        switch (pathState) {
-            case 0:
-                feeder.setArmDown();
-                feeder.turnWheelsOn();
-                indexer.spinIndexer();
-                new Delay(delay1);
-                setPathState(1);
-                return 0;
-            case 1:
-                follower.followPath(paths.Path1);
-                intake.spinIntake();
-                setPathState(2);
-                return 1;
-            case 2:
-                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-                if(!follower.isBusy()) {
-                    /* Score Preload */
-                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-                    new Delay(delay2);
-                    intake.stopIntake();
-                    follower.followPath(paths.Path2, true);
-                    setPathState(3);
-                }
-                return 2;
-            case 3:
-                if(!follower.isBusy()) {
-                    feeder.setArmDown();
-                    feeder.turnWheelsOn();
-                    indexer.spinIndexer();
-                    new Delay(delay3);
-                    follower.followPath(paths.Path3);
-                    intake.spinIntake();
-                    setPathState(4);
-                }
-                return 3;
-            case 4:
-                if(!follower.isBusy()) {
-                    new Delay(delay4);
-                    follower.followPath(paths.Path4);
-                    intake.stopIntake();
-                    setPathState(5);
-                }
-                return 4;
-            case 5:
-                if(!follower.isBusy()) {
-                    new Delay(delay5);
-                    follower.followPath(paths.Path5, true);
-                    setPathState(6);
-                }
-                return 5;
-            case 6:
-                if(!follower.isBusy()) {
-                    feeder.setArmDown();
-                    feeder.turnWheelsOn();
-                    indexer.spinIndexer();
-                    setPathState(-1);
-                }
-                panelsTelemetry.debug("FINAL TIME", opmodeTimer);
-                return 6;
-        }
-        return -1;
+    public Command autonomousRoutine() {
+        return new SequentialGroup(
+                new ParallelGroup(
+                        flywheel.shootFlywheelFar(),
+                        new SequentialGroup(
+                                new Delay(delay1),
+                                new ParallelGroup(
+                                    feeder.setArmDown(),
+                                    feeder.turnWheelsOn(),
+                                    indexer.spinIndexer()
+                                ),
+                                new Delay(delay2),
+                                new ParallelGroup(
+                                        intake.spinIntake(),
+                                        new FollowPath(paths.Path1)
+                                ),
+                                new Delay(delay3),
+                                new FollowPath(paths.Path2),
+                                new ParallelGroup(
+                                        feeder.setArmDown(),
+                                        feeder.turnWheelsOn(),
+                                        indexer.spinIndexer()
+                                ),
+                                new Delay(delay4)
+                        )
+                ),
+                new ParallelGroup(
+                        flywheel.shootFlywheelClose(),
+                        new SequentialGroup(
+                            new FollowPath(paths.Path3),
+                                
+
+                        )
+                )
+        );
     }
+
+
+
+//        switch (pathState) {
+//            case 0:
+//                flywheel.shootFlywheelFar().schedule();
+//                new ParallelGroup(
+//                        feeder.setArmDown(),
+//                        feeder.turnWheelsOn(),
+//                        indexer.spinIndexer()).schedule();
+//                new Delay(delay1);
+//                setPathState(1);
+//                return 0;
+//            case 1:
+//                follower.followPath(paths.Path1);
+//                intake.spinIntake();
+//                setPathState(2);
+//                return 1;
+//            case 2:
+//                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
+//                if(!follower.isBusy()) {
+//                    /* Score Preload */
+//                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
+//                    new Delay(delay2);
+//                    intake.stopIntake();
+//                    follower.followPath(paths.Path2, true);
+//                    setPathState(3);
+//                }
+//                return 2;
+//            case 3:
+//                if(!follower.isBusy()) {
+//                    new ParallelGroup(
+//                            feeder.setArmDown(),
+//                            feeder.turnWheelsOn(),
+//                            indexer.spinIndexer()).schedule();
+//                    new Delay(delay3);
+//                    follower.followPath(paths.Path3);
+//                    intake.spinIntake();
+//                    setPathState(4);
+//                }
+//                return 3;
+//            case 4:
+//                if(!follower.isBusy()) {
+//                    new Delay(delay4);
+//                    follower.followPath(paths.Path4);
+//                    intake.stopIntake();
+//                    setPathState(5);
+//                }
+//                return 4;
+//            case 5:
+//                if(!follower.isBusy()) {
+//                    new Delay(delay5);
+//                    follower.followPath(paths.Path5, true);
+//                    setPathState(6);
+//                }
+//                return 5;
+//            case 6:
+//                if(!follower.isBusy()) {
+//                    new ParallelGroup(
+//                            feeder.setArmDown(),
+//                            feeder.turnWheelsOn(),
+//                            indexer.spinIndexer()).schedule();
+//                    setPathState(-1);
+//                }
+//                panelsTelemetry.debug("FINAL TIME", opmodeTimer);
+//                return 6;
+//        }
+//        return -1;
+
     /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
     public void setPathState(int pState) {
         pathState = pState;
