@@ -1,8 +1,6 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
-import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
-
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -10,11 +8,11 @@ import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 
-@TeleOp(name = "BLUE_PickleOp")
-public class BLUE_TeleOp extends BaseOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
+public class TeleOp extends BaseOpMode {
 
 
-    public BLUE_TeleOp(){
+    public TeleOp(){
         addComponents(
                 new SubsystemComponent(
                         super.drivebase,
@@ -47,17 +45,10 @@ public class BLUE_TeleOp extends BaseOpMode {
                         )
                 );
 
-        Gamepads.gamepad2().b().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        feeder.transfer()
-                )
+        Gamepads.gamepad1().rightTrigger().greaterThan(0.5)
                 .whenBecomesFalse(
-                        feeder.store()
-                );
-        Gamepads.gamepad1().x().toggleOnBecomesTrue()
-                .whenBecomesTrue(
                         flywheel.stopFlywheel()
-                ).whenBecomesFalse(
+                ).whenBecomesTrue(
                         flywheel.shootFlywheelFar()
                 );
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
@@ -66,16 +57,6 @@ public class BLUE_TeleOp extends BaseOpMode {
                 ).whenBecomesFalse(
                         intake.stopIntake()
                 );
-        Gamepads.gamepad1().dpadUp().whenBecomesTrue(
-                flywheel.spinHoodUp()
-        ).whenBecomesFalse(
-                flywheel.stopHood()
-        );
-        Gamepads.gamepad1().dpadDown().whenBecomesTrue(
-                flywheel.spinHoodDown()
-        ).whenBecomesFalse(
-                flywheel.stopHood()
-        );
         Gamepads.gamepad1().dpadRight().whenBecomesTrue(
                 turret.spinTurretRight()
         ).whenBecomesFalse(

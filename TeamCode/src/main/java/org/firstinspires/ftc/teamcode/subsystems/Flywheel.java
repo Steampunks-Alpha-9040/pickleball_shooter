@@ -99,8 +99,8 @@ public class Flywheel implements Subsystem {
     //Commands
     public Command shootFlywheelFar(){
         return new ParallelGroup(
-                new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this).setInterruptible(true)
-        ).named("farFlywheel");
+                new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
+        ).setInterruptible(true);
     }
 
     public Command shootFlywheelClose(){
@@ -110,7 +110,7 @@ public class Flywheel implements Subsystem {
     }
 
     public Command stopFlywheel(){
-        return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this).named("stopFlywheel");
+        return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this);
     }
 
     public Command spinHoodUp(){
