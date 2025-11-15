@@ -77,8 +77,7 @@ public class PedroAuto extends BaseOpMode {
     @Override
     public void onStartButtonPressed() {
         follower.update(); // Update Pedro Pathing
-        pathState = autonomousPathUpdate(); // Update autonomous state machine
-
+        autonomousRoutine().schedule();
         // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("X", follower.getPose().getX());
