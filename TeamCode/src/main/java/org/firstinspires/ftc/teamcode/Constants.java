@@ -43,7 +43,7 @@ public class Constants {
 
         public static final double servoToTurret = 10.0 / 29.0;
 
-        public static final double turret_kP = 10.0; //The like main pushing force, the constant :)
+        public static final double turret_kP = 10000.0; //The like main pushing force, the constant :)
         public static final double turret_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
         public static final double turret_kD = 0.0; //slows down/speeds up the closer/farther away u are
         public static final double turret_kF = 0.0; //friction, tune so when the turret barely moves

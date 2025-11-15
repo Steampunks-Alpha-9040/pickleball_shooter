@@ -2,10 +2,13 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import org.firstinspires.ftc.teamcode.Constants;
 
+import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.commands.utility.PerpetualCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.impl.CRServoEx;
 
 public class Turret implements Subsystem {
@@ -14,24 +17,45 @@ public class Turret implements Subsystem {
     private CRServoEx turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
     private CRServoEx turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
 
+
+    private final ControlSystem turretPIDF = ControlSystem.builder()
+            .velPid(
+                    Constants.TurretConstants.turret_kP,
+                    Constants.TurretConstants.turret_kI,
+                    Constants.TurretConstants.turret_kD
+            )
+            .basicFF(
+                    Constants.TurretConstants.turret_kF
+            )
+            .build();
+
+
     @Override
     public void initialize(){
 
     }
 
+    @Override
+    public void periodic(){
+        turretS.setPower(turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
+        turretM.setPower(turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
+    }
+
+
+
     public Command spinTurretRight(){
         return new LambdaCommand()
                 .setStart(() -> {
-                    turretM.setPower(0.8);
-                    turretS.setPower(-0.8);
+                    turretM.setPower(1);
+                    turretS.setPower(1);
                 })
                 .requires(this);
     }
     public Command spinTurretLeft(){
         return new LambdaCommand()
                 .setStart(() -> {
-                    turretM.setPower(-0.8);
-                    turretS.setPower(0.8);
+                    turretM.setPower(-1);
+                    turretS.setPower(-1);
                 })
                 .requires(this);
     }
@@ -44,20 +68,20 @@ public class Turret implements Subsystem {
                 .requires(this);
     }
 
-    public Command trackTurret(Vision vision){
-        return new LambdaCommand()
-                .requires(this)
-                .setUpdate(() -> {
-                    setTurretDirection(vision);
-                })
-                .setInterruptible(true);
+    public Command trackTurret(){
+        return new RunToPosition(turretPIDF, 0).addRequirements(this);
     }
 
-    public  setTurretDirection(Vision vision){
-        switch (vision.getTurretDirection()){
-            case LEFT -> {
-
-            }
-        }
-    }
+//    public void setTurretDirection(Vision vision){
+//        if (vision.getTurretDirection() == Vision.TurretDirection.LEFT) {
+//            turretM.setPower(-0.8);
+//            turretS.setPower(0.8);
+//        } else if (vision.getTurretDirection() == Vision.TurretDirection.RIGHT){
+//            turretM.setPower(0.8);
+//            turretS.setPower(-0.8);
+//        } else if (vision.getTurretDirection() == Vision.TurretDirection.STOP){
+//            turretM.setPower(0.0);
+//            turretS.setPower(0.0);
+//        }
+//    }
 }

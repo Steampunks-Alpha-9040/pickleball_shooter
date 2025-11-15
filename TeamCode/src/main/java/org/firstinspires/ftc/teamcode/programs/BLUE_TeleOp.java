@@ -21,7 +21,8 @@ public class BLUE_TeleOp extends BaseOpMode {
                         super.indexer,
                         super.feeder,
                         super.flywheel,
-                        super.intake
+                        super.intake,
+                        super.vision
                 ),
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
@@ -75,23 +76,27 @@ public class BLUE_TeleOp extends BaseOpMode {
         ).whenBecomesFalse(
                 flywheel.stopHood()
         );
-
         Gamepads.gamepad1().dpadRight().whenBecomesTrue(
                 turret.spinTurretRight()
         ).whenBecomesFalse(
                 turret.stopTurret()
         );
-        Gamepads.gamepad1().dpadDown().whenBecomesTrue(
+        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(
                 turret.spinTurretLeft()
         ).whenBecomesFalse(
                 turret.stopTurret()
         );
-
+        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
+                turret.trackTurret()
+        ).whenBecomesFalse(
+                turret.stopTurret()
+        );
     }
 
     @Override
     public void onUpdate(){
         flywheel.log(telemetry);
+//        vision.logVision(telemetry);
         telemetry.update();
     }
 

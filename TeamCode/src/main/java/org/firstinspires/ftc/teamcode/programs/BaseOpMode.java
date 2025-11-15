@@ -8,6 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
 import dev.nextftc.ftc.NextFTCOpMode;
 
@@ -21,5 +22,6 @@ public abstract class BaseOpMode extends NextFTCOpMode {
     protected Feeder feeder = Feeder.INSTANCE;
     protected Intake intake = Intake.INSTANCE;
     protected Turret turret = Turret.INSTANCE;
+    protected Vision vision = Vision.INSTANCE;
 
 }

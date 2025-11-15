@@ -61,7 +61,8 @@ public class Feeder implements Subsystem {
     public Command turnWheelsOn(){
         return new LambdaCommand()
                 .requires(this)
-                .setStart(() -> feederWheel.setPower(1));
+                .setStart(() -> feederWheel.setPower(1))
+                ;
     }
 
     public Command turnWheelsOff(){
