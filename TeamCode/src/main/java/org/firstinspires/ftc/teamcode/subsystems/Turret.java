@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -9,6 +10,7 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.commands.utility.PerpetualCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.hardware.controllable.RunToPosition;
+import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.CRServoEx;
 
 public class Turret implements Subsystem {
@@ -37,8 +39,6 @@ public class Turret implements Subsystem {
 
     @Override
     public void periodic(){
-        turretS.setPower(turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
-        turretM.setPower(turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
     }
 
 
@@ -46,16 +46,16 @@ public class Turret implements Subsystem {
     public Command spinTurretRight(){
         return new LambdaCommand()
                 .setStart(() -> {
-                    turretM.setPower(1);
-                    turretS.setPower(1);
+                    turretM.setPower(0.1);
+                    turretS.setPower(.1);
                 })
                 .requires(this);
     }
     public Command spinTurretLeft(){
         return new LambdaCommand()
                 .setStart(() -> {
-                    turretM.setPower(-1);
-                    turretS.setPower(-1);
+                    turretM.setPower(-.1);
+                    turretS.setPower(-.1);
                 })
                 .requires(this);
     }
@@ -69,7 +69,13 @@ public class Turret implements Subsystem {
     }
 
     public Command trackTurret(){
-        return new RunToPosition(turretPIDF, 0).addRequirements(this);
+        return new LambdaCommand()
+                .requires(this)
+                        .setUpdate(() -> {
+                            turretS.setPower(Util.clamp(Vision.INSTANCE.getHorizontalTy()+0.05/80, -0.1, 0.1));
+                            turretM.setPower(Util.clamp(Vision.INSTANCE.getHorizontalTy()+0.05/80, -0.1, 0.1));
+                        }
+        );
     }
 
 //    public void setTurretDirection(Vision vision){

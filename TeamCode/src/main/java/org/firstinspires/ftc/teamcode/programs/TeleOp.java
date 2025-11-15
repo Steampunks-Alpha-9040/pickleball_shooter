@@ -45,7 +45,7 @@ public class TeleOp extends BaseOpMode {
                         )
                 );
 
-        Gamepads.gamepad1().rightTrigger().greaterThan(0.5)
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesFalse(
                         flywheel.stopFlywheel()
                 ).whenBecomesTrue(
@@ -77,7 +77,8 @@ public class TeleOp extends BaseOpMode {
     @Override
     public void onUpdate(){
         flywheel.log(telemetry);
-//        vision.logVision(telemetry);
+        telemetry.addData("tyasdf", vision.getHorizontalTy());
+        //        vision.logVision(telemetry);
         telemetry.update();
     }
 
