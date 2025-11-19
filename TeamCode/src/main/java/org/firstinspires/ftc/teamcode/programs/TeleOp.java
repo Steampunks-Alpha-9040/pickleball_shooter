@@ -20,9 +20,9 @@ public class TeleOp extends BaseOpMode {
                         super.feeder,
                         super.flywheel,
                         super.intake,
+                        super.turret,
                         super.vision
                 ),
-                BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
     }

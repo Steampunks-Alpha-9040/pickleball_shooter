@@ -23,6 +23,7 @@ public class Vision implements Subsystem {
     public void initialize(){
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
         limelight.pipelineSwitch(0);
+        limelight.setPollRateHz(10);
 
         limelight.start();
     }
@@ -32,16 +33,15 @@ public class Vision implements Subsystem {
         if (result != null) {
             if (result.isValid()) {
                 Pose3D botpose = result.getBotpose();
-                ActiveOpMode.telemetry().addData("tx", result.getTx());
-                ActiveOpMode.telemetry().addData("ty", result.getTy());
+//                ActiveOpMode.telemetry().addData("tx", result.getTx());
+//                ActiveOpMode.telemetry().addData("ty", result.getTy());
                 ty = result.getTy();
-                ActiveOpMode.telemetry().addData("Botpose", botpose.toString());
             }
         }
     }
 
     public double getHorizontalTy(){
-        return ty;
+        return ty+0.5;
     }
 
 
