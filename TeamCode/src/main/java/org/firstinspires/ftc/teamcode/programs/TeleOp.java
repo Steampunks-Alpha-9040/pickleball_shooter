@@ -13,18 +13,7 @@ public class TeleOp extends BaseOpMode {
 
 
     public TeleOp(){
-        addComponents(
-                new SubsystemComponent(
-                        super.drivebase,
-                        super.indexer,
-                        super.feeder,
-                        super.flywheel,
-                        super.intake,
-                        super.turret,
-                        super.vision
-                ),
-                BindingsComponent.INSTANCE
-        );
+        super();
     }
 
     @Override

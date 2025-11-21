@@ -18,16 +18,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @Autonomous(name = "pickleAuto")
 public class AutoOp extends BaseOpMode{
     public AutoOp(){
-        addComponents(
-                new SubsystemComponent(
-                        super.drivebase,
-                        super.indexer,
-                        super.feeder,
-                        super.flywheel
-                ),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE
-        );
+        super();
     }
 
 //    public Command autonomousRoutine() {

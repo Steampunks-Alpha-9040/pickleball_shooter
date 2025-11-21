@@ -10,6 +10,8 @@ import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.subsystems.Vision;
 
+import dev.nextftc.core.components.BindingsComponent;
+import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
 
 
@@ -23,5 +25,20 @@ public abstract class BaseOpMode extends NextFTCOpMode {
     protected Intake intake = Intake.INSTANCE;
     protected Turret turret = Turret.INSTANCE;
     protected Vision vision = Vision.INSTANCE;
+
+    public BaseOpMode(){
+        addComponents(
+                new SubsystemComponent(
+                        drivebase,
+                        indexer,
+                        feeder,
+                        flywheel,
+                        intake,
+                        turret,
+                        vision
+                ),
+                BindingsComponent.INSTANCE
+        );
+    }
 
 }
