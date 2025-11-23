@@ -35,11 +35,24 @@ public class Drivebase implements Subsystem {
     private Drivebase() { }
     public static Follower follower;
 
-    private MotorEx FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
-    private MotorEx FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
-    private MotorEx BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
-    private MotorEx BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
-//    private IMUEx imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
+    private MotorEx FL;
+    private MotorEx FR;
+    private MotorEx BL;
+    private MotorEx BR;
+    private IMUEx imu;
+
+
+    public void initialize(){
+        FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
+        FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
+        BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
+        BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
+        imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
+    }
+
+    public void periodic(){
+
+    }
 
 
     public MecanumDriverControlled getMecanumDriver(){
@@ -47,9 +60,8 @@ public class Drivebase implements Subsystem {
             FL, FR, BL, BR,
             Gamepads.gamepad1().leftStickY().negate(),
             Gamepads.gamepad1().leftStickX(),
-            Gamepads.gamepad1().rightStickX()
-//                ,
-//            new FieldCentric(imu)
+            Gamepads.gamepad1().rightStickX(),
+            new FieldCentric(imu)
         );
     }
 
@@ -73,5 +85,7 @@ public class Drivebase implements Subsystem {
                         })
         );
     }
+
+
 
 }
