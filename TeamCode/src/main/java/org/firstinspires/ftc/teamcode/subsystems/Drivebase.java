@@ -4,9 +4,11 @@ import androidx.annotation.NonNull;
 
 import com.pedropathing.follower.Follower;
 import com.qualcomm.hardware.bosch.BNO055IMU;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
 
 import java.lang.annotation.ElementType;
@@ -20,6 +22,7 @@ import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
 import dev.nextftc.hardware.driving.HolonomicMode;
@@ -32,14 +35,15 @@ import dev.nextftc.hardware.impl.IMUEx;
 public class Drivebase implements Subsystem {
 
     public static final Drivebase INSTANCE = new Drivebase();
-    private Drivebase() { }
+    private Drivebase(){}
     public static Follower follower;
 
     private MotorEx FL;
     private MotorEx FR;
     private MotorEx BL;
     private MotorEx BR;
-    private IMUEx imu;
+    private GoBildaPinpointDriver imu;
+    private Pose2D botpose;
 
 
     public void initialize(){
@@ -47,11 +51,12 @@ public class Drivebase implements Subsystem {
         FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
-        imu = new IMUEx(Constants.DrivebaseConstants.IMU, Direction.DOWN, Direction.FORWARD).zeroed();
+        imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
+        imu.setOffsets();
     }
 
     public void periodic(){
-
+        botpose = imu.getPosition();
     }
 
 
