@@ -13,6 +13,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Vision;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.NextFTCOpMode;
+import dev.nextftc.ftc.components.BulkReadComponent;
 
 
 public abstract class BaseOpMode extends NextFTCOpMode {
@@ -37,6 +38,7 @@ public abstract class BaseOpMode extends NextFTCOpMode {
                         turret,
                         vision
                 ),
+                BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
     }

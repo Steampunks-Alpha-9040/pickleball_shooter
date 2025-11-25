@@ -8,6 +8,8 @@ import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 import com.qualcomm.robotcore.hardware.DcMotorEx;
 import com.qualcomm.robotcore.hardware.IMU;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
 
@@ -22,6 +24,7 @@ import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.core.units.Angle;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
@@ -52,11 +55,12 @@ public class Drivebase implements Subsystem {
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
         imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
-        imu.setOffsets();
+        imu.setOffsets(0.215,-6.766, DistanceUnit.INCH);
     }
 
     public void periodic(){
         botpose = imu.getPosition();
+        ActiveOpMode.telemetry().addData("pose", this::getBotpose);
     }
 
 
@@ -66,7 +70,7 @@ public class Drivebase implements Subsystem {
             Gamepads.gamepad1().leftStickY().negate(),
             Gamepads.gamepad1().leftStickX(),
             Gamepads.gamepad1().rightStickX(),
-            new FieldCentric(imu)
+            new FieldCentric(() -> Angle.fromRad(imu.getHeading(AngleUnit.RADIANS)))
         );
     }
 
@@ -89,6 +93,10 @@ public class Drivebase implements Subsystem {
                             BR.setPower(0);
                         })
         );
+    }
+
+    public Pose2D getBotpose(){
+        return botpose;
     }
 
 
