@@ -33,6 +33,7 @@ import dev.nextftc.hardware.driving.MecanumDriverControlled;
 import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.IMUEx;
+import kotlin.Unit;
 
 
 public class Drivebase implements Subsystem {
@@ -61,8 +62,8 @@ public class Drivebase implements Subsystem {
     public void periodic(){
         botpose = imu.getPosition();
         ActiveOpMode.telemetry().addData("pose", this::getBotpose);
+        FL.atPosition(0);
     }
-
 
     public MecanumDriverControlled getMecanumDriver(){
         return new MecanumDriverControlled(
@@ -100,5 +101,9 @@ public class Drivebase implements Subsystem {
     }
 
 
+
+    public double updateTurretQuadature(){
+        return (FL.getRawTicks()/4096)*360;
+    }
 
 }

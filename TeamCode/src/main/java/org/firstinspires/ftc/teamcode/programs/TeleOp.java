@@ -1,6 +1,9 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
+import com.arcrobotics.ftclib.util.Timing;
+import com.pedropathing.util.Timer;
+
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
@@ -11,6 +14,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
 public class TeleOp extends BaseOpMode {
 
+    private Timer timer;
 
     public TeleOp(){
         super();
@@ -62,6 +66,9 @@ public class TeleOp extends BaseOpMode {
         ).whenBecomesFalse(
                 turret.stopTurret()
         );
+
+        timer = new Timer();
+        timer.resetTimer();
     }
 
     @Override
@@ -69,7 +76,12 @@ public class TeleOp extends BaseOpMode {
         flywheel.log(telemetry);
         telemetry.addData("tyasdf", vision.getHorizontalTy());
         //        vision.logVision(telemetry);
+
+
+        telemetry.addData("timer", timer.getElapsedTime());
         telemetry.update();
+        timer.resetTimer();
+
     }
 
 }

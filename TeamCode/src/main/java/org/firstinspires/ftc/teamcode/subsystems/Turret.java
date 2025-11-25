@@ -5,18 +5,11 @@ import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
-import dev.nextftc.control.feedback.AngularFeedback;
-import dev.nextftc.control.feedback.FeedbackType;
-import dev.nextftc.control.feedback.PIDElement;
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.core.commands.utility.LambdaCommand;
-import dev.nextftc.core.commands.utility.PerpetualCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
-import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.CRServoEx;
 
 public class Turret implements Subsystem {
@@ -24,6 +17,8 @@ public class Turret implements Subsystem {
 
     private CRServoEx turretM;
     private CRServoEx turretS;
+
+    private double turretQuad;
 
     private final ControlSystem turretPIDF = ControlSystem.builder()
             .posPid(
@@ -42,6 +37,7 @@ public class Turret implements Subsystem {
         turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
         turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
         turretPIDF.setGoal(new KineticState(0));
+        turretQuad = 0;
     }
 
     @Override
@@ -51,6 +47,8 @@ public class Turret implements Subsystem {
             turretM.setPower(-turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
             turretS.setPower(-turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
         }
+        turretQuad = Drivebase.INSTANCE.updateTurretQuadature();
+        ActiveOpMode.telemetry().addData("quad", turretQuad);
 
     }
 
