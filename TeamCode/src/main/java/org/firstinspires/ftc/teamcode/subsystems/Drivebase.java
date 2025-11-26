@@ -35,7 +35,7 @@ public class Drivebase implements Subsystem {
     private MotorEx BR;
     private GoBildaPinpointDriver imu;
     private Pose2D botpose;
-
+    private double offset;
 
     public void initialize(){
         FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
@@ -57,6 +57,7 @@ public class Drivebase implements Subsystem {
         imu.update();
         botpose = imu.getPosition();
         ActiveOpMode.telemetry().addData("pose", getBotpose());
+        imu.setPosition(getBotpose());
     }
 
     public MecanumDriverControlled getMecanumDriver(){
@@ -65,7 +66,7 @@ public class Drivebase implements Subsystem {
             Gamepads.gamepad1().leftStickY().negate(),
             Gamepads.gamepad1().leftStickX(),
             Gamepads.gamepad1().rightStickX(),
-            new FieldCentric(() -> Angle.fromRad(imu.getHeading(AngleUnit.RADIANS)))
+            new FieldCentric(() -> Angle.fromRad(imu.getHeading(AngleUnit.RADIANS) - offset))
         );
     }
 
@@ -91,15 +92,16 @@ public class Drivebase implements Subsystem {
     }
 
     public Pose2D getBotpose(){
-
         Pose2D cameraPose = Vision.INSTANCE.getPose2d();
 
         double sigmaK = Constants.DrivebaseConstants.constantSigmaOdo / (Constants.DrivebaseConstants.constantSigmaOdo + Vision.INSTANCE.getVisionSigma());
 
-        double fusedX = imu.getPosX(DistanceUnit.METER) + (sigmaK * cameraPose.getX(DistanceUnit.METER));
-        double fusedY = imu.getPosY(DistanceUnit.METER) + (sigmaK * cameraPose.getY(DistanceUnit.METER));
-
-        return new Pose2D(DistanceUnit.METER, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
+        if (cameraPose == null){
+            return new Pose2D(DistanceUnit.INCH, imu.getPosX(DistanceUnit.INCH), imu.getPosY(DistanceUnit.INCH), AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
+        }
+        double fusedX = (imu.getPosX(DistanceUnit.INCH) + (sigmaK * cameraPose.getX(DistanceUnit.INCH)))/(1+sigmaK);
+        double fusedY = (imu.getPosY(DistanceUnit.INCH) + (sigmaK * cameraPose.getY(DistanceUnit.INCH)))/(1+sigmaK);
+        return new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
     }
 
 
@@ -109,7 +111,7 @@ public class Drivebase implements Subsystem {
     }
 
     public Command zeroGryo(){
-        return new InstantCommand(() -> imu.setHeading(0, AngleUnit.RADIANS));
+        return new InstantCommand(() -> offset = imu.getHeading(AngleUnit.RADIANS));
     }
 
 }

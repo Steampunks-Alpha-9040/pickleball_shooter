@@ -20,7 +20,7 @@ public class Constants {
 
         public static final double slowScalar = 0.5;
 
-        public static final double constantSigmaOdo = 0.5;
+        public static final double constantSigmaOdo = 0.2;
 
     }
 

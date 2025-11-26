@@ -8,6 +8,7 @@ import dev.nextftc.ftc.Gamepads;
 import com.bylazar.field.PanelsField;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
@@ -91,6 +92,7 @@ public class TeleOp extends BaseOpMode {
         panels.getTelemetry().addData("LoopTime", timer.getMs());
         field.getField().update();
         panels.getTelemetry().update();
+        telemetry.update();
     }
 }
 
