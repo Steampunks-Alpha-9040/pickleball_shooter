@@ -227,6 +227,4 @@ public class Util {
         return Math.abs(error) < tolerance;
     }
 
-
-
 }

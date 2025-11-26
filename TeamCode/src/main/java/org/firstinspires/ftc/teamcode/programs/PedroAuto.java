@@ -6,6 +6,7 @@ import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
 import dev.nextftc.extensions.pedro.PedroComponent;
+
 import dev.nextftc.ftc.components.BulkReadComponent;
 
 import com.pedropathing.follower.Follower;
@@ -77,7 +78,7 @@ public class PedroAuto extends BaseOpMode {
     @Override
     public void onStartButtonPressed() {
         follower.update(); // Update Pedro Pathing
-        pathState = autonomousPathUpdate(); // Update autonomous state machine
+//        pathState = autonomousPathUpdate(); // Update autonomous state machine
 
         // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
@@ -205,42 +206,42 @@ public class PedroAuto extends BaseOpMode {
     double delay4 = 1.0;
     double delay5 = 2.0; //Gate delay, very important
 
-    public Command autonomousRoutine() {
-        return new SequentialGroup(
-                new ParallelGroup(
-                        flywheel.shootFlywheelFar(),
-                        new SequentialGroup(
-                                new Delay(delay1),
-                                new ParallelGroup(
-                                    feeder.setArmDown(),
-                                    feeder.turnWheelsOn(),
-                                    indexer.spinIndexer()
-                                ),
-                                new Delay(delay2),
-                                new ParallelGroup(
-                                        intake.spinIntake(),
-                                        new FollowPath(paths.Path1)
-                                ),
-                                new Delay(delay3),
-                                new FollowPath(paths.Path2),
-                                new ParallelGroup(
-                                        feeder.setArmDown(),
-                                        feeder.turnWheelsOn(),
-                                        indexer.spinIndexer()
-                                ),
-                                new Delay(delay4)
-                        )
-                ),
-                new ParallelGroup(
-                        flywheel.shootFlywheelClose(),
-                        new SequentialGroup(
-                            new FollowPath(paths.Path3),
-                                
-
-                        )
-                )
-        );
-    }
+//    public Command autonomousRoutine() {
+//        return new SequentialGroup(
+//                new ParallelGroup(
+//                        flywheel.shootFlywheelFar(),
+//                        new SequentialGroup(
+//                                new Delay(delay1),
+//                                new ParallelGroup(
+//                                    feeder.setArmDown(),
+//                                    feeder.turnWheelsOn(),
+//                                    indexer.spinIndexer()
+//                                ),
+//                                new Delay(delay2),
+//                                new ParallelGroup(
+//                                        intake.spinIntake(),
+//                                        new FollowPath(paths.Path1)
+//                                ),
+//                                new Delay(delay3),
+//                                new FollowPath(paths.Path2),
+//                                new ParallelGroup(
+//                                        feeder.setArmDown(),
+//                                        feeder.turnWheelsOn(),
+//                                        indexer.spinIndexer()
+//                                ),
+//                                new Delay(delay4)
+//                        )
+//                ),
+//                new ParallelGroup(
+//                        flywheel.shootFlywheelClose(),
+//                        new SequentialGroup(
+//                            new FollowPath(paths.Path3),
+//
+//
+//                        )
+//                )
+//        );
+//    }
 
 
 

@@ -1,6 +1,10 @@
 package org.firstinspires.ftc.teamcode.programs;
 
+import com.bylazar.field.PanelsField;
+import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
+
+
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.subsystems.Feeder;
@@ -19,6 +23,7 @@ import dev.nextftc.ftc.components.BulkReadComponent;
 public abstract class BaseOpMode extends NextFTCOpMode {
 
     protected PanelsTelemetry panels = PanelsTelemetry.INSTANCE;
+    protected PanelsField field = PanelsField.INSTANCE;
     protected Flywheel flywheel = Flywheel.INSTANCE;
     protected Drivebase drivebase = Drivebase.INSTANCE;
     protected Indexer indexer = Indexer.INSTANCE;
@@ -41,6 +46,7 @@ public abstract class BaseOpMode extends NextFTCOpMode {
                 BulkReadComponent.INSTANCE,
                 BindingsComponent.INSTANCE
         );
+
     }
 
 }

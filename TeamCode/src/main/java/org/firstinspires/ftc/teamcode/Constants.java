@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.arcrobotics.ftclib.geometry.Vector2d;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 public class Constants {
@@ -10,9 +16,11 @@ public class Constants {
         public static final String FL = "fl";
         public static final String BR = "br";
         public static final String BL = "bl";
-        public static final String IMU = "imu";
+        public static final String IMU = "pinpoint";
 
         public static final double slowScalar = 0.5;
+
+        public static final double constantSigmaOdo = 0.5;
 
     }
 
@@ -46,6 +54,8 @@ public class Constants {
 
 
         public static final double turretTolerance_VisionAngleDeg = 0.5;
+
+        public static final double encoderToTurret = 145.0/60.0;
 
     }
 
@@ -103,8 +113,12 @@ public class Constants {
         public static final double accepted_pipeline_latency_ms = 200;
         public static final double kTagAreaThresholdForYawCheck = 2.0;
         public static final double kDefaultYawDiffThreshold = 5.0;
-
         public static final double tagTargetTolerance = 0.5;
+
+        public static final Vector2d turretCenterToRobotCenter = new Vector2d(-(78.66)/1000,0);
+        public static final Vector2d cameraToTurretCenter = new Vector2d(-(37.448)/1000, (109.226)/1000);
+
+
     }
 
 }

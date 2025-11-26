@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
 
@@ -74,8 +75,8 @@ public class Flywheel implements Subsystem {
 //        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
     }
 
-    public void log(Telemetry telemetry){
-        telemetry.addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
+    public void log(PanelsTelemetry telemetry){
+        telemetry.getTelemetry().addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
     }
 
     //jank asf code for axon abs encoders... probably doesn't work.

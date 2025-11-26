@@ -42,13 +42,7 @@ public class Turret implements Subsystem {
 
     @Override
     public void periodic(){
-        ActiveOpMode.telemetry().addData("hi", Vision.INSTANCE.getHorizontalTy());
-        if (!Util.isNear(0, Vision.INSTANCE.getHorizontalTy(), Constants.TurretConstants.turretTolerance_VisionAngleDeg) && ActiveOpMode.gamepad1().right_bumper){
-            turretM.setPower(-turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
-            turretS.setPower(-turretPIDF.calculate(new KineticState(Vision.INSTANCE.getHorizontalTy())));
-        }
-        turretQuad = Drivebase.INSTANCE.updateTurretQuadature();
-        ActiveOpMode.telemetry().addData("quad", turretQuad);
+
 
     }
 

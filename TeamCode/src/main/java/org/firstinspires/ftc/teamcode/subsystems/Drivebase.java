@@ -1,39 +1,26 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import androidx.annotation.NonNull;
-
+import com.arcrobotics.ftclib.geometry.Pose2d;
 import com.pedropathing.follower.Follower;
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
-import com.qualcomm.robotcore.hardware.DcMotorEx;
-import com.qualcomm.robotcore.hardware.IMU;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
 
-import java.lang.annotation.ElementType;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import java.lang.annotation.RetentionPolicy;
-import java.lang.annotation.Target;
-
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.units.Angle;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.ftc.Gamepads;
 import dev.nextftc.hardware.driving.FieldCentric;
-import dev.nextftc.hardware.driving.HolonomicMode;
 import dev.nextftc.hardware.driving.MecanumDriverControlled;
-import dev.nextftc.hardware.impl.Direction;
 import dev.nextftc.hardware.impl.MotorEx;
-import dev.nextftc.hardware.impl.IMUEx;
-import kotlin.Unit;
 
 
 public class Drivebase implements Subsystem {
@@ -57,12 +44,19 @@ public class Drivebase implements Subsystem {
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
         imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
         imu.setOffsets(0.215,-6.766, DistanceUnit.INCH);
+        imu.setEncoderDirections(
+                GoBildaPinpointDriver.EncoderDirection.FORWARD,
+                GoBildaPinpointDriver.EncoderDirection.REVERSED
+        );
+        imu.resetPosAndIMU();
+        imu.setPosition(new Pose2D(DistanceUnit.INCH, 72, 0, AngleUnit.DEGREES, 0));
+        FL.atPosition(0);
     }
 
     public void periodic(){
+        imu.update();
         botpose = imu.getPosition();
-        ActiveOpMode.telemetry().addData("pose", this::getBotpose);
-        FL.atPosition(0);
+        ActiveOpMode.telemetry().addData("pose", getBotpose());
     }
 
     public MecanumDriverControlled getMecanumDriver(){
@@ -97,13 +91,25 @@ public class Drivebase implements Subsystem {
     }
 
     public Pose2D getBotpose(){
-        return botpose;
+
+        Pose2D cameraPose = Vision.INSTANCE.getPose2d();
+
+        double sigmaK = Constants.DrivebaseConstants.constantSigmaOdo / (Constants.DrivebaseConstants.constantSigmaOdo + Vision.INSTANCE.getVisionSigma());
+
+        double fusedX = imu.getPosX(DistanceUnit.METER) + (sigmaK * cameraPose.getX(DistanceUnit.METER));
+        double fusedY = imu.getPosY(DistanceUnit.METER) + (sigmaK * cameraPose.getY(DistanceUnit.METER));
+
+        return new Pose2D(DistanceUnit.METER, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
     }
 
 
+    //We do this since the quadature is attached to the FL motor, and quadatures are only implemented for motors. We use servos for the turret :)
+    public double getTurretQuadature(){
+        return (((FL.getRawTicks()*Constants.TurretConstants.encoderToTurret)/4096)*2*Math.PI);
+    }
 
-    public double updateTurretQuadature(){
-        return (FL.getRawTicks()/4096)*360;
+    public Command zeroGryo(){
+        return new InstantCommand(() -> imu.setHeading(0, AngleUnit.RADIANS));
     }
 
 }

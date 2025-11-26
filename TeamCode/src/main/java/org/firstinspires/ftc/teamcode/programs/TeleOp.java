@@ -1,28 +1,31 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
-import com.arcrobotics.ftclib.util.Timing;
-import com.pedropathing.util.Timer;
+import com.bylazar.utils.LoopTimer;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.ftc.components.BulkReadComponent;
+import com.bylazar.field.PanelsField;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
 public class TeleOp extends BaseOpMode {
 
-    private Timer timer;
+    private LoopTimer timer = new LoopTimer();
 
-    public TeleOp(){
+    public TeleOp() {
         super();
     }
 
 
     @Override
     public void onInit() {
+
+        field.getField().setStyle("none", "white", 1.5);
+        field.getField().update();
+
 
         drivebase.getMecanumDriver().schedule();
 
@@ -66,22 +69,28 @@ public class TeleOp extends BaseOpMode {
         ).whenBecomesFalse(
                 turret.stopTurret()
         );
-
-        timer = new Timer();
-        timer.resetTimer();
+        Gamepads.gamepad1().b().and(
+                Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
+        ).whenBecomesTrue(
+                drivebase.zeroGryo()
+        );
     }
 
     @Override
-    public void onUpdate(){
-        flywheel.log(telemetry);
-        telemetry.addData("tyasdf", vision.getHorizontalTy());
-        //        vision.logVision(telemetry);
+    public void onUpdate() {
+        timer.start();
 
+        // Draw dot at current animated position
+        field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH));
+        field.getField().circle(1.5);
 
-        telemetry.addData("timer", timer.getElapsedTime());
-        telemetry.update();
-        timer.resetTimer();
-
+        flywheel.log(panels);
+        panels.getTelemetry().addData("quad", drivebase.getTurretQuadature());
+        panels.getTelemetry().addData("botpose", drivebase.getBotpose());
+        timer.end();
+        panels.getTelemetry().addData("LoopTime", timer.getMs());
+        field.getField().update();
+        panels.getTelemetry().update();
     }
-
 }
+
