@@ -7,6 +7,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -42,21 +43,26 @@ public class Drivebase implements Subsystem {
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
         imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
-        imu.setOffsets(6.766,-0.215, DistanceUnit.INCH);
+        imu.recalibrateIMU();
+
+        imu.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
+
+        imu.setOffsets(-0.215,-6.766, DistanceUnit.INCH);
+
         imu.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
-        imu.setYawScalar(1.55);
-        imu.resetPosAndIMU();
+        imu.setYawScalar(Constants.DrivebaseConstants.yawScalar);
+
         FL.atPosition(0);
     }
 
     public void periodic(){
         imu.update();
-        ActiveOpMode.telemetry().addData("pose", getBotpose());
         updateBotpose();
-        imu.setPosition(getBotpose());
+        ActiveOpMode.telemetry().addData("pose", Util.poseUnitConvertor(DistanceUnit.INCH, getBotpose()));
+        ActiveOpMode.telemetry().addData("headingraw", imu.getHeading(AngleUnit.DEGREES));
     }
 
     public MecanumDriverControlled getMecanumDriver(){
@@ -91,17 +97,16 @@ public class Drivebase implements Subsystem {
     }
 
     private void updateBotpose(){
-        Pose2D cameraPose = Vision.INSTANCE.getPose2d();
+        Pose2D cameraPose = Vision.INSTANCE.getRaw2D();
 
         double sigmaK = Constants.DrivebaseConstants.constantSigmaOdo / (Constants.DrivebaseConstants.constantSigmaOdo + Vision.INSTANCE.getVisionSigma());
 
-//        if (cameraPose == null){
-        botpose = imu.getPosition();
-//            return;
-//        }
-//        double fusedX = (imu.getPosX(DistanceUnit.INCH) + (sigmaK * cameraPose.getX(DistanceUnit.INCH)))/(1+sigmaK);
-//        double fusedY = (imu.getPosY(DistanceUnit.INCH) + (sigmaK * cameraPose.getY(DistanceUnit.INCH)))/(1+sigmaK);
-//        botpose =  new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
+        if (cameraPose == null){
+            return;
+        }
+        double fusedX = (imu.getPosX(DistanceUnit.INCH) + (sigmaK * cameraPose.getX(DistanceUnit.INCH)))/(1+sigmaK);
+        double fusedY = (imu.getPosY(DistanceUnit.INCH) + (sigmaK * cameraPose.getY(DistanceUnit.INCH)))/(1+sigmaK);
+        imu.setPosition(new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS)));
     }
 
     public void setStartingPose(double x, double y){
@@ -111,7 +116,7 @@ public class Drivebase implements Subsystem {
 
     //We do this since the quadature is attached to the FL motor, and quadatures are only implemented for motors. We use servos for the turret :)
     public double getTurretQuadature(){
-        return (((FL.getRawTicks()*Constants.TurretConstants.encoderToTurret)/4096)*2*Math.PI);
+        return ((FL.getRawTicks()/4096)/(Constants.TurretConstants.encoderToTurret)*2*Math.PI);
     }
 
     public Command zeroGryo(){
@@ -119,7 +124,7 @@ public class Drivebase implements Subsystem {
     }
 
     public Pose2D getBotpose(){
-        return botpose;
+        return imu.getPosition();
     }
 
 }

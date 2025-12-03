@@ -1,5 +1,11 @@
 package org.firstinspires.ftc.teamcode.util;
 
+import com.qualcomm.hardware.sparkfun.SparkFunOTOS;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+
 public class Util {
 
     public enum GoBILDA {
@@ -25,6 +31,10 @@ public class Util {
         public double getAchievableMaxTicksPerSecond() {
             return cpr * rpm / 60;
         }
+    }
+
+    public static Pose2D poseUnitConvertor(DistanceUnit unit, Pose2D pose){
+        return new Pose2D(unit, pose.getX(unit), pose.getY(unit), AngleUnit.DEGREES, pose.getHeading(AngleUnit.DEGREES));
     }
 
     /**

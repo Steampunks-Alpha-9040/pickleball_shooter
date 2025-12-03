@@ -1,22 +1,15 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.arcrobotics.ftclib.geometry.Pose2d;
-import com.arcrobotics.ftclib.geometry.Rotation2d;
 import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.qualcomm.hardware.limelightvision.LLResult;
 import com.qualcomm.hardware.limelightvision.Limelight3A;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Util;
-
-import java.util.Optional;
-import java.util.Random;
 
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.units.Angle;
@@ -27,7 +20,7 @@ public class Vision implements Subsystem {
     public static Vision INSTANCE = new Vision();
     private Limelight3A limelight;
 
-    private Pose2D cameraRobotPose = new Pose2D(DistanceUnit.INCH, 0,0, AngleUnit.RADIANS, 0);
+    private Pose2D cameraRobotPose;
 
     private double visionSigma;
 
@@ -43,33 +36,36 @@ public class Vision implements Subsystem {
     }
 
     public void periodic(){
-        limelight.updateRobotOrientation(Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.DEGREES));
         LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid() && result != prevResult) { //checks if result is null, if it's valid, and if it's different than beforev
+        if (result != null && result.isValid() && result != prevResult) { //checks if result is null, if it's valid, and if it's different than before
             ActiveOpMode.telemetry().addData("raw cam X", result.getBotpose().getPosition().x);
             ActiveOpMode.telemetry().addData("raw cam Y", result.getBotpose().getPosition().y);
-            if (result.getBotposeAvgDist() < 5){
-                if (Util.isNear(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), result.getBotpose().getPosition().x, 0.5) ||
-                        Util.isNear(Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER), result.getBotpose().getPosition().y, 0.5)){
-                    visionSigma = result.getBotposeAvgArea() * (1.0 + Math.min(1, Math.abs(Drivebase.INSTANCE.getTurretQuadature()/(Math.PI/2))));
-                    Pose3D botpose = result.getBotpose();
 
-                    // 4. Rotate turret→camera based on turret angle
+            Pose3D botpose = result.getBotpose();
 
-                    Vector2d turretToCamRotated = Constants.VisionConstants.cameraToTurretCenter.rotateBy(Angle.fromRad(Drivebase.INSTANCE.getTurretQuadature()).inDeg);
+            Vector2d cameraToTurret = Constants.VisionConstants.cameraToTurretCenter.rotateBy(Angle.fromRad(Drivebase.INSTANCE.getTurretQuadature()).inDeg);
+//
+            Vector2d robotToCamera = Constants.VisionConstants.turretCenterToRobotCenter.plus(cameraToTurret);
+
+            Vector2d cameraTranslated = new Vector2d(botpose.getPosition().x, botpose.getPosition().y).plus(robotToCamera).rotateBy(-90).plus(new Vector2d(1.8288, 1.8288));
+//            if (result.getBotposeAvgDist() < 5){
+                if (Util.isNear(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), cameraTranslated.getX(), 0.3) &&
+                        Util.isNear(Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER), cameraTranslated.getY(), 0.3)){
+
+                    visionSigma = result.getBotposeAvgArea() * (1.0 + Math.min(1, Math.abs(Drivebase.INSTANCE.getTurretQuadature()/(Math.PI))));
+
+
 
                     // Total transform robot→camera
-                    Vector2d robotToCamera = Constants.VisionConstants.turretCenterToRobotCenter.plus(turretToCamRotated);
 
-                    // 5. Now compute robot pose = cameraPose minus robot→camera
-                    double robotX = botpose.getPosition().x - robotToCamera.getX();
-                    double robotY = botpose.getPosition().y - robotToCamera.getY();
 
-                    cameraRobotPose = new Pose2D(DistanceUnit.METER,robotX, robotY, AngleUnit.RADIANS, Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS));
+                    cameraRobotPose = new Pose2D(DistanceUnit.METER, cameraTranslated.getX(), cameraTranslated.getY(), AngleUnit.RADIANS, Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS));
+
+
 
                     return;
                 }
-            }
+//            }
             prevResult = result;
         }
         cameraRobotPose = null;
@@ -79,7 +75,8 @@ public class Vision implements Subsystem {
         return visionSigma;
     }
 
-    public Pose2D getPose2d(){
+
+    public Pose2D getRaw2D(){
         return cameraRobotPose;
     }
 

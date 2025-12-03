@@ -9,6 +9,8 @@ import com.bylazar.field.PanelsField;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.subsystems.Vision;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
@@ -25,7 +27,8 @@ public class TeleOp extends BaseOpMode {
     public void onInit() {
 
         field.getField().setStyle("none", "white", 1.5);
-        field.getField().update();
+
+        drivebase.setStartingPose(72,72);
 
         drivebase.getMecanumDriver().schedule();
 
@@ -74,7 +77,7 @@ public class TeleOp extends BaseOpMode {
         ).whenBecomesTrue(
                 drivebase.zeroGryo()
         );
-        drivebase.setStartingPose(72,72);
+
     }
 
     @Override
@@ -82,12 +85,13 @@ public class TeleOp extends BaseOpMode {
         timer.start();
 
         // Draw dot at current animated position
-        field.getField().moveCursor(drivebase.getBotpose().getY(DistanceUnit.INCH), drivebase.getBotpose().getX(DistanceUnit.INCH)); //flipped since x in pedro is y
+//        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
+        field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH)); //flipped since x in pedro is y
         field.getField().circle(1.5);
 
         flywheel.log(panels);
         panels.getTelemetry().addData("quad", drivebase.getTurretQuadature());
-        panels.getTelemetry().addData("botpose", drivebase.getBotpose());
+        panels.getTelemetry().addData("botpose", Util.poseUnitConvertor(DistanceUnit.METER,drivebase.getBotpose()));
         timer.end();
         panels.getTelemetry().addData("LoopTime", timer.getMs());
         field.getField().update();
