@@ -203,40 +203,48 @@ public class PedroAuto extends BaseOpMode {
     double delay3 = 1.0;
     double delay4 = 1.0;
     double delay5 = 2.0; //Gate delay, very important
+    double delay6 = 1.0;
+    double delay7 = 1.0;
+    double delay8 = 1.0;
+    double delay9 = 1.0;
+
+    public Command shoot() {
+        return new ParallelGroup(
+                feeder.setArmDown(),
+                feeder.turnWheelsOn(),
+                indexer.spinIndexer()
+        );
+    }
 
     public Command autonomousRoutine() {
-        return new SequentialGroup(
-                new ParallelGroup(
-                        flywheel.shootFlywheelFar(),
-                        new SequentialGroup(
-                                new Delay(delay1),
-                                new ParallelGroup(
-                                    feeder.setArmDown(),
-                                    feeder.turnWheelsOn(),
-                                    indexer.spinIndexer()
-                                ),
-                                new Delay(delay2),
-                                new ParallelGroup(
-                                        intake.spinIntake(),
-                                        new FollowPath(paths.Path1)
-                                ),
-                                new Delay(delay3),
-                                new FollowPath(paths.Path2),
-                                new ParallelGroup(
-                                        feeder.setArmDown(),
-                                        feeder.turnWheelsOn(),
-                                        indexer.spinIndexer()
-                                ),
-                                new Delay(delay4)
-                        )
-                ),
-                new ParallelGroup(
-                        flywheel.shootFlywheelClose(),
-                        new SequentialGroup(
-                            new FollowPath(paths.Path3),
-                                
-
-                        )
+        return new ParallelGroup(
+                flywheel.shootFlywheelFar(),
+                new SequentialGroup(
+                        new Delay(delay1),
+                        shoot(),
+                        new Delay(delay2),
+                        intake.spinIntake(),
+                        new FollowPath(paths.Path1),
+                        new Delay(delay3),
+                        intake.stopIntake(),
+                        new FollowPath(paths.Path2),
+                        shoot(),
+                        new Delay(delay4),
+                        intake.spinIntake(),
+                        new FollowPath(paths.Path3),
+                        new Delay(delay5),
+                        new FollowPath(paths.Path4),
+                        new Delay(delay6),
+                        new FollowPath(paths.Path5),
+                        shoot(),
+                        new Delay(delay7),
+                        new FollowPath(paths.Path6),
+                        new Delay(delay8),
+                        new FollowPath(paths.Path7),
+                        shoot(),
+                        new FollowPath(paths.Path8),
+                        new Delay(delay9),
+                        new FollowPath(paths.Path9)
                 )
         );
     }
