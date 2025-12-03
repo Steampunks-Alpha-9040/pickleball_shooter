@@ -2,8 +2,12 @@ package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.pedropathing.ftc.localization.constants.PinpointConstants;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.util.Util;
@@ -20,7 +24,9 @@ public class Constants {
 
         public static final double slowScalar = 0.5;
 
-        public static final double constantSigmaOdo = 0.2; //todo: tune this value.
+        public static final double constantSigmaOdo = 0.1; //todo: tune this value.
+
+        public static final Pose2D startingPose = new Pose2D(DistanceUnit.INCH, 72, 0, AngleUnit.DEGREES, 0);
 
     }
 
@@ -55,7 +61,7 @@ public class Constants {
 
         public static final double turretTolerance_VisionAngleDeg = 0.5;
 
-        public static final double encoderToTurret = 145.0/60.0;
+        public static final double encoderToTurret = 145.0/6.0;
 
     }
 

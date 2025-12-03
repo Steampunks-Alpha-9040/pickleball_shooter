@@ -42,13 +42,13 @@ public class Drivebase implements Subsystem {
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
         imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
-        imu.setOffsets(0.215,-6.766, DistanceUnit.INCH);
+        imu.setOffsets(6.766,-0.215, DistanceUnit.INCH);
         imu.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
+        imu.setYawScalar(1.55);
         imu.resetPosAndIMU();
-        imu.setPosition(new Pose2D(DistanceUnit.INCH, 72, 0, AngleUnit.DEGREES, 0));
         FL.atPosition(0);
     }
 
@@ -95,13 +95,17 @@ public class Drivebase implements Subsystem {
 
         double sigmaK = Constants.DrivebaseConstants.constantSigmaOdo / (Constants.DrivebaseConstants.constantSigmaOdo + Vision.INSTANCE.getVisionSigma());
 
-        if (cameraPose == null){
-            botpose =  new Pose2D(DistanceUnit.INCH, imu.getPosX(DistanceUnit.INCH), imu.getPosY(DistanceUnit.INCH), AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
-            return;
-        }
-        double fusedX = (imu.getPosX(DistanceUnit.INCH) + (sigmaK * cameraPose.getX(DistanceUnit.INCH)))/(1+sigmaK);
-        double fusedY = (imu.getPosY(DistanceUnit.INCH) + (sigmaK * cameraPose.getY(DistanceUnit.INCH)))/(1+sigmaK);
-        botpose =  new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
+//        if (cameraPose == null){
+        botpose = imu.getPosition();
+//            return;
+//        }
+//        double fusedX = (imu.getPosX(DistanceUnit.INCH) + (sigmaK * cameraPose.getX(DistanceUnit.INCH)))/(1+sigmaK);
+//        double fusedY = (imu.getPosY(DistanceUnit.INCH) + (sigmaK * cameraPose.getY(DistanceUnit.INCH)))/(1+sigmaK);
+//        botpose =  new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS));
+    }
+
+    public void setStartingPose(double x, double y){
+        imu.setPosition(new Pose2D(DistanceUnit.INCH, x, y, AngleUnit.DEGREES, 0));
     }
 
 

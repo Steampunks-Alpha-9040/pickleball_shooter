@@ -16,6 +16,7 @@ import org.firstinspires.ftc.teamcode.util.Point;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import java.util.Optional;
+import java.util.Random;
 
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.core.units.Angle;
@@ -30,6 +31,8 @@ public class Vision implements Subsystem {
 
     private double visionSigma;
 
+    private LLResult prevResult;
+
 
     public void initialize(){
         limelight = ActiveOpMode.hardwareMap().get(Limelight3A.class, "limelight");
@@ -41,9 +44,8 @@ public class Vision implements Subsystem {
 
     public void periodic(){
         limelight.updateRobotOrientation(Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.DEGREES));
-        Pose2D prevPose = cameraRobotPose;
         LLResult result = limelight.getLatestResult();
-        if (result != null && result.isValid()) {
+        if (result != null && result.isValid() && result != prevResult) { //checks if result is null, if it's valid, and if it's different than beforev
             ActiveOpMode.telemetry().addData("raw cam X", result.getBotpose().getPosition().x);
             ActiveOpMode.telemetry().addData("raw cam Y", result.getBotpose().getPosition().y);
             if (result.getBotposeAvgDist() < 5){
@@ -54,7 +56,7 @@ public class Vision implements Subsystem {
 
                     // 4. Rotate turret→camera based on turret angle
 
-                    Vector2d turretToCamRotated = Constants.VisionConstants.cameraToTurretCenter.rotateBy(Drivebase.INSTANCE.getTurretQuadature());
+                    Vector2d turretToCamRotated = Constants.VisionConstants.cameraToTurretCenter.rotateBy(Angle.fromRad(Drivebase.INSTANCE.getTurretQuadature()).inDeg);
 
                     // Total transform robot→camera
                     Vector2d robotToCamera = Constants.VisionConstants.turretCenterToRobotCenter.plus(turretToCamRotated);
@@ -68,6 +70,7 @@ public class Vision implements Subsystem {
                     return;
                 }
             }
+            prevResult = result;
         }
         cameraRobotPose = null;
     }

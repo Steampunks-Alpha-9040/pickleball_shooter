@@ -27,7 +27,6 @@ public class TeleOp extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
         field.getField().update();
 
-
         drivebase.getMecanumDriver().schedule();
 
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
@@ -75,6 +74,7 @@ public class TeleOp extends BaseOpMode {
         ).whenBecomesTrue(
                 drivebase.zeroGryo()
         );
+        drivebase.setStartingPose(72,72);
     }
 
     @Override
@@ -82,7 +82,7 @@ public class TeleOp extends BaseOpMode {
         timer.start();
 
         // Draw dot at current animated position
-        field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH));
+        field.getField().moveCursor(drivebase.getBotpose().getY(DistanceUnit.INCH), drivebase.getBotpose().getX(DistanceUnit.INCH)); //flipped since x in pedro is y
         field.getField().circle(1.5);
 
         flywheel.log(panels);
