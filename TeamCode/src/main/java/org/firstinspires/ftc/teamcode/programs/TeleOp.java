@@ -1,34 +1,34 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 
+import com.bylazar.utils.LoopTimer;
+
 import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.ftc.Gamepads;
-import dev.nextftc.ftc.components.BulkReadComponent;
+import com.bylazar.field.PanelsField;
+
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.subsystems.Vision;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 
 @com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
 public class TeleOp extends BaseOpMode {
 
+    private LoopTimer timer = new LoopTimer();
 
-    public TeleOp(){
-        addComponents(
-                new SubsystemComponent(
-                        super.drivebase,
-                        super.indexer,
-                        super.feeder,
-                        super.flywheel,
-                        super.intake,
-                        super.vision
-                ),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE
-        );
+    public TeleOp() {
+        super();
     }
+
 
     @Override
     public void onInit() {
+
+        field.getField().setStyle("none", "white", 1.5);
+
+        drivebase.setStartingPose(72,72);
 
         drivebase.getMecanumDriver().schedule();
 
@@ -72,14 +72,31 @@ public class TeleOp extends BaseOpMode {
         ).whenBecomesFalse(
                 turret.stopTurret()
         );
+        Gamepads.gamepad1().b().and(
+                Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
+        ).whenBecomesTrue(
+                drivebase.zeroGryo()
+        );
+
     }
 
     @Override
-    public void onUpdate(){
-        flywheel.log(telemetry);
-        telemetry.addData("tyasdf", vision.getHorizontalTy());
-        //        vision.logVision(telemetry);
+    public void onUpdate() {
+        timer.start();
+
+        // Draw dot at current animated position
+//        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
+        field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH)); //flipped since x in pedro is y
+        field.getField().circle(1.5);
+
+        flywheel.log(panels);
+        panels.getTelemetry().addData("quad", drivebase.getTurretQuadature());
+        panels.getTelemetry().addData("botpose", Util.poseUnitConvertor(DistanceUnit.METER,drivebase.getBotpose()));
+        timer.end();
+        panels.getTelemetry().addData("LoopTime", timer.getMs());
+        field.getField().update();
+        panels.getTelemetry().update();
         telemetry.update();
     }
-
 }
+

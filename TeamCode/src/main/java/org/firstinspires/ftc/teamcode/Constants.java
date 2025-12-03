@@ -1,18 +1,34 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.arcrobotics.ftclib.geometry.Translation2d;
+import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.bylazar.configurables.annotations.Configurable;
+import com.pedropathing.ftc.localization.constants.PinpointConstants;
+import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
+import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
+import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 public class Constants {
-
 
     public static class DrivebaseConstants {
         public static final String FR = "fr";
         public static final String FL = "fl";
         public static final String BR = "br";
         public static final String BL = "bl";
-        public static final String IMU = "imu";
+        public static final String IMU = "pinpoint";
 
         public static final double slowScalar = 0.5;
+
+//0.9877
+        public static final double yawScalar = 1;
+        public static final double constantSigmaOdo = 0.1; //todo: tune this value.
+
+        public static final Pose2D startingPose = new Pose2D(DistanceUnit.INCH, 72, 0, AngleUnit.DEGREES, 0);
 
     }
 
@@ -39,17 +55,15 @@ public class Constants {
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turretS";
-        public static final String turretEncoder = "turretEncoder";
-
-        public static final double servoToTurret = 10.0 / 29.0;
-
-        public static final double turret_kP = 10000.0; //The like main pushing force, the constant :)
+        public static final double turret_kP = 0.009; //The like main pushing force, the constant :)
         public static final double turret_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double turret_kD = 0.0; //slows down/speeds up the closer/farther away u are
+        public static final double turret_kD = 5; //slows down/speeds up the closer/farther away u are
         public static final double turret_kF = 0.0; //friction, tune so when the turret barely moves
 
 
         public static final double turretTolerance_VisionAngleDeg = 0.5;
+
+        public static final double encoderToTurret = 145.0/60.0;
 
     }
 
@@ -107,8 +121,12 @@ public class Constants {
         public static final double accepted_pipeline_latency_ms = 200;
         public static final double kTagAreaThresholdForYawCheck = 2.0;
         public static final double kDefaultYawDiffThreshold = 5.0;
-
         public static final double tagTargetTolerance = 0.5;
+
+        public static final Vector2d turretCenterToRobotCenter = new Vector2d(-(78.66)/1000,0);
+        public static final Vector2d cameraToTurretCenter = new Vector2d(-(37.448)/1000, (109.226)/1000);
+
+
     }
 
 }

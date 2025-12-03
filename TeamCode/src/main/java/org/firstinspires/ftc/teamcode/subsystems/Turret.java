@@ -6,22 +6,22 @@ import org.firstinspires.ftc.teamcode.util.Util;
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.utility.LambdaCommand;
-import dev.nextftc.core.commands.utility.PerpetualCommand;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
-import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.CRServoEx;
 
 public class Turret implements Subsystem {
     public static final Turret INSTANCE = new Turret();
 
-    private CRServoEx turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
-    private CRServoEx turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
+    private CRServoEx turretM;
+    private CRServoEx turretS;
 
+    private double turretQuad;
 
     private final ControlSystem turretPIDF = ControlSystem.builder()
-            .velPid(
+            .posPid(
                     Constants.TurretConstants.turret_kP,
                     Constants.TurretConstants.turret_kI,
                     Constants.TurretConstants.turret_kD
@@ -34,48 +34,80 @@ public class Turret implements Subsystem {
 
     @Override
     public void initialize(){
-
+        turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
+        turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
+        turretPIDF.setGoal(new KineticState(0));
+        turretQuad = 0;
     }
 
     @Override
     public void periodic(){
+
+
     }
 
 
 
     public Command spinTurretRight(){
-        return new LambdaCommand()
-                .setStart(() -> {
-                    turretM.setPower(0.1);
-                    turretS.setPower(.1);
-                })
-                .requires(this);
+
+        return new InstantCommand(() -> {
+            turretM.setPower(0.1);
+            turretS.setPower(0.1);
+        }).requires(this);
+//        return new ParallelGroup(
+//                new LambdaCommand()
+//                        .setStart(() -> turretM.setPower(.1))
+//                        .requires(this),
+//                new LambdaCommand()
+//                        .setStart(() -> turretS.setPower(.1))
+//                        .requires(this)
+//        ).requires(this);
+
+//        return new RunToVelocity(turretPIDF, )
     }
     public Command spinTurretLeft(){
-        return new LambdaCommand()
-                .setStart(() -> {
-                    turretM.setPower(-.1);
-                    turretS.setPower(-.1);
-                })
-                .requires(this);
+        return new InstantCommand(() -> {
+            turretM.setPower(-0.1);
+            turretS.setPower(-0.1);
+        }).requires(this);
+//        return new ParallelGroup(
+//                new LambdaCommand()
+//                        .setStart(() -> turretM.setPower(-.1))
+//                        .requires(this),
+//                new LambdaCommand()
+//                        .setStart(() -> turretS.setPower(-.1))
+//                        .requires(this)
+//        ).requires(this);
+
+
     }
     public Command stopTurret(){
-        return new LambdaCommand()
-                .setStart(() -> {
-                    turretM.setPower(0.0);
-                    turretS.setPower(0.0);
-                })
-                .requires(this);
+//        return new ParallelGroup(
+//                new LambdaCommand()
+//                        .setStart(() -> turretM.setPower(0))
+//                        .requires(this),
+//                new LambdaCommand()
+//                        .setStart(() -> turretS.setPower(0))
+//                        .requires(this)
+//        ).requires(this);
+//        return new LambdaCommand()
+//                .setStart(() -> {
+//                    turretM.setPower(0.0);
+//                    turretS.setPower(0.0);
+//                })
+//                .requires(this);
+        return new InstantCommand(() -> {
+            turretM.setPower(0);
+            turretS.setPower(0);
+        }).requires(this);
     }
 
     public Command trackTurret(){
-        return new LambdaCommand()
-                .requires(this)
-                        .setUpdate(() -> {
-                            turretS.setPower(Util.clamp(Vision.INSTANCE.getHorizontalTy()+0.05/80, -0.1, 0.1));
-                            turretM.setPower(Util.clamp(Vision.INSTANCE.getHorizontalTy()+0.05/80, -0.1, 0.1));
-                        }
-        );
+        return new RunToPosition(turretPIDF, 0, Constants.TurretConstants.turretTolerance_VisionAngleDeg)
+                .then(stopTurret())
+            .requires(this)
+                .setInterruptible(true);
+
     }
 
 //    public void setTurretDirection(Vision vision){
