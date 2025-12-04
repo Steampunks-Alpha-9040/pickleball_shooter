@@ -8,14 +8,14 @@ import dev.nextftc.ftc.Gamepads;
 import com.bylazar.field.PanelsField;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp", group = "TeleOp")
 public class TeleOp extends BaseOpMode {
-
     private LoopTimer timer = new LoopTimer();
 
     public TeleOp() {
@@ -25,6 +25,7 @@ public class TeleOp extends BaseOpMode {
 
     @Override
     public void onInit() {
+        Constants.OpModeConstants.side = Constants.Side.BLUE;
 
         field.getField().setStyle("none", "white", 1.5);
 
