@@ -1,16 +1,10 @@
 package org.firstinspires.ftc.teamcode;
 
-import com.arcrobotics.ftclib.geometry.Translation2d;
 import com.arcrobotics.ftclib.geometry.Vector2d;
-import com.bylazar.configurables.annotations.Configurable;
-import com.pedropathing.ftc.localization.constants.PinpointConstants;
-import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
-import org.firstinspires.ftc.robotcore.external.navigation.Position;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 public class Constants {
@@ -20,7 +14,7 @@ public class Constants {
     }
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(0, 144);
+        public static Vector2d BLUEscore = new Vector2d(10, 150);
         public static Vector2d REDscore = new Vector2d(144, 144);
     }
     public static class DrivebaseConstants {
@@ -63,13 +57,13 @@ public class Constants {
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turretS";
-        public static final double turret_kP = 0.009; //The like main pushing force, the constant :)
-        public static final double turret_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double turret_kD = 5; //slows down/speeds up the closer/farther away u are
-        public static final double turret_kF = 0.0; //friction, tune so when the turret barely moves
+        public static final double turret_kP = 2.5; //The like main pushing force, the constant :)
+        public static final double turret_kI = 0; //The more you aren't making it to the setpoint, the more you increase this
+        public static final double turret_kD = 4; //slows down/speeds up the closer/farther away u are
+        public static final double turret_kF = 0; //friction, tune so when the turret barely moves
 
 
-        public static final double turretTolerance_VisionAngleDeg = 0.5;
+        public static final double turretTolerance_VisionAngleRad = 0.02;
 
         public static final double encoderToTurret = 145.0/60.0;
 
