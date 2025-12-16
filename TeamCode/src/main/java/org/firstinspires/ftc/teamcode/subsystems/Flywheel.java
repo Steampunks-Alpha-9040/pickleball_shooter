@@ -8,6 +8,8 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.Util;
 
+import java.util.function.DoubleSupplier;
+
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
@@ -97,10 +99,21 @@ public class Flywheel implements Subsystem {
     }
 
 
+    private double flywheelTarget = 1.0;
+
+    public void setFlywheelTarget(double target) {
+        flywheelTarget = target;
+    }
+
+    public double getFlywheelTarget() {
+        return flywheelTarget;
+    }
+
     //Commands
-    public Command shootFlywheelFar(){
+    public Command shootFlywheelFar() {
         return new ParallelGroup(
-                new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
+                new RunToVelocity(flywheelCalculator, getFlywheelTarget())
+                        .addRequirements(this)
         ).setInterruptible(true);
     }
 
