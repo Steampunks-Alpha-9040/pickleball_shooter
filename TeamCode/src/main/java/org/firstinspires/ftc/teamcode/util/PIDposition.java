@@ -27,6 +27,10 @@ public class PIDposition {
         this.setpoint = angleRadians;
     }
 
+    public double getSetpoint(){
+        return this.setpoint;
+    }
+
     public double calculate(double currentAngle) {
         double error = setpoint - currentAngle;
 

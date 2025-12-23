@@ -84,8 +84,6 @@ public class TeleOpRED extends BaseOpMode {
 //        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
         field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH)); //flipped since x in pedro is y
         field.getField().circle(1.5);
-
-        flywheel.log(panels);
         panels.getTelemetry().addData("quad", drivebase.getTurretQuadature());
         panels.getTelemetry().addData("botpose", Util.poseUnitConvertor(DistanceUnit.METER,drivebase.getBotpose()));
         timer.end();

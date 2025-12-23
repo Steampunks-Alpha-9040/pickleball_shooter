@@ -13,6 +13,7 @@ import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -46,24 +47,30 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void initialize(){
-        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed().reversed();
+        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
     }
 
     @Override
     public void periodic(){
-        flywheel.setPower(flywheelCalculator.calculate(flywheel.getVelocity()));
+        flywheel.setPower(flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+
+        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
+        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+
+
+        ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("flywheelVeloCurrent", (flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60);
+        ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
-    public void log(PanelsTelemetry telemetry){
-        telemetry.getTelemetry().addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
-    }
 
     public Command shootFlywheel(){
         return new ParallelGroup(
             new InstantCommand(() -> flywheelCalculator.setSetpoint(6000)),
-            new InstantCommand(() -> hoodCalculator.setSetpoint(0.5))
+            new InstantCommand(() -> hoodCalculator.setSetpoint(1))
         );
     }
 

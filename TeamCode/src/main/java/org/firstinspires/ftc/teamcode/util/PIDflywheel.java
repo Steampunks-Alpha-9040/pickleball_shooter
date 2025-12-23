@@ -25,6 +25,10 @@ public class PIDflywheel {
         this.setpoint = rpm;
     }
 
+    public double getSetpoint(){
+        return this.setpoint;
+    }
+
 
     public double calculate(double currentRPM) {
         double error = setpoint - currentRPM;
@@ -54,6 +58,10 @@ public class PIDflywheel {
         if (output < outputMin) output = outputMin;
 
         previousError = error;
+
+        if (setpoint == 0.0){
+            return 0.0;
+        }
 
         return output;
     }
