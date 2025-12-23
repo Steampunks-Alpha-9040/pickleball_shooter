@@ -54,8 +54,6 @@ public class Drivebase implements Subsystem {
                 GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
         imu.setYawScalar(Constants.DrivebaseConstants.yawScalar);
-
-        FL.atPosition(0);
     }
 
     public void periodic(){
@@ -116,7 +114,7 @@ public class Drivebase implements Subsystem {
 
     //We do this since the quadature is attached to the FL motor, and quadatures are only implemented for motors. We use servos for the turret :)
     public double getTurretQuadature(){
-        return ((FL.getRawTicks()/4096)/(Constants.TurretConstants.encoderToTurret)*2*Math.PI);
+        return -((FL.getCurrentPosition()/4096)/(Constants.TurretConstants.encoderToTurret)*2*Math.PI);
     }
 
     public Command zeroGryo(){
@@ -125,6 +123,9 @@ public class Drivebase implements Subsystem {
 
     public Pose2D getBotpose(){
         return imu.getPosition();
+    }
+    public void zeroQuadature(){
+        FL.setCurrentPosition(0);
     }
 
 }

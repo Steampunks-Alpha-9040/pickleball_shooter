@@ -40,6 +40,7 @@ public class Vision implements Subsystem {
         if (result != null && result.isValid() && result != prevResult) { //checks if result is null, if it's valid, and if it's different than before
             ActiveOpMode.telemetry().addData("raw cam X", result.getBotpose().getPosition().x);
             ActiveOpMode.telemetry().addData("raw cam Y", result.getBotpose().getPosition().y);
+            ActiveOpMode.telemetry().addData("raw cam area", result.getBotposeAvgArea());
 
             Pose3D botpose = result.getBotpose();
 
@@ -48,7 +49,7 @@ public class Vision implements Subsystem {
             Vector2d robotToCamera = Constants.VisionConstants.turretCenterToRobotCenter.plus(cameraToTurret);
 
             Vector2d cameraTranslated = new Vector2d(botpose.getPosition().x, botpose.getPosition().y).plus(robotToCamera).rotateBy(-90).plus(new Vector2d(1.8288, 1.8288));
-//            if (result.getBotposeAvgDist() < 5){
+            if (result.getBotposeAvgArea() > 0.4){
                 if (Util.isNear(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), cameraTranslated.getX(), 0.3) &&
                         Util.isNear(Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER), cameraTranslated.getY(), 0.3)){
 
@@ -65,7 +66,7 @@ public class Vision implements Subsystem {
 
                     return;
                 }
-//            }
+            }
             prevResult = result;
         }
         cameraRobotPose = null;
