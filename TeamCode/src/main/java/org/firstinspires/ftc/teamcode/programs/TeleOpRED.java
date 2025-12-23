@@ -3,29 +3,26 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.bylazar.utils.LoopTimer;
 
-import dev.nextftc.core.commands.groups.ParallelGroup;
-import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.ftc.Gamepads;
-import com.bylazar.field.PanelsField;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.subsystems.Vision;
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.Util;
 
+import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.ftc.Gamepads;
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOp")
-public class TeleOp extends BaseOpMode {
 
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOpRED", group = "TeleOp")
+public class TeleOpRED extends BaseOpMode {
     private LoopTimer timer = new LoopTimer();
 
-    public TeleOp() {
+    public TeleOpRED() {
         super();
     }
 
 
     @Override
     public void onInit() {
+        Constants.OpModeConstants.side = Constants.Side.RED;
 
         field.getField().setStyle("none", "white", 1.5);
 
@@ -58,37 +55,23 @@ public class TeleOp extends BaseOpMode {
                 ).whenBecomesFalse(
                         intake.stopIntake()
                 );
-        Gamepads.gamepad1().dpadRight().whenBecomesTrue(
-                turret.spinTurretRight()
-        ).whenBecomesFalse(
-                turret.stopTurret()
-        );
-        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(
-                turret.spinTurretLeft()
-        ).whenBecomesFalse(
-                turret.stopTurret()
-        );
+//        Gamepads.gamepad1().dpadRight().whenBecomesTrue(
+//                turret.spinTurretRight()
+//        ).whenBecomesFalse(
+//                turret.stopTurret()
+//        );
+//        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(
+//                turret.spinTurretLeft()
+//        ).whenBecomesFalse(
+//                turret.stopTurret()
+//        );
         Gamepads.gamepad1().rightBumper().whenBecomesTrue(
                 turret.trackTurret()
-        ).whenBecomesFalse(
-                turret.stopTurret()
         );
         Gamepads.gamepad1().b().and(
                 Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
         ).whenBecomesTrue(
                 drivebase.zeroGryo()
-        );
-
-        Gamepads.gamepad2().a().whenBecomesTrue(
-                indexer.autoSet()
-        );
-
-        Gamepads.gamepad2().b().whenBecomesTrue(
-                new InstantCommand(() -> indexer.setPattern(indexer.pattern+1))
-        );
-
-        Gamepads.gamepad2().x().whenBecomesTrue(
-                indexer.oneRot()
         );
 
     }

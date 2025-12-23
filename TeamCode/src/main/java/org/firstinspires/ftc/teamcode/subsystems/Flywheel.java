@@ -5,10 +5,9 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.AnalogSensor;
 
 import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.Util;
-
-import java.util.function.DoubleSupplier;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.KineticState;
@@ -37,6 +36,7 @@ public class Flywheel implements Subsystem {
 
     private double curEncoder = 0.0;
     private double prevEncoder = 0.0;
+    private double turretShotDistance;
 
     private final ControlSystem flywheelCalculator = ControlSystem.builder()
             .velPid(
@@ -72,48 +72,44 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void periodic(){
-        updateHoodPos();
         flywheel.setPower(flywheelCalculator.calculate(flywheel.getState()));
-//        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
+        turretShotDistance = calculateShotDistance();
+//        hood.setPower(hoodCalculator.calculate());
     }
 
     public void log(PanelsTelemetry telemetry){
         telemetry.getTelemetry().addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
     }
 
-    //jank asf code for axon abs encoders... probably doesn't work.
-    private KineticState getHoodPhysicalState(){
-        return new KineticState(getEncoderRotations());
-    }
-    private void updateHoodPos(){
-        curEncoder = (encoder.getVoltage() / 3.3);
-        if (prevEncoder - curEncoder > 0.8){
-            encoderRotations++;
-        } else if (prevEncoder - curEncoder < -0.8){
-            encoderRotations--;
+    public double calculateShotDistance(){
+        switch (Constants.OpModeConstants.side){
+            case RED:
+                double a = Math.pow(
+                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH), 2
+                );
+                double b = Math.pow(
+                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH), 2
+                );
+                return Math.sqrt(a+b);
+            case BLUE:
+                double c = Math.pow(
+                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH), 2
+                );
+                double d = Math.pow(
+                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH), 2
+                );
+                return Math.sqrt(c+d);
+            default:
+                return 0;
         }
-        prevEncoder = curEncoder;
-    }
-    private double getEncoderRotations(){
-        return curEncoder + encoderRotations;
     }
 
 
-    private double flywheelTarget = 1.0;
-
-    public void setFlywheelTarget(double target) {
-        flywheelTarget = target;
-    }
-
-    public double getFlywheelTarget() {
-        return flywheelTarget;
-    }
 
     //Commands
-    public Command shootFlywheelFar() {
+    public Command shootFlywheelFar(){
         return new ParallelGroup(
-                new RunToVelocity(flywheelCalculator, getFlywheelTarget())
-                        .addRequirements(this)
+                new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
         ).setInterruptible(true);
     }
 
