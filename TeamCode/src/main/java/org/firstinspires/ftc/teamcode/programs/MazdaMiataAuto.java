@@ -156,8 +156,37 @@ public class MazdaMiataAuto extends BaseOpMode {
     public Command shoot() {
         return new ParallelGroup(
                 feeder.setArmDown(),
-                feeder.turnWheelsOn(),
+                feeder.turnWheelsOn()
+        );
+    }
+
+    public Command safeShoot() {
+        if (indexer.checkValid()) {
+            return shoot();
+        } else {
+            sort();
+            new Delay(0.5);
+        }
+        return shoot();
+    }
+
+    public Command sort() {
+        return new ParallelGroup(
+                indexer.autoSet()
+        );
+    }
+
+    public Command intake() {
+        return new SequentialGroup(
+                intake.spinIntake(),
                 indexer.spinIndexer()
+        );
+    }
+
+    public Command intakeStop() {
+        return new SequentialGroup(
+                intake.stopIntake(),
+                indexer.stopIndexer()
         );
     }
 
@@ -165,23 +194,27 @@ public class MazdaMiataAuto extends BaseOpMode {
         return new ParallelGroup(
                 flywheel.shootFlywheelFar(),
                 new SequentialGroup(
+                        sort(),
                         new Delay(Beginning),
-                        shoot(),
+                        safeShoot(),
                         new Delay(shootFarDelay),
                         new FollowPath(paths.Path1),
-                        intake.spinIntake(),
+                        intake(),
                         new FollowPath(paths.Path2),
                         new Delay(intakeDelay),
+                        sort(),
                         new FollowPath(paths.Path3),
-                        intake.stopIntake(),
-                        shoot(),
+                        intakeStop(),
+                        safeShoot(),
                         new Delay(shootFarDelay),
                         new FollowPath(paths.Path4),
-                        intake.spinIntake(),
+                        intake(),
                         new FollowPath(paths.Path5),
                         new Delay(intakeDelay),
+                        sort(),
                         new FollowPath(paths.Path6),
-                        shoot(),
+                        intakeStop(),
+                        safeShoot(),
                         new Delay(shootFarDelay)
                 )
         );

@@ -7,6 +7,7 @@ import android.graphics.Color;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.control.ControlSystem;
 import dev.nextftc.control.feedback.PIDElement;
@@ -25,7 +26,13 @@ public class Indexer implements Subsystem {
     private ColorSensor color1;
     private ColorSensor color2;
     private ColorSensor color3;
-    private int TicksPerRot = 4000; //change later
+    private final double TicksPerRot =  (Util.GoBILDA.RPM_312.getCPR()) * (340.0/80.0);
+
+    public int pattern = 0;
+    public void setPattern(int id) {
+        pattern = id;
+    }
+
 
     private final ControlSystem indexerCalculator =
             ControlSystem.builder()
@@ -47,10 +54,7 @@ public class Indexer implements Subsystem {
     private final ControlSystem maxSpeed =
             ControlSystem.builder()
 
-                    .posPid(1,0,0.01)
-                    .basicFF(
-
-                    )
+                    .posPid(1,0,0.02)
 //                    .stateSupplier(() ->
 //                            new KineticState(
 //                                    motor.getCurrentPosition() / TICKS_PER_SLOT
@@ -87,9 +91,9 @@ public class Indexer implements Subsystem {
                 .addRequirements(this);
     }
 
-    int ticksCenter = 0;
-    int ticksRight = 0;
-    int ticksLeft = 0;
+    int ticksCenter = (int) (TicksPerRot/3 + pattern*TicksPerRot);
+    int ticksRight = (int) (2*TicksPerRot/3 + pattern*TicksPerRot);
+    int ticksLeft = (int) (pattern*TicksPerRot);
 
     int target = 0;
     int currticks = 0;
@@ -98,6 +102,19 @@ public class Indexer implements Subsystem {
         return new SequentialGroup(
                 movetocheckColor(),
                 sort());
+    }
+
+    public boolean checkValid() {
+        if (greenState == IndexerState.LEFT) {
+            return checkPos(ticksLeft,50);
+        }
+        if (greenState == IndexerState.RIGHT) {
+            return checkPos(ticksRight, 50);
+        }
+        if (greenState == IndexerState.CENTER) {
+            return checkPos(ticksCenter, 50);
+        }
+        return true;
     }
 
 
@@ -113,9 +130,9 @@ public class Indexer implements Subsystem {
         currticks = (int) indexer.getRawTicks();
 
         if (Math.abs(target-(currticks%TicksPerRot)) < (double) TicksPerRot/2) {
-            target = (currticks/TicksPerRot) * TicksPerRot + (target);
+            target = (int) ((currticks/TicksPerRot) * TicksPerRot + (target));
         } else {
-            target = (currticks/TicksPerRot) * TicksPerRot - (target);
+            target = (int) ((currticks/TicksPerRot) * TicksPerRot - (target));
         }
         return new RunToPosition(indexerCalculator, target).requires(this);
     }
@@ -125,9 +142,9 @@ public class Indexer implements Subsystem {
         currticks = (int) indexer.getRawTicks();
 
         if (Math.abs(target-(currticks%(TicksPerRot/3))) < (double) (TicksPerRot/3)/2) {
-            target = (currticks/(TicksPerRot/3)) * (TicksPerRot/3) + (target);
+            target = (int) ((currticks/(TicksPerRot/3)) * (TicksPerRot/3) + (target));
         } else {
-            target = (currticks/(TicksPerRot/3)) * (TicksPerRot/3) - (target);
+            target = (int) ((currticks/(TicksPerRot/3)) * (TicksPerRot/3) - (target));
         }
         return new RunToPosition(indexerCalculator, target).requires(this);
     }
@@ -139,7 +156,7 @@ public class Indexer implements Subsystem {
     }
     public IndexerState checkColor() {
 
-        if (checkPos(TicksPerRot/6, 50)) {
+        if (checkPos((int) (TicksPerRot/6), 50)) {
             if (color1.green() > 100) {
                 return IndexerState.CENTER;
             }
@@ -149,7 +166,7 @@ public class Indexer implements Subsystem {
             if (color3.green() > 100) {
                 return IndexerState.LEFT;
             }
-        } else if (checkPos(TicksPerRot/2, 50)) {
+        } else if (checkPos((int) (TicksPerRot/2), 50)) {
             if (color1.green() > 100) {
                 return IndexerState.RIGHT;
             }
@@ -159,7 +176,7 @@ public class Indexer implements Subsystem {
             if (color3.green() > 100) {
                 return IndexerState.CENTER;
             }
-        } else if (checkPos(5*TicksPerRot/6, 50)) {
+        } else if (checkPos((int) (5*TicksPerRot/6), 50)) {
             if (color1.green() > 100) {
                 return IndexerState.LEFT;
             }
@@ -177,19 +194,21 @@ public class Indexer implements Subsystem {
 
     public boolean checkPos(int ticks, int tolerance) {
         currticks = (int) indexer.getRawTicks();
-        if (Math.abs(ticks-currticks%TicksPerRot) < tolerance) {
+        if (Math.abs(ticks-currticks)%TicksPerRot < tolerance) {
             return true;
         } else {
             return false;
         }
     }
 
-    private Command oneRot() {
+    public Command oneRot() {
         return new RunToPosition(indexerCalculator, indexer.getRawTicks()+TicksPerRot).requires(this);
     }
 
-    private void spinIndexer(double power){
+    public void spinIndexer(double power){
         INSTANCE.indexer.setPower(power);
     }
+
+
 
 }

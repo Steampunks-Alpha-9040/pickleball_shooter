@@ -4,6 +4,7 @@ package org.firstinspires.ftc.teamcode.programs;
 import com.bylazar.utils.LoopTimer;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.ftc.Gamepads;
 import com.bylazar.field.PanelsField;
 
@@ -76,6 +77,18 @@ public class TeleOp extends BaseOpMode {
                 Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
         ).whenBecomesTrue(
                 drivebase.zeroGryo()
+        );
+
+        Gamepads.gamepad2().a().whenBecomesTrue(
+                indexer.autoSet()
+        );
+
+        Gamepads.gamepad2().b().whenBecomesTrue(
+                new InstantCommand(() -> indexer.setPattern(indexer.pattern+1))
+        );
+
+        Gamepads.gamepad2().x().whenBecomesTrue(
+                indexer.oneRot()
         );
 
     }
