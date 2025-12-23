@@ -2,22 +2,18 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.hardware.AnalogInput;
-import com.qualcomm.robotcore.hardware.AnalogSensor;
 
-import org.firstinspires.ftc.robotcore.external.Telemetry;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.PIDflywheel;
+import org.firstinspires.ftc.teamcode.util.PIDposition;
 import org.firstinspires.ftc.teamcode.util.Util;
 
-import dev.nextftc.control.ControlSystem;
-import dev.nextftc.control.KineticState;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.hardware.controllable.RunToPosition;
-import dev.nextftc.hardware.controllable.RunToVelocity;
 import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -30,97 +26,56 @@ public class Flywheel implements Subsystem {
 
     private CRServoEx hood;
 
-    private AnalogInput encoder;
+    private final PIDflywheel flywheelCalculator = new PIDflywheel(
+            Constants.FlywheelConstants.flywheel_kP,
+            Constants.FlywheelConstants.flywheel_kI,
+            Constants.FlywheelConstants.flywheel_kD,
+            Constants.FlywheelConstants.flywheel_kF,
+            Constants.FlywheelConstants.flywheelVelocityTolerance
+    );
 
-    private double encoderRotations;
-
-    private double curEncoder = 0.0;
-    private double prevEncoder = 0.0;
-    private double turretShotDistance;
-
-    private final ControlSystem flywheelCalculator = ControlSystem.builder()
-            .velPid(
-                    Constants.FlywheelConstants.flywheel_kP,
-                    Constants.FlywheelConstants.flywheel_kI,
-                    Constants.FlywheelConstants.flywheel_kD
-            )
-            .basicFF(
-                    Constants.FlywheelConstants.flywheel_kF
-            )
-            .build();
-
-    private final ControlSystem hoodCalculator = ControlSystem.builder()
-            .posPid(
-                    Constants.FlywheelConstants.hood_kP,
-                    Constants.FlywheelConstants.hood_kI,
-                    Constants.FlywheelConstants.hood_kD
-            )
-            .basicFF(
-                    Constants.FlywheelConstants.hood_kF
-            )
-            .build();
+    private final PIDposition hoodCalculator = new PIDposition(
+            Constants.FlywheelConstants.hood_kP,
+            Constants.FlywheelConstants.hood_kI,
+            Constants.FlywheelConstants.hood_kD,
+            Constants.FlywheelConstants.hood_kF,
+            Constants.FlywheelConstants.hoodPositionToleranceRAD
+    );
 
 
     private Flywheel(){}
 
     @Override
     public void initialize(){
-        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed().reversed();
+        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
-        encoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, "hoodEnc");
     }
 
     @Override
     public void periodic(){
-        flywheel.setPower(flywheelCalculator.calculate(flywheel.getState()));
-        turretShotDistance = calculateShotDistance();
-//        hood.setPower(hoodCalculator.calculate());
-    }
+        flywheel.setPower(flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
+        hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-    public void log(PanelsTelemetry telemetry){
-        telemetry.getTelemetry().addData("flyVeloRPS:", flywheel.getVelocity() * Util.GoBILDA.BARE.getCPR());
-    }
+        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
+        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-    public double calculateShotDistance(){
-        switch (Constants.OpModeConstants.side){
-            case RED:
-                double a = Math.pow(
-                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH), 2
-                );
-                double b = Math.pow(
-                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH), 2
-                );
-                return Math.sqrt(a+b);
-            case BLUE:
-                double c = Math.pow(
-                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH), 2
-                );
-                double d = Math.pow(
-                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH), 2
-                );
-                return Math.sqrt(c+d);
-            default:
-                return 0;
-        }
+
+        ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("flywheelVeloCurrent", (flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60);
+        ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
 
-
-    //Commands
-    public Command shootFlywheelFar(){
+    public Command shootFlywheel(){
         return new ParallelGroup(
-                new RunToVelocity(flywheelCalculator, 1.0).addRequirements(this)
-        ).setInterruptible(true);
-    }
-
-    public Command shootFlywheelClose(){
-        return new ParallelGroup(
-            new RunToVelocity(flywheelCalculator, 0.5).addRequirements(this)
-        ).named("closeFlywheel");
+            new InstantCommand(() -> flywheelCalculator.setSetpoint(6000)),
+            new InstantCommand(() -> hoodCalculator.setSetpoint(1))
+        );
     }
 
     public Command stopFlywheel(){
-        return new RunToVelocity(flywheelCalculator, 0.0).addRequirements(this);
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(0));
     }
 
     public Command spinHoodUp(){

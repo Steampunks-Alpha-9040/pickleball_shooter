@@ -117,6 +117,10 @@ public class Drivebase implements Subsystem {
         return -((FL.getCurrentPosition()/4096)/(Constants.TurretConstants.encoderToTurret)*2*Math.PI);
     }
 
+    public double getHoodQuadature(){
+        return (BR.getCurrentPosition()/4096)*2*Math.PI;
+    }
+
     public Command zeroGryo(){
         return new InstantCommand(() -> gyroOffset = imu.getHeading(AngleUnit.RADIANS));
     }
@@ -124,8 +128,12 @@ public class Drivebase implements Subsystem {
     public Pose2D getBotpose(){
         return imu.getPosition();
     }
-    public void zeroQuadature(){
+    public void zeroTurretQuadature(){
         FL.setCurrentPosition(0);
     }
+    public void zeroHoodQuadature(){
+        BR.setCurrentPosition(0);
+    }
+
 
 }
