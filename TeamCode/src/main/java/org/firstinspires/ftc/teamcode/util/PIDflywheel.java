@@ -1,6 +1,6 @@
 package org.firstinspires.ftc.teamcode.util;
 
-public class PIDcontroller {
+public class PIDflywheel {
 
     private double kP, kI, kD, kF;
     private double setpoint;
@@ -11,33 +11,23 @@ public class PIDcontroller {
     private double outputMin = -1.0;
     private double outputMax = 1.0;
 
-    private double tolerance = 0.026; // ~1.5 degrees in radians
+    private double tolerance; // ~1.5 degrees in radians
 
-    public PIDcontroller(double kP, double kI, double kD, double kF, double toleranceRadians) {
+    public PIDflywheel(double kP, double kI, double kD, double kF, double toleranceRPM) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
         this.kF = kF;
-        this.tolerance = Math.abs(toleranceRadians);
-
+        this.tolerance = Math.abs(toleranceRPM);
     }
 
-    // Forward = 0, wrap at ±π
-    private double normalizeAngle(double angle) {
-        angle = angle % (2.0 * Math.PI);
-        if (angle > Math.PI) angle -= 2.0 * Math.PI;
-        if (angle < -Math.PI) angle += 2.0 * Math.PI;
-        return angle;
+    public void setSetpoint(double rpm) {
+        this.setpoint = rpm;
     }
 
-    public void setSetpoint(double angleRadians) {
-        this.setpoint = normalizeAngle(angleRadians);
-    }
 
-    public double calculate(double currentAngle) {
-        currentAngle = normalizeAngle(currentAngle);
-
-        double error = normalizeAngle(setpoint - currentAngle);
+    public double calculate(double currentRPM) {
+        double error = setpoint - currentRPM;
 
         // --- TOLERANCE CHECK ---
         if (Math.abs(error) <= tolerance) {
@@ -68,8 +58,4 @@ public class PIDcontroller {
         return output;
     }
 
-    public void reset() {
-        integral = 0;
-        previousError = 0;
-    }
 }

@@ -13,7 +13,6 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
-import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -21,17 +20,12 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.util.pedropathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.ftc.components.BulkReadComponent;
+
 @Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
 @Configurable // Panels
 public class PedroAuto extends BaseOpMode {
@@ -220,7 +214,7 @@ public class PedroAuto extends BaseOpMode {
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                flywheel.shootFlywheelFar(),
+                flywheel.shootFlywheel(),
                 new SequentialGroup(
                         new Delay(delay1),
                         shoot(),

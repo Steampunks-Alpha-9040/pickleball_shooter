@@ -47,7 +47,7 @@ public class TeleOpRED extends BaseOpMode {
                 .whenBecomesFalse(
                         flywheel.stopFlywheel()
                 ).whenBecomesTrue(
-                        flywheel.shootFlywheelFar()
+                        flywheel.shootFlywheel()
                 );
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(

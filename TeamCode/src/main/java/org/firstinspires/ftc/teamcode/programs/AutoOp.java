@@ -3,17 +3,8 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
-
-import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.ftc.components.BulkReadComponent;
 
 @Autonomous(name = "pickleAuto")
 public class AutoOp extends BaseOpMode{
@@ -51,7 +42,7 @@ public class AutoOp extends BaseOpMode{
     @Override
     public void onStartButtonPressed() {
         // 1) spin flywheel forever (or until you stop it later)
-        flywheel.shootFlywheelFar().schedule();
+        flywheel.shootFlywheel().schedule();
 
         // 2) do the actual auto: shoot -> drive
         new SequentialGroup(

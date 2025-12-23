@@ -1,23 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.pedropathing.control.PIDFCoefficients;
-import com.pedropathing.control.PIDFController;
-import com.qualcomm.robotcore.hardware.PIDCoefficients;
-
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.PIDcontroller;
+import org.firstinspires.ftc.teamcode.util.PIDposition;
 
-import dev.nextftc.control.ControlSystem;
-import dev.nextftc.control.KineticState;
-import dev.nextftc.control.feedback.AngleType;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.impl.CRServoEx;
 
 public class Turret implements Subsystem {
@@ -31,7 +22,7 @@ public class Turret implements Subsystem {
     private double turretTargetAngle;
 
 
-    private PIDcontroller controller = new PIDcontroller(
+    private PIDposition controller = new PIDposition(
             Constants.TurretConstants.turret_kP,
             Constants.TurretConstants.turret_kI,
             Constants.TurretConstants.turret_kD,

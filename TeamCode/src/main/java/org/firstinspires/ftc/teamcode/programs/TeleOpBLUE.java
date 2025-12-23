@@ -47,7 +47,7 @@ public class TeleOpBLUE extends BaseOpMode {
                 .whenBecomesFalse(
                         flywheel.stopFlywheel()
                 ).whenBecomesTrue(
-                        flywheel.shootFlywheelFar()
+                        flywheel.shootFlywheel()
                 );
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
@@ -74,7 +74,8 @@ public class TeleOpBLUE extends BaseOpMode {
                 drivebase.zeroGryo()
         );
 
-        drivebase.zeroQuadature();
+        drivebase.zeroTurretQuadature();
+        drivebase.zeroHoodQuadature();
 
     }
 
