@@ -72,7 +72,7 @@ public class Flywheel implements Subsystem {
     public void periodic(){
         updateHoodPos();
         flywheel.setPower(flywheelCalculator.calculate(flywheel.getState()));
-//        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
+        hood.setPower(hoodCalculator.calculate(getHoodPhysicalState()));
     }
 
     public void log(PanelsTelemetry telemetry){
