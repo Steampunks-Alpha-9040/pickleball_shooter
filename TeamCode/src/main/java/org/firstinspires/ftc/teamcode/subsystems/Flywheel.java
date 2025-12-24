@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.JankParser;
 import org.firstinspires.ftc.teamcode.util.KDTree;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
@@ -81,9 +82,11 @@ public class Flywheel implements Subsystem {
 
     public double[] setShooting() {
 
-        double[] closestEntry = parseTable();
 
+        int FileRow= JankParser.findClosestPointIndex(ShootingPoints.points,Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER),Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
+        double[] closestEntry = ShootingPoints.points[FileRow];
         double hoodAngle = (((closestEntry[7] + closestEntry[6])/2)/360)*2*Math.PI;
+
 
         double flywheelRPM =
                 closestEntry[2] * (hoodAngle*hoodAngle*hoodAngle) +
@@ -130,6 +133,8 @@ public class Flywheel implements Subsystem {
     public double[] parseTable(){
         return tree.findNearest(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
     }
+
+
 
 
 
