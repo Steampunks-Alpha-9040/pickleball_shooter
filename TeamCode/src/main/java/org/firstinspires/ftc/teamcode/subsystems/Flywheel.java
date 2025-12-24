@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.util.JankParser;
 import org.firstinspires.ftc.teamcode.util.KDTree;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
+import org.firstinspires.ftc.teamcode.util.ShootingPoints;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
@@ -29,7 +30,6 @@ public class Flywheel implements Subsystem {
 
     private CRServoEx hood;
 
-    private KDTree tree;
 
     private double flywheelRPM = 3000;
 
@@ -58,7 +58,6 @@ public class Flywheel implements Subsystem {
     public void initialize(){
         flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
-        tree = new KDTree(Constants.points);
     }
 
     @Override
@@ -81,10 +80,8 @@ public class Flywheel implements Subsystem {
     }
 
     public double[] setShooting() {
-
-
-        int FileRow= JankParser.findClosestPointIndex(ShootingPoints.points,Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER),Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
-        double[] closestEntry = ShootingPoints.points[FileRow];
+        int fileRow = JankParser.findClosestPointIndex(ShootingPoints.points,Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER),Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
+        double[] closestEntry = ShootingPoints.points[fileRow];
         double hoodAngle = (((closestEntry[7] + closestEntry[6])/2)/360)*2*Math.PI;
 
 
@@ -93,6 +90,8 @@ public class Flywheel implements Subsystem {
                 closestEntry[3] * (hoodAngle*hoodAngle) +
                 closestEntry[4] * (hoodAngle) +
                 closestEntry[5];
+
+        flywheelRPM = (flywheelRPM+2.0187818)/0.0025192438;
 
         return new double[]{hoodAngle, flywheelRPM};
     }
@@ -128,10 +127,6 @@ public class Flywheel implements Subsystem {
         return new LambdaCommand()
                 .setStart(() -> hood.setPower(0.0))
                 .requires(this);
-    }
-
-    public double[] parseTable(){
-        return tree.findNearest(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
     }
 
 
