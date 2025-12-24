@@ -38,9 +38,9 @@ public class Vision implements Subsystem {
     public void periodic(){
         LLResult result = limelight.getLatestResult();
         if (result != null && result.isValid() && result != prevResult) { //checks if result is null, if it's valid, and if it's different than before
-            ActiveOpMode.telemetry().addData("raw cam X", result.getBotpose().getPosition().x);
-            ActiveOpMode.telemetry().addData("raw cam Y", result.getBotpose().getPosition().y);
-            ActiveOpMode.telemetry().addData("raw cam area", result.getBotposeAvgArea());
+//            ActiveOpMode.telemetry().addData("raw cam X", result.getBotpose().getPosition().x);
+//            ActiveOpMode.telemetry().addData("raw cam Y", result.getBotpose().getPosition().y);
+//            ActiveOpMode.telemetry().addData("raw cam area", result.getBotposeAvgArea());
 
             Pose3D botpose = result.getBotpose();
 

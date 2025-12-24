@@ -1,20 +1,23 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.hardwareMap;
 
 import android.graphics.Color;
 
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.PIDposition;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.control.ControlSystem;
+import dev.nextftc.control.KineticState;
 import dev.nextftc.control.feedback.PIDElement;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.SequentialGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -23,34 +26,27 @@ public class Indexer implements Subsystem {
     public static final Indexer INSTANCE = new Indexer();
 
     private MotorEx indexer;
-    private ColorSensor color1;
-    private ColorSensor color2;
-    private ColorSensor color3;
-    private final double TicksPerRot =  (Util.GoBILDA.RPM_312.getCPR()) * (340.0/80.0);
+    ColorSensor color1;
+    ColorSensor color2;
+    ColorSensor color3;
+    private final double TicksPerRot =  (Util.GoBILDA.RPM_1620.getCPR()) * (340.0/80.0);
 
     public int pattern = 0;
     public void setPattern(int id) {
         pattern = id;
     }
 
+    @Override
+    public void periodic() {
+        double power = indexerCalculator.calculate(indexer.getCurrentPosition());
+        indexer.setPower(-power);
+        ActiveOpMode.telemetry().addData("Spindex Setpoint:", indexerCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("Power Spindex:", power);
+        ActiveOpMode.telemetry().addData("Spindex Encoder:", indexer.getCurrentPosition());
+    }
 
-    private final ControlSystem indexerCalculator =
-            ControlSystem.builder()
 
-                    .posPid(Constants.IndexerConstants.indexer_kP,Constants.IndexerConstants.indexer_kI,Constants.IndexerConstants.indexer_kD)
-                    .basicFF(
-                            Constants.IndexerConstants.indexer_kF
-                    )
-//                    .stateSupplier(() ->
-//                            new KineticState(
-//                                    motor.getCurrentPosition() / TICKS_PER_SLOT
-//                            )
-//                    )
-//                    .outputConsumer(output ->
-//                            motor.setPower(output)
-//                    )
-                    .build();
-
+    private final PIDposition indexerCalculator = new PIDposition(Constants.IndexerConstants.indexer_kP,0,Constants.IndexerConstants.indexer_kD,Constants.IndexerConstants.indexer_kF,50);
     private final ControlSystem maxSpeed =
             ControlSystem.builder()
 
@@ -72,10 +68,12 @@ public class Indexer implements Subsystem {
 
     @Override
     public void initialize(){
-        indexer = new MotorEx(Constants.IndexerConstants.indexer);
-        color1 = hardwareMap.get(ColorSensor.class, "color1");
-        color2 = hardwareMap.get(ColorSensor.class, "color2");
-        color3 = hardwareMap.get(ColorSensor.class, "color3");
+        indexer = new MotorEx(Constants.IndexerConstants.indexer).zeroed();
+        indexer.setCurrentPosition(0);
+        indexerCalculator.setSetpoint(0);
+        color1 = ActiveOpMode.hardwareMap().get(ColorSensor.class, "color1");
+        color2 = ActiveOpMode.hardwareMap().get(ColorSensor.class, "color2");
+        color3 = ActiveOpMode.hardwareMap().get(ColorSensor.class, "color3");
     }
 
 
@@ -101,7 +99,7 @@ public class Indexer implements Subsystem {
     public Command autoSet() {
         return new SequentialGroup(
                 movetocheckColor(),
-                sort());
+                sort()).setInterruptible(true);
     }
 
     public boolean checkValid() {
@@ -129,24 +127,24 @@ public class Indexer implements Subsystem {
         }
         currticks = (int) indexer.getRawTicks();
 
-        if (Math.abs(target-(currticks%TicksPerRot)) < (double) TicksPerRot/2) {
+        if (Math.abs(target-(Math.floorMod(currticks, (int)TicksPerRot))) < (double) TicksPerRot/2) {
             target = (int) ((currticks/TicksPerRot) * TicksPerRot + (target));
         } else {
             target = (int) ((currticks/TicksPerRot) * TicksPerRot - (target));
         }
-        return new RunToPosition(indexerCalculator, target).requires(this);
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(target));
     }
 
     public Command movetocheckColor() {
         target = 0; //settocheckColor
         currticks = (int) indexer.getRawTicks();
 
-        if (Math.abs(target-(currticks%(TicksPerRot/3))) < (double) (TicksPerRot/3)/2) {
+        if (Math.abs(target-(Math.floorMod(currticks, (int) TicksPerRot/3))) < (double) (TicksPerRot/3)/2) {
             target = (int) ((currticks/(TicksPerRot/3)) * (TicksPerRot/3) + (target));
         } else {
             target = (int) ((currticks/(TicksPerRot/3)) * (TicksPerRot/3) - (target));
         }
-        return new RunToPosition(indexerCalculator, target).requires(this);
+        return new InstantCommand(() -> indexerCalculator.setSetpoint((double) target)).requires(this);
     }
     public Command sort() {
         if (greenState != null) {
@@ -202,7 +200,7 @@ public class Indexer implements Subsystem {
     }
 
     public Command oneRot() {
-        return new RunToPosition(indexerCalculator, indexer.getRawTicks()+TicksPerRot).requires(this);
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+TicksPerRot));
     }
 
     public void spinIndexer(double power){

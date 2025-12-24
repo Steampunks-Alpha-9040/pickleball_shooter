@@ -192,7 +192,7 @@ public class MazdaMiataAuto extends BaseOpMode {
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                flywheel.shootFlywheelFar(),
+                flywheel.shootFlywheel(),
                 new SequentialGroup(
                         sort(),
                         new Delay(Beginning),
