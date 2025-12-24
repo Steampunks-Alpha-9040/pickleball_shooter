@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import com.bylazar.telemetry.PanelsTelemetry;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.KDTree;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
 import org.firstinspires.ftc.teamcode.util.Util;
@@ -25,6 +27,12 @@ public class Flywheel implements Subsystem {
     private MotorEx flywheel;
 
     private CRServoEx hood;
+
+    private KDTree tree;
+
+    private double flywheelRPM = 3000;
+
+    private double hoodTarget = 0;
 
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
@@ -49,10 +57,15 @@ public class Flywheel implements Subsystem {
     public void initialize(){
         flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
+        tree = new KDTree(Constants.points);
     }
 
     @Override
     public void periodic(){
+
+//        flywheelCalculator.setSetpoint(flywheelRPM);
+        hoodCalculator.setSetpoint(hoodTarget);
+
         flywheel.setPower(flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
@@ -66,11 +79,24 @@ public class Flywheel implements Subsystem {
         ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
+    public double[] setShooting() {
+
+        double[] closestEntry = parseTable();
+
+        double hoodAngle = (((closestEntry[7] + closestEntry[6])/2)/360)*2*Math.PI;
+
+        double flywheelRPM =
+                closestEntry[2] * (hoodAngle*hoodAngle*hoodAngle) +
+                closestEntry[3] * (hoodAngle*hoodAngle) +
+                closestEntry[4] * (hoodAngle) +
+                closestEntry[5];
+
+        return new double[]{hoodAngle, flywheelRPM};
+    }
 
     public Command shootFlywheel(){
         return new ParallelGroup(
-            new InstantCommand(() -> flywheelCalculator.setSetpoint(6000)),
-            new InstantCommand(() -> hoodCalculator.setSetpoint(1))
+            new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM))
         );
     }
 
@@ -78,22 +104,31 @@ public class Flywheel implements Subsystem {
         return new InstantCommand(() -> flywheelCalculator.setSetpoint(0));
     }
 
+    public Command fasterFLywheel(){
+        return new InstantCommand(() -> flywheelRPM += 100);
+    }
+
+    public Command slowerFLywheel() {
+        return new InstantCommand(() -> flywheelRPM -= 100);
+
+    }
+
     public Command spinHoodUp(){
-        return new LambdaCommand()
-                .setStart(() -> hood.setPower(1))
-                .requires(this);
+        return new InstantCommand(() -> hoodTarget += 0.2);
     }
 
     public Command spinHoodDown(){
-        return new LambdaCommand()
-                .setStart(() -> hood.setPower(-1))
-                .requires(this);
+        return new InstantCommand(() -> hoodTarget -= 0.2);
     }
 
     public Command stopHood(){
         return new LambdaCommand()
                 .setStart(() -> hood.setPower(0.0))
                 .requires(this);
+    }
+
+    public double[] parseTable(){
+        return tree.findNearest(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
     }
 
 
