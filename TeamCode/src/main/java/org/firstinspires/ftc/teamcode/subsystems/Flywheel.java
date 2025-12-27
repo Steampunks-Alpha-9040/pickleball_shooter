@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.AutoAimCalculator;
 import org.firstinspires.ftc.teamcode.util.JankParser;
 import org.firstinspires.ftc.teamcode.util.KDTree;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
@@ -30,7 +31,6 @@ public class Flywheel implements Subsystem {
 
     private CRServoEx hood;
 
-
     private double flywheelRPM = 3000;
 
     private double hoodTarget = 0;
@@ -51,6 +51,7 @@ public class Flywheel implements Subsystem {
             Constants.FlywheelConstants.hoodPositionToleranceRAD
     );
 
+    private final AutoAimCalculator aimCalculator = new AutoAimCalculator();
 
     private Flywheel(){}
 
@@ -63,7 +64,7 @@ public class Flywheel implements Subsystem {
     @Override
     public void periodic(){
 
-//        flywheelCalculator.setSetpoint(flywheelRPM);
+        //flywheelCalculator.setSetpoint(flywheelRPM);
         hoodCalculator.setSetpoint(hoodTarget);
 
         flywheel.setPower(flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
@@ -79,27 +80,22 @@ public class Flywheel implements Subsystem {
         ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
-    public double[] setShooting() {
-        int fileRow = JankParser.findClosestPointIndex(ShootingPoints.points,Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER),Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
-        double[] closestEntry = ShootingPoints.points[fileRow];
-        double hoodAngle = (((closestEntry[7] + closestEntry[6])/2)/360)*2*Math.PI;
 
-
-        double flywheelRPM =
-                closestEntry[2] * (hoodAngle*hoodAngle*hoodAngle) +
-                closestEntry[3] * (hoodAngle*hoodAngle) +
-                closestEntry[4] * (hoodAngle) +
-                closestEntry[5];
-
-        flywheelRPM = (flywheelRPM+2.0187818)/0.0025192438;
-
-        return new double[]{hoodAngle, flywheelRPM};
+    public void AutoControl(){
+        double[] calculated = aimCalculator.calculate(Drivebase.INSTANCE.getBotpose(),Drivebase.INSTANCE.getBotVelo());
+        flywheelCalculator.setSetpoint(calculated[0]);
+        //set hood angle here
+        Turret.INSTANCE.setTurretTargetAngle(calculated[2]);
     }
 
     public Command shootFlywheel(){
         return new ParallelGroup(
             new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM))
         );
+    }
+
+    public Command autoShoot(){
+        return new InstantCommand(this::AutoControl);
     }
 
     public Command stopFlywheel(){

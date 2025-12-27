@@ -237,4 +237,11 @@ public class Util {
         return Math.abs(error) < tolerance;
     }
 
+    public static double meterToInch(double m){
+        return (m*39.3700787);
+    }
+    public static double inchToMeter(double i){
+        return (i/39.3700787);
+    }
+
 }

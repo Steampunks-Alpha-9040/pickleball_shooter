@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.arcrobotics.ftclib.geometry.Vector2d;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
@@ -41,7 +43,7 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        turretTargetAngle = calculateTurretAngle();
+        //turretTargetAngle = calculateTurretAngle(); replaced in flywheel code
         double pow = controller.calculate(turretQuad);
         turretM.setPower(-pow);
         turretS.setPower(-pow);
@@ -50,23 +52,28 @@ public class Turret implements Subsystem {
     }
 
     public double calculateTurretAngle(){
+        double offset=0;
+        double robotVeloGoal=Drivebase.INSTANCE.getBotVeloRelative().getX();
+
         switch (Constants.OpModeConstants.side){
             case RED:
                 return Math.atan2(
                         Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
                         Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
+                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
             case BLUE:
                 return Math.atan2(
                         Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
                         Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
+                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
 
             default:
                 return 0;
         }
     }
-
+    public void setTurretTargetAngle(double s){
+        turretTargetAngle=s;
+    }
     public Command spinTurretRight(){
         return new InstantCommand(() -> {
             turretM.setPower(0.1);
