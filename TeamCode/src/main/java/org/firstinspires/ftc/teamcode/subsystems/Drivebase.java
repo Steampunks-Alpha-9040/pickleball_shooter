@@ -121,7 +121,11 @@ public class Drivebase implements Subsystem {
     }
 
     public double getHoodQuadature(){
-        return (BR.getCurrentPosition()/4096)*2*Math.PI;
+        return (((BR.getCurrentPosition()/4096)*2*Math.PI)*(16f/265f))+(0.53756141+0.51696652)/2;
+        //0.51696652 for calculated,0.53756141 for experimental
+        //(BR.getCurrentPosition()/4096)*2*Math.PI
+        //Big Gear Teeth:265
+        //Small Gear Teeth:16
     }
 
     public Command zeroGryo(){
@@ -147,6 +151,8 @@ public class Drivebase implements Subsystem {
 
         switch (Constants.OpModeConstants.side){
             case RED:
+                //do this latter
+                /*
                 thetaGoal= Math.atan2(
                         Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
                         Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
@@ -155,10 +161,10 @@ public class Drivebase implements Subsystem {
                 veloPerp=(velox*-Math.sin(thetaGoal+(Math.PI/2)))+(veloy*Math.cos(thetaGoal+(Math.PI/2)));
                 //positive perpedicular velocity is away from the goal
                 //positive parralel veloicty is to the left of the goal from the robots view
-
+                */
             case BLUE:
 
-
+                //we are ignoring Thomas code.
                 thetaGoal=Math.atan2(
                         Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
                         Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)

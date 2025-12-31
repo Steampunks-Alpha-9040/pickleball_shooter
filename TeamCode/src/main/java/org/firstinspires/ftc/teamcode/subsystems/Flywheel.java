@@ -84,7 +84,7 @@ public class Flywheel implements Subsystem {
     public void AutoControl(){
         double[] calculated = aimCalculator.calculate(Drivebase.INSTANCE.getBotpose(),Drivebase.INSTANCE.getBotVelo());
         flywheelCalculator.setSetpoint(calculated[0]);
-        //set hood angle here
+        hoodCalculator.setSetpoint(calculated[1]);
         Turret.INSTANCE.setTurretTargetAngle(calculated[2]);
     }
 

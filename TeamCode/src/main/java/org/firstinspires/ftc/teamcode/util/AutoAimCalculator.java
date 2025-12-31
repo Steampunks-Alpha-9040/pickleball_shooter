@@ -17,15 +17,17 @@ public class AutoAimCalculator {
     private double calculateTurretAngle(Pose2D botPos){
 
         switch (Constants.OpModeConstants.side){
+
+            //originly for red and blue, the get position was using the oposite goal ie: for red:opmodeconstants.bluescore
             case RED:
-                return Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getX() - botPos.getX(DistanceUnit.INCH),
-                        Constants.OpModeConstants.BLUEscore.getY() - botPos.getY(DistanceUnit.INCH)
-                ) - botPos.getHeading(AngleUnit.RADIANS);
-            case BLUE:
                 return Math.atan2(
                         Constants.OpModeConstants.REDscore.getX() - botPos.getX(DistanceUnit.INCH),
                         Constants.OpModeConstants.REDscore.getY() - botPos.getY(DistanceUnit.INCH)
+                ) - botPos.getHeading(AngleUnit.RADIANS);
+            case BLUE:
+                return Math.atan2(
+                        Constants.OpModeConstants.BLUEscore.getX() - botPos.getX(DistanceUnit.INCH),
+                        Constants.OpModeConstants.BLUEscore.getY() - botPos.getY(DistanceUnit.INCH)
                 ) - botPos.getHeading(AngleUnit.RADIANS);
 
             default:
@@ -51,13 +53,22 @@ public class AutoAimCalculator {
         return new double[]{flywheelRPM,hoodAngle,turretAngle};
     }
     public double[] calculate(Pose2D botPos,Vector2d botVelo){
-        double minSpeed=0.15f;
+
+        //this is here to ofset TO my position. do this later and it depends on (0,0) and the unit vectors.
+        botPos=new Pose2D(DistanceUnit.METER, botPos.getX(DistanceUnit.METER)-1.785144, botPos.getY(DistanceUnit.METER)-0.588169, AngleUnit.RADIANS, botPos.getHeading(AngleUnit.RADIANS));
+
+        double minSpeed=0.1f;
         if(Math.sqrt((botVelo.getX()*botVelo.getX())+(botVelo.getY()*botVelo.getY()))<minSpeed){
             //returns [flywheel_speed,hood_angle,turret_angle]
             return calculateFast(botPos);
         }
 
         //returns [flywheel_speed,hood_angle,turret_angle]
+
+        //31degrees
+
+        //(BR.getCurrentPosition()/4096)*2*Math.PI;
+
         return new double[] {0,0,0};
     }
 }
