@@ -67,9 +67,6 @@ public class Flywheel implements Subsystem {
     @Override
     public void periodic(){
 
-        //flywheelCalculator.setSetpoint(flywheelRPM);
-        AutoControlPeriodic();
-
         flywheel.setPower(flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
@@ -83,35 +80,10 @@ public class Flywheel implements Subsystem {
         ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
-    public void AutoControlPeriodic(){
-        double[] calculated = aimCalculator.calculate(Drivebase.INSTANCE.getBotpose(),Drivebase.INSTANCE.getBotVelo());
-        if(flywheelIsOn){
-            flywheelCalculator.setSetpoint(calculated[0]);
-        }else{
-            flywheelCalculator.setSetpoint(0);
-        }
-        hoodCalculator.setSetpoint(calculated[1]);
-        Turret.INSTANCE.setTurretTargetAngle(calculated[2]);
-    }
-    public void AutoControl(){
-        /*
-        double[] calculated = aimCalculator.calculate(Drivebase.INSTANCE.getBotpose(),Drivebase.INSTANCE.getBotVelo());
-        flywheelCalculator.setSetpoint(calculated[0]);
-        hoodCalculator.setSetpoint(calculated[1]);
-        Turret.INSTANCE.setTurretTargetAngle(calculated[2]);
-        */
-         flywheelIsOn=!flywheelIsOn;
-         //turns on and
-    }
-
     public Command shootFlywheel(){
         return new ParallelGroup(
             new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM))
         );
-    }
-
-    public Command autoShoot(){
-        return new InstantCommand(this::AutoControl);
     }
 
     public Command stopFlywheel(){

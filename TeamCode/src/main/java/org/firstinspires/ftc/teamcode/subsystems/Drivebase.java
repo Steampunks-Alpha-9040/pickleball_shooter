@@ -37,7 +37,6 @@ public class Drivebase implements Subsystem {
     private GoBildaPinpointDriver imu;
     private Pose2D botpose;
 
-    private Vector2d botVelo;
     private double gyroOffset;
 
     public void initialize(){
@@ -117,9 +116,7 @@ public class Drivebase implements Subsystem {
 
     public double getHoodQuadature(){
         return (((BR.getCurrentPosition()/4096)*2*Math.PI));
-//                *
-
-//                ((double) 16 /265))+(0.53756141+0.51696652)/2;
+//                *((double) 16 /265))+(0.53756141+0.51696652)/2;
         //0.51696652 for calculated,0.53756141 for experimental
         //(BR.getCurrentPosition()/4096)*2*Math.PI
         //Big Gear Teeth:265
@@ -133,53 +130,7 @@ public class Drivebase implements Subsystem {
     public Pose2D getBotpose(){
         return imu.getPosition();
     }
-    public  Vector2d getBotVelo(){
-        return new Vector2d(imu.getVelX(DistanceUnit.METER),imu.getVelY(DistanceUnit.METER));
-    }
 
-    public Vector2d getBotVeloRelative(){
-        double thetaGoal=0;
-        double thetaVelo=Math.atan2(getBotVelo().getX(),getBotVelo().getY());
-
-        //need to multiplie these two bellow by the magnitude of the velocity vector
-        double velox=-Math.sin(thetaVelo+botpose.getHeading(AngleUnit.RADIANS));
-        double veloy=Math.cos(thetaVelo+botpose.getHeading(AngleUnit.RADIANS));
-        double veloPar=0;
-        double veloPerp=0;
-
-        switch (Constants.OpModeConstants.side){
-            case RED:
-                //do this latter
-                /*
-                thetaGoal= Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
-                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                );
-                veloPar=(velox*-Math.sin(thetaGoal))+(veloy*Math.cos(thetaGoal));
-                veloPerp=(velox*-Math.sin(thetaGoal+(Math.PI/2)))+(veloy*Math.cos(thetaGoal+(Math.PI/2)));
-                //positive perpedicular velocity is away from the goal
-                //positive parralel veloicty is to the left of the goal from the robots view
-                */
-            case BLUE:
-
-                //we are ignoring Thomas code.
-                thetaGoal=Math.atan2(
-                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
-                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                );
-                veloPar=(velox*-Math.sin(thetaGoal))+(veloy*Math.cos(thetaGoal));
-                veloPerp=(velox*-Math.sin(thetaGoal+(Math.PI/2)))+(veloy*Math.cos(thetaGoal+(Math.PI/2)));
-                //positive perpedicular velocity is away from the goal
-                //positive parralel veloicty is to the left of the goal from the robots view
-
-
-            default:
-                double c= 0;
-        }
-
-
-        return new Vector2d(veloPar,veloPerp);
-    }
     public void zeroTurretQuadature(){
         FL.setCurrentPosition(0);
     }

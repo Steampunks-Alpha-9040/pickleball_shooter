@@ -43,17 +43,17 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        //turretTargetAngle = calculateTurretAngle(); replaced in flywheel code
+        turretTargetAngle = calculateTurretAngle();
+        controller.setSetpoint(turretTargetAngle);
         double pow = controller.calculate(turretQuad);
         turretM.setPower(-pow);
         turretS.setPower(-pow);
-        ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
+        ActiveOpMode.telemetry().addData("turretTargetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
 
     public double calculateTurretAngle(){
         double offset=0;
-        double robotVeloGoal=Drivebase.INSTANCE.getBotVeloRelative().getX();
 
         switch (Constants.OpModeConstants.side){
             case RED:
@@ -71,9 +71,7 @@ public class Turret implements Subsystem {
                 return 0;
         }
     }
-    public void setTurretTargetAngle(double s){
-        turretTargetAngle=s;
-    }
+
     public Command spinTurretRight(){
         return new InstantCommand(() -> {
             turretM.setPower(0.1);
