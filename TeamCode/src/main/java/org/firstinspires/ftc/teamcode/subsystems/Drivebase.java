@@ -115,8 +115,7 @@ public class Drivebase implements Subsystem {
     }
 
     public double getHoodQuadature(){
-        return (((BR.getCurrentPosition()/4096)*2*Math.PI));
-//                *((double) 16 /265))+(0.53756141+0.51696652)/2;
+        return (((((BR.getCurrentPosition()/4096)*2*Math.PI))*((double) 16 /265))+Constants.FlywheelConstants.hoodStartingPos);
         //0.51696652 for calculated,0.53756141 for experimental
         //(BR.getCurrentPosition()/4096)*2*Math.PI
         //Big Gear Teeth:265
@@ -134,9 +133,7 @@ public class Drivebase implements Subsystem {
     public void zeroTurretQuadature(){
         FL.setCurrentPosition(0);
     }
-    public void zeroHoodQuadature(){
-        BR.setCurrentPosition(0);
-    }
+    public void zeroHoodQuadature(){BR.setCurrentPosition(0);}
 
 
 }

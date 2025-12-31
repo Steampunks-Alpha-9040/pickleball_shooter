@@ -47,12 +47,14 @@ public class Constants {
         public static final double flywheel_kD = 0.5;
         public static final double flywheel_kF = 0.0;
 
-        public static final double hoodPositionToleranceRAD = 0.1;
+        public static final double hoodPositionToleranceRAD = 0.01;
 
-        public static final double hood_kP = 1.0;
+        public static final double hood_kP = 7.0;
         public static final double hood_kI = 0.0;
         public static final double hood_kD = 0.0;
         public static final double hood_kF = 0.0;
+
+        public static final double hoodStartingPos = (0.53756141+0.51696652)/2;
 
     }
 

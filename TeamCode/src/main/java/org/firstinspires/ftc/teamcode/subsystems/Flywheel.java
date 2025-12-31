@@ -33,7 +33,9 @@ public class Flywheel implements Subsystem {
 
     private double flywheelRPM = 3000;
 
-    private double hoodTarget = 0;
+    private double hoodTarget;
+
+    private double hoodQuad;
 
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
@@ -57,15 +59,22 @@ public class Flywheel implements Subsystem {
     public void initialize(){
         flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
+
+        hoodQuad = Constants.FlywheelConstants.hoodStartingPos;
+        hoodTarget = Constants.FlywheelConstants.hoodStartingPos;
+
     }
 
     @Override
     public void periodic(){
+        hoodQuad = Drivebase.INSTANCE.getHoodQuadature();
 
         double flywheelCurrentRPM = flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
 
+        setHood();
+
         flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
-        hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+        hood.setPower(hoodCalculator.calculate(hoodQuad));
 
         ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
         ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
@@ -92,12 +101,16 @@ public class Flywheel implements Subsystem {
         return new InstantCommand(() -> flywheelRPM -= 100);
     }
 
+    public void setHood(){
+       hoodCalculator.setSetpoint(hoodTarget);
+    }
+
     public Command spinHoodUp(){
-        return new InstantCommand(() -> hoodTarget += 0.2);
+        return new InstantCommand(() -> hoodTarget += 0.05);
     }
 
     public Command spinHoodDown(){
-        return new InstantCommand(() -> hoodTarget -= 0.2);
+        return new InstantCommand(() -> hoodTarget -= 0.05);
     }
 
     public Command stopHood(){
