@@ -57,11 +57,11 @@ public class AutoAimCalculator {
         //this is here to ofset TO my position. do this later and it depends on (0,0) and the unit vectors.
         botPos=new Pose2D(DistanceUnit.METER, botPos.getX(DistanceUnit.METER)-1.785144, botPos.getY(DistanceUnit.METER)-0.588169, AngleUnit.RADIANS, botPos.getHeading(AngleUnit.RADIANS));
 
-        double minSpeed=0.1f;
-        if(Math.sqrt((botVelo.getX()*botVelo.getX())+(botVelo.getY()*botVelo.getY()))<minSpeed){
-            //returns [flywheel_speed,hood_angle,turret_angle]
+        double minSpeed=0.1;
+//        if(Math.sqrt((botVelo.getX()*botVelo.getX())+(botVelo.getY()*botVelo.getY()))<minSpeed){
+//            //returns [flywheel_speed,hood_angle,turret_angle]
             return calculateFast(botPos);
-        }
+//        }
 
         //returns [flywheel_speed,hood_angle,turret_angle]
 
@@ -69,6 +69,6 @@ public class AutoAimCalculator {
 
         //(BR.getCurrentPosition()/4096)*2*Math.PI;
 
-        return new double[] {0,0,0};
+//        return new double[] {0,0,0};
     }
 }
