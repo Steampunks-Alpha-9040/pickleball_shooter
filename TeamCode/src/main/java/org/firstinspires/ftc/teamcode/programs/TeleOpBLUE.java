@@ -30,31 +30,14 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.getMecanumDriver().schedule();
 
-        Gamepads.gamepad1().y().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        new ParallelGroup(
-                                indexer.spinIndexer(),
-                                feeder.transfer()
-                        )
-                ).whenBecomesFalse(
-                        new ParallelGroup(
-                                indexer.stopIndexer(),
-                                feeder.store()
-                        )
+        Gamepads.gamepad2().x().toggleOnBecomesTrue()
+                .whenBecomesFalse(
+                        flywheel.autoShoot()
+                ).whenBecomesTrue(
+                        flywheel.autoShoot()
                 );
 
-        Gamepads.gamepad1().x().toggleOnBecomesTrue()
-                .whenBecomesFalse(
-                        flywheel.stopFlywheel()
-                ).whenBecomesTrue(
-                        flywheel.shootFlywheel()
-                );
-        Gamepads.gamepad1().a().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        intake.spinIntake()
-                ).whenBecomesFalse(
-                        intake.stopIntake()
-                );
+
 //        Gamepads.gamepad1().dpadRight().whenBecomesTrue(
 //                turret.spinTurretRight()
 //        ).whenBecomesFalse(

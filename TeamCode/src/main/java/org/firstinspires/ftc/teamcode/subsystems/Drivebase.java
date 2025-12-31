@@ -98,15 +98,10 @@ public class Drivebase implements Subsystem {
     }
 
     private void updateBotpose(){
-        Pose2D cameraPose = Vision.INSTANCE.getRaw2D();
 
-        double sigmaK = Constants.DrivebaseConstants.constantSigmaOdo / (Constants.DrivebaseConstants.constantSigmaOdo + Vision.INSTANCE.getVisionSigma());
 
-        if (cameraPose == null){
-            return;
-        }
-        double fusedX = (imu.getPosX(DistanceUnit.INCH) + (sigmaK * cameraPose.getX(DistanceUnit.INCH)))/(1+sigmaK);
-        double fusedY = (imu.getPosY(DistanceUnit.INCH) + (sigmaK * cameraPose.getY(DistanceUnit.INCH)))/(1+sigmaK);
+        double fusedX = (imu.getPosX(DistanceUnit.INCH));
+        double fusedY = (imu.getPosY(DistanceUnit.INCH));
         imu.setPosition(new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS)));
     }
 
