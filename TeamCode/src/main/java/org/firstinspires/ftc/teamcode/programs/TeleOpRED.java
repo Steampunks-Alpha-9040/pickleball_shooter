@@ -36,19 +36,7 @@ public class TeleOpRED extends BaseOpMode {
                 ).whenBecomesTrue(
                         flywheel.shootFlywheel()
                 );
-//        Gamepads.gamepad1().dpadRight().whenBecomesTrue(
-//                turret.spinTurretRight()
-//        ).whenBecomesFalse(
-//                turret.stopTurret()
-//        );
-//        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(
-//                turret.spinTurretLeft()
-//        ).whenBecomesFalse(
-//                turret.stopTurret()
-//        );
-        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
-                turret.trackTurret()
-        );
+
         Gamepads.gamepad1().b().and(
                 Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
         ).whenBecomesTrue(

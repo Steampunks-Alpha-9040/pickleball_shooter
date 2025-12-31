@@ -35,8 +35,6 @@ public class Flywheel implements Subsystem {
 
     private double hoodTarget = 0;
 
-    private boolean flywheelIsOn;
-
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
             Constants.FlywheelConstants.flywheel_kI,
@@ -53,37 +51,33 @@ public class Flywheel implements Subsystem {
             Constants.FlywheelConstants.hoodPositionToleranceRAD
     );
 
-    private final AutoAimCalculator aimCalculator = new AutoAimCalculator();
-
     private Flywheel(){}
 
     @Override
     public void initialize(){
         flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
-        flywheelIsOn=false;
     }
 
     @Override
     public void periodic(){
 
-        flywheel.setPower(flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
+        double flywheelCurrentRPM = flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
+
+        flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
         ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
         ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-
         ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
-        ActiveOpMode.telemetry().addData("flywheelVeloCurrent", (flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60);
+        ActiveOpMode.telemetry().addData("flywheelVeloCurrent", flywheelCurrentRPM);
         ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
     public Command shootFlywheel(){
-        return new ParallelGroup(
-            new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM))
-        );
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM));
     }
 
     public Command stopFlywheel(){
@@ -96,7 +90,6 @@ public class Flywheel implements Subsystem {
 
     public Command slowerFLywheel() {
         return new InstantCommand(() -> flywheelRPM -= 100);
-
     }
 
     public Command spinHoodUp(){

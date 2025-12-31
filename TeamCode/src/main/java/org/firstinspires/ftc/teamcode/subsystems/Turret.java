@@ -24,7 +24,7 @@ public class Turret implements Subsystem {
     private double turretTargetAngle;
 
 
-    private PIDposition controller = new PIDposition(
+    private final PIDposition controller = new PIDposition(
             Constants.TurretConstants.turret_kP,
             Constants.TurretConstants.turret_kI,
             Constants.TurretConstants.turret_kD,
@@ -44,10 +44,10 @@ public class Turret implements Subsystem {
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
         turretTargetAngle = calculateTurretAngle();
-        controller.setSetpoint(turretTargetAngle);
-        double pow = controller.calculate(turretQuad);
-        turretM.setPower(-pow);
-        turretS.setPower(-pow);
+
+        setTurret();
+        moveTurret();
+
         ActiveOpMode.telemetry().addData("turretTargetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
@@ -91,12 +91,15 @@ public class Turret implements Subsystem {
         }).requires(this);
     }
 
-    public Command trackTurret(){
-        return new InstantCommand(
-                () -> {
-                    controller.setSetpoint(turretTargetAngle);
-                }
-        );
+
+    private void setTurret(){
+        controller.setSetpoint(turretTargetAngle);
+    }
+
+    private void moveTurret(){
+        double pow = controller.calculate(turretQuad);
+        turretM.setPower(-pow);
+        turretS.setPower(-pow);
     }
 
 
