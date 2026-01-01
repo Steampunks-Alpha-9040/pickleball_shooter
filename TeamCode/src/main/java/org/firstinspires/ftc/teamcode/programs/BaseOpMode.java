@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.programs;
 
 import com.bylazar.field.PanelsField;
-import com.bylazar.panels.Panels;
 import com.bylazar.telemetry.PanelsTelemetry;
 
 

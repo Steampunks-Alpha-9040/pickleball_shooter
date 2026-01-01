@@ -1,12 +1,10 @@
 package org.firstinspires.ftc.teamcode.util;
 
 public class JankParser {
-    public static int findClosestPointIndex(double[][] points, double tx, double ty) {
+    public static int findClosestPointIndex(double tx, double ty) {
         //finds index of closest point
 
-        if (points == null || points.length == 0) {
-            return -1; //should never happen
-        }
+        double[][] points = ShootingPoints.points;
 
         int closestIndex = 0;
         double minDistSq = Float.MAX_VALUE;
@@ -18,15 +16,14 @@ public class JankParser {
 
             if (distSq < minDistSq) {
                 //this if statment removes positions that are not valid from being considerd closest points. will code into robot eventually.
-                if(points[i][2]==0 &&points[i][3]==0 &&points[i][4]==0 &&points[i][5]==0){
-                    //skip this because this point is not valid
-                }else{
+                if (points[i][2] == 0 && points[i][3] == 0 && points[i][4] == 0 && points[i][5] == 0) {
+                    return -1;
+                } else {
                     minDistSq = distSq;
                     closestIndex = i;
                 }
             }
         }
-
         return closestIndex;
     }
 

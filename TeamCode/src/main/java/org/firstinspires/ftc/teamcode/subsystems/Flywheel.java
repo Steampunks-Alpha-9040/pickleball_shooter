@@ -1,20 +1,14 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.util.AutoAimCalculator;
 import org.firstinspires.ftc.teamcode.util.JankParser;
-import org.firstinspires.ftc.teamcode.util.KDTree;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
 import org.firstinspires.ftc.teamcode.util.ShootingPoints;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -31,7 +25,7 @@ public class Flywheel implements Subsystem {
 
     private CRServoEx hood;
 
-    private double flywheelRPM = 3000;
+    private double flywheelTarget = 3000;
 
     private double hoodTarget;
 
@@ -71,6 +65,7 @@ public class Flywheel implements Subsystem {
 
         double flywheelCurrentRPM = flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
 
+        setShooting();
         setHood();
 
         flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
@@ -85,8 +80,27 @@ public class Flywheel implements Subsystem {
         ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
+    public double[] parseLookupTable(double x, double y){
+        int i = JankParser.findClosestPointIndex(x,y);
+
+        return ShootingPoints.points[i];
+    }
+
+    public void setShooting(){
+        double[] point = parseLookupTable(Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.METER), Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.METER));
+        double maxtheta = point[7];
+        double mintheta = point[6];
+        double hoodAngle = ((maxtheta+mintheta)/2)*((float)Math.PI/180);
+        double outputVelo = (point[2])*(hoodAngle*hoodAngle*hoodAngle)+(point[3])*(hoodAngle*hoodAngle)+(point[4])*(hoodAngle)+point[5];
+        double flywheelVelo = (outputVelo+2.0187818)/0.0025192438;
+
+        hoodTarget = hoodAngle;
+        flywheelTarget = flywheelVelo;
+    }
+
+
     public Command shootFlywheel(){
-        return new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM));
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelTarget));
     }
 
     public Command stopFlywheel(){
@@ -94,11 +108,11 @@ public class Flywheel implements Subsystem {
     }
 
     public Command fasterFLywheel(){
-        return new InstantCommand(() -> flywheelRPM += 100);
+        return new InstantCommand(() -> flywheelTarget += 100);
     }
 
     public Command slowerFLywheel() {
-        return new InstantCommand(() -> flywheelRPM -= 100);
+        return new InstantCommand(() -> flywheelTarget -= 100);
     }
 
     public void setHood(){
