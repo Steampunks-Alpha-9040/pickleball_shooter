@@ -92,7 +92,7 @@ public class Flywheel implements Subsystem {
         double mintheta = point[6];
         double hoodAngle = ((maxtheta+mintheta)/2)*((float)Math.PI/180);
         double outputVelo = (point[2])*(hoodAngle*hoodAngle*hoodAngle)+(point[3])*(hoodAngle*hoodAngle)+(point[4])*(hoodAngle)+point[5];
-        double flywheelVelo = ((outputVelo+2.0187818)/0.0025192438) + 600;
+        double flywheelVelo = ((outputVelo+2.0187818)/0.0025192438) + 1000;
 
         hoodTarget = hoodAngle;
         flywheelTarget = flywheelVelo;
