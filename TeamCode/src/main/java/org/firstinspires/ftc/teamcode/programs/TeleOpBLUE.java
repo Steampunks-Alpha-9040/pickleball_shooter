@@ -26,7 +26,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
         field.getField().setStyle("none", "white", 1.5);
 
-        drivebase.setStartingPose(72,72);
+        drivebase.setStartingPose(96,10);
 
         drivebase.getMecanumDriver().schedule();
 
