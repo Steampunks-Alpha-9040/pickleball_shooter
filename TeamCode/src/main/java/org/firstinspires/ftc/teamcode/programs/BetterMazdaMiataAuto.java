@@ -13,7 +13,6 @@ import com.pedropathing.geometry.BezierLine;
 import com.pedropathing.geometry.Pose;
 import com.pedropathing.paths.PathChain;
 import com.pedropathing.util.Timer;
-import  com.qualcomm.robotcore.eventloop.opmode.OpMode;
 
 import com.bylazar.configurables.annotations.Configurable;
 import com.bylazar.telemetry.PanelsTelemetry;
@@ -21,22 +20,17 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.util.pedropathing.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.subsystems.Feeder;
-import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
-import dev.nextftc.core.components.BindingsComponent;
-import dev.nextftc.core.components.SubsystemComponent;
-import dev.nextftc.ftc.components.BulkReadComponent;
+
 @Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
 @Configurable // Panels
-public class MazdaMiataAuto extends BaseOpMode {
+public class BetterMazdaMiataAuto extends BaseOpMode {
 
-    public MazdaMiataAuto(){
+    public BetterMazdaMiataAuto(){
         addComponents(
                 new SubsystemComponent(
                         super.drivebase,
@@ -90,58 +84,49 @@ public class MazdaMiataAuto extends BaseOpMode {
 
     public static class Paths {
 
-        public PathChain Path1;
-        public PathChain Path2;
-        public PathChain Path3;
-        public PathChain Path4;
-        public PathChain Path5;
-        public PathChain Path6;
+        public PathChain PathIntakeClose;
+        public PathChain PathShootFirst;
+        public PathChain PathIntakeMiddle;
+        public PathChain PathShootSecond;
 
         public Paths(Follower follower) {
-            Path1 = follower
+            PathIntakeClose = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(44.000, 5.300), new Pose(44.000, 36.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(90), Math.toRadians(180))
-                    .build();
-
-            Path2 = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(44.000, 36.000), new Pose(21.000, 36.000))
+                            new BezierCurve(
+                                    new Pose(64.145, 8.790),
+                                    new Pose(51.908, 39.279),
+                                    new Pose(18.000, 36.000)
+                            )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            Path3 = follower
+            PathShootFirst = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(21.000, 36.000), new Pose(44.000, 8.693))
+                            new BezierLine(new Pose(18.000, 36.000), new Pose(48.000, 10.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            Path4 = follower
+            PathIntakeMiddle = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(44.000, 8.693), new Pose(44.000, 60.000))
+                            new BezierCurve(
+                                    new Pose(48.000, 10.000),
+                                    new Pose(49.919, 64.600),
+                                    new Pose(43.227, 61.345),
+                                    new Pose(18.000, 60.000)
+                            )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            Path5 = follower
+            PathShootSecond = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(44.000, 60.000), new Pose(21.000, 60.000))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
-
-            Path6 = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(21.000, 60.000), new Pose(44.000, 8.693))
+                            new BezierLine(new Pose(18.000, 60.000), new Pose(48.000, 10.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
@@ -168,6 +153,13 @@ public class MazdaMiataAuto extends BaseOpMode {
             new Delay(0.5);
         }
         return shoot();
+    }
+
+    public Command stopShoot() {
+        return new ParallelGroup(
+                feeder.setArmUp(),
+                feeder.turnWheelsOff()
+        );
     }
 
     public Command sort() {
@@ -198,99 +190,27 @@ public class MazdaMiataAuto extends BaseOpMode {
                         new Delay(Beginning),
                         safeShoot(),
                         new Delay(shootFarDelay),
-                        new FollowPath(paths.Path1),
+                        stopShoot(),
                         intake(),
-                        new FollowPath(paths.Path2),
+                        new FollowPath(paths.PathIntakeClose),
+                        new Delay(intakeDelay),
+                        intakeStop(),
+                        sort(),
+                        new FollowPath(paths.PathShootFirst),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        intake(),
+                        new FollowPath(paths.PathIntakeMiddle),
                         new Delay(intakeDelay),
                         sort(),
-                        new FollowPath(paths.Path3),
+                        new FollowPath(paths.PathShootSecond),
                         intakeStop(),
                         safeShoot(),
                         new Delay(shootFarDelay),
-                        new FollowPath(paths.Path4),
-                        intake(),
-                        new FollowPath(paths.Path5),
-                        new Delay(intakeDelay),
-                        sort(),
-                        new FollowPath(paths.Path6),
-                        intakeStop(),
-                        safeShoot(),
-                        new Delay(shootFarDelay)
-                )
+                        stopShoot()
+                        )
         );
     }
 
-
-
-//        switch (pathState) {
-//            case 0:
-//                flywheel.shootFlywheelFar().schedule();
-//                new ParallelGroup(
-//                        feeder.setArmDown(),
-//                        feeder.turnWheelsOn(),
-//                        indexer.spinIndexer()).schedule();
-//                new Delay(delay1);
-//                setPathState(1);
-//                return 0;
-//            case 1:
-//                follower.followPath(paths.Path1);
-//                intake.spinIntake();
-//                setPathState(2);
-//                return 1;
-//            case 2:
-//                /* This case checks the robot's position and will wait until the robot position is close (1 inch away) from the scorePose's position */
-//                if(!follower.isBusy()) {
-//                    /* Score Preload */
-//                    /* Since this is a pathChain, we can have Pedro hold the end point while we are grabbing the sample */
-//                    new Delay(delay2);
-//                    intake.stopIntake();
-//                    follower.followPath(paths.Path2, true);
-//                    setPathState(3);
-//                }
-//                return 2;
-//            case 3:
-//                if(!follower.isBusy()) {
-//                    new ParallelGroup(
-//                            feeder.setArmDown(),
-//                            feeder.turnWheelsOn(),
-//                            indexer.spinIndexer()).schedule();
-//                    new Delay(delay3);
-//                    follower.followPath(paths.Path3);
-//                    intake.spinIntake();
-//                    setPathState(4);
-//                }
-//                return 3;
-//            case 4:
-//                if(!follower.isBusy()) {
-//                    new Delay(delay4);
-//                    follower.followPath(paths.Path4);
-//                    intake.stopIntake();
-//                    setPathState(5);
-//                }
-//                return 4;
-//            case 5:
-//                if(!follower.isBusy()) {
-//                    new Delay(delay5);
-//                    follower.followPath(paths.Path5, true);
-//                    setPathState(6);
-//                }
-//                return 5;
-//            case 6:
-//                if(!follower.isBusy()) {
-//                    new ParallelGroup(
-//                            feeder.setArmDown(),
-//                            feeder.turnWheelsOn(),
-//                            indexer.spinIndexer()).schedule();
-//                    setPathState(-1);
-//                }
-//                panelsTelemetry.debug("FINAL TIME", opmodeTimer);
-//                return 6;
-//        }
-//        return -1;
-
-    /** These change the states of the paths and actions. It will also reset the timers of the individual switches **/
-    public void setPathState(int pState) {
-        pathState = pState;
-        pathTimer.resetTimer();
-    }
 }
