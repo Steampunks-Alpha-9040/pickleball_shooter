@@ -54,21 +54,42 @@ public class Turret implements Subsystem {
 
     public double calculateTurretAngle(){
         double offset=0;
+        double maxTurretAngle=1.3;
+        double minTurretAngle=-1.42;
 
         switch (Constants.OpModeConstants.side){
             case RED:
-                return Math.atan2(
+                double redVal=Math.atan2(
                         Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.REDscore.getX(),
                         Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
                 ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                if(redVal>=minTurretAngle&&redVal<=maxTurretAngle){
+                    return redVal;
+                }else if (redVal<minTurretAngle){
+                    return minTurretAngle;
+                }else if (redVal>maxTurretAngle){
+                    return maxTurretAngle;
+                }else{
+                    return 0;
+                }
             case BLUE:
-                return Math.atan2(
+                double blueVal=Math.atan2(
                         Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.BLUEscore.getX(),
                         Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
 
 
 
                 ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                if(blueVal>=minTurretAngle&&blueVal<=maxTurretAngle){
+                    return blueVal;
+                }else if (blueVal<minTurretAngle){
+                    return minTurretAngle;
+                }else if (blueVal>maxTurretAngle){
+                    return maxTurretAngle;
+                }else{
+                    return 0;
+                }
+
 
             default:
                 return 0;
