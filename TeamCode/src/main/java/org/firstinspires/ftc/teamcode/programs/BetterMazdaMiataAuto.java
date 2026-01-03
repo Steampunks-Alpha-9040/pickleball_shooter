@@ -186,29 +186,29 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
         return new ParallelGroup(
                 flywheel.shootFlywheel(),
                 new SequentialGroup(
-                        sort(),
+//                        sort(),
                         new Delay(Beginning),
-                        safeShoot(),
-                        new Delay(shootFarDelay),
-                        stopShoot(),
-                        intake(),
+//                        safeShoot(),
+//                        new Delay(shootFarDelay),
+//                        stopShoot(),
+//                        intake(),
                         new FollowPath(paths.PathIntakeClose),
                         new Delay(intakeDelay),
-                        intakeStop(),
-                        sort(),
+//                        intakeStop(),
+//                        sort(),
                         new FollowPath(paths.PathShootFirst),
-                        safeShoot(),
+//                        safeShoot(),
                         new Delay(shootFarDelay),
-                        stopShoot(),
-                        intake(),
+//                        stopShoot(),
+//                        intake(),
                         new FollowPath(paths.PathIntakeMiddle),
                         new Delay(intakeDelay),
-                        sort(),
+//                        sort(),
                         new FollowPath(paths.PathShootSecond),
-                        intakeStop(),
-                        safeShoot(),
-                        new Delay(shootFarDelay),
-                        stopShoot()
+//                        intakeStop(),
+//                        safeShoot(),
+                        new Delay(shootFarDelay)
+//                        stopShoot()
                         )
         );
     }
