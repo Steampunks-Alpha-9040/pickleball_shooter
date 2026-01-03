@@ -13,17 +13,19 @@ import com.qualcomm.robotcore.hardware.HardwareMap;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 public class Constants {
-    public static FollowerConstants followerConstants = new FollowerConstants().mass(8.0); // kg
+    public static FollowerConstants followerConstants = new FollowerConstants().mass(8.0)//kg
+            .lateralZeroPowerAcceleration(-59.7819)
+            .forwardZeroPowerAcceleration(-41.278);
 
     public static PathConstraints pathConstraints = new PathConstraints(0.99, 100, 1, 1);
     public static PinpointConstants localizerConstants = new PinpointConstants()
-        .forwardPodY(-6.766) // Adjust for pod placement
-        .strafePodX(-0.215) // Adjust for pod placement
-        .distanceUnit(DistanceUnit.INCH)
-        .hardwareMapName("pinpoint")
-        .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
-        .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED) // Adjust for pod placement
-        .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
+            .forwardPodY(6.766) // Adjust for pod placement
+            .strafePodX(-0.215) // Adjust for pod placement
+            .distanceUnit(DistanceUnit.INCH)
+            .hardwareMapName("pinpoint")
+            .encoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD)
+            .forwardEncoderDirection(GoBildaPinpointDriver.EncoderDirection.REVERSED) // Adjust for pod placement
+            .strafeEncoderDirection(GoBildaPinpointDriver.EncoderDirection.FORWARD);
 
     public static Follower createFollower(HardwareMap hardwareMap) {
         return new FollowerBuilder(followerConstants, hardwareMap)
@@ -42,5 +44,7 @@ public class Constants {
             .leftFrontMotorDirection(DcMotorSimple.Direction.REVERSE) //Adjust for motor direction
             .leftRearMotorDirection(DcMotorSimple.Direction.REVERSE)
             .rightFrontMotorDirection(DcMotorSimple.Direction.FORWARD)
-            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD);
+            .rightRearMotorDirection(DcMotorSimple.Direction.FORWARD)
+            .yVelocity(43.4510031872847)
+            .xVelocity(51.91089473471333);
 }
