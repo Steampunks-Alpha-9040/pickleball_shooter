@@ -5,8 +5,10 @@ import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 
@@ -15,14 +17,16 @@ public class Feeder implements Subsystem {
 
     public static Feeder INSTANCE = new Feeder();
 
-    private MotorEx feederWheel;
+    private CRServoEx feederM;
+    private CRServoEx feederS;
     private ServoEx feederArm;
 
 
 
     @Override
     public void initialize(){
-        feederWheel = new MotorEx(Constants.FeederConstants.feederWheel).brakeMode().reversed();
+        feederM = new CRServoEx(Constants.FeederConstants.feederM);
+        feederS = new CRServoEx(Constants.FeederConstants.feederS);
         feederArm = new ServoEx(Constants.FeederConstants.feederArm);
     }
 
@@ -59,15 +63,21 @@ public class Feeder implements Subsystem {
     }
 
     public Command turnWheelsOn(){
-        return new LambdaCommand()
-                .requires(this)
-                .setStart(() -> feederWheel.setPower(1));
+        return new InstantCommand(
+                () -> {
+                    feederM.setPower(1);
+                    feederS.setPower(-1);
+                }
+        );
     }
 
     public Command turnWheelsOff(){
-        return new LambdaCommand()
-                .requires(this)
-                .setStart(() -> feederWheel.setPower(0));
+        return new InstantCommand(
+                () -> {
+                    feederM.setPower(0);
+                    feederS.setPower(0);
+                }
+        );
     }
 
 }
