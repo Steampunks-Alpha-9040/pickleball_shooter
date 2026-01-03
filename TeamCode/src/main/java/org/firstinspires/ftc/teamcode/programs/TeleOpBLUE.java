@@ -26,6 +26,18 @@ public class TeleOpBLUE extends BaseOpMode {
 
         field.getField().setStyle("none", "white", 1.5);
 
+        Gamepads.gamepad1().a().toggleOnBecomesTrue().whenBecomesTrue(
+                feeder.setArmDown()
+        ).whenBecomesFalse(
+                feeder.setArmUp()
+        );
+
+        Gamepads.gamepad1().b().toggleOnBecomesTrue().whenBecomesTrue(
+                feeder.turnWheelsOn()
+        ).whenBecomesFalse(
+                feeder.turnWheelsOff()
+        );
+
 
     }
 

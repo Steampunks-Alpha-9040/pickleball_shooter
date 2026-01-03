@@ -52,21 +52,19 @@ public class Feeder implements Subsystem {
 
     public Command setArmDown(){
         return new LambdaCommand()
-                .requires(this)
                 .setStart(() -> feederArm.setPosition(0.9));
     }
 
     public Command setArmUp(){
         return new LambdaCommand()
-                .requires(this)
                 .setStart(() -> feederArm.setPosition(0.0));
     }
 
     public Command turnWheelsOn(){
         return new InstantCommand(
                 () -> {
-                    feederM.setPower(1);
-                    feederS.setPower(-1);
+                    feederM.setPower(-1);
+                    feederS.setPower(1);
                 }
         );
     }
