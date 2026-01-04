@@ -1,7 +1,9 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.bylazar.telemetry.PanelsTelemetry;
 
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
@@ -37,7 +39,9 @@ public class Turret implements Subsystem {
         turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
         turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
 
-        turretQuad = 0;
+        turretQuad =0;
+
+        //should be 0 it is scuffed though
     }
 
     @Override
@@ -63,8 +67,7 @@ public class Turret implements Subsystem {
                 double redVal=Math.atan2(
                         Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.REDscore.getX(),
                         Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - (Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)-offset+2*Math.PI);
-                redVal=((redVal+Math.PI)%(2*Math.PI))-Math.PI;
+                ) - trueheading;
 
 
                 if(redVal>=minTurretAngle&&redVal<=maxTurretAngle){
@@ -80,11 +83,9 @@ public class Turret implements Subsystem {
                 double blueVal=Math.atan2(
                         Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.BLUEscore.getX(),
                         Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-
-
-
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
-                blueVal=((blueVal+Math.PI)%(2*Math.PI))-Math.PI;
+                ) - trueheading;
+                ActiveOpMode.telemetry().addData("x pos", Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH));
+                ActiveOpMode.telemetry().addData("y pos", Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH));
                 if(blueVal>=minTurretAngle&&blueVal<=maxTurretAngle){
                     return blueVal;
                 }else if (blueVal<minTurretAngle){

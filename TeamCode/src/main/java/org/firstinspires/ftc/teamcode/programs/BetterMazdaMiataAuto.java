@@ -20,6 +20,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
+import org.firstinspires.ftc.teamcode.subsystems.Turret;
 import org.firstinspires.ftc.teamcode.util.pedropathing.Constants;
 import org.firstinspires.ftc.teamcode.util.Drawing;
 
@@ -38,7 +39,8 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
                         super.drivebase,
 //                        super.indexer,
 //                        super.feeder,
-                        super.flywheel
+                        super.flywheel,
+                        super.turret
                 ),
                 new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
@@ -68,6 +70,8 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+        Drivebase.INSTANCE.zeroTurretQuadature();
+        Drivebase.INSTANCE.zeroHoodQuadature();
     }
 
 
@@ -78,6 +82,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
         follower.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(180)));
 //        Drivebase.INSTANCE.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(90)));
         // Log values to Panels and Driver Station
+
 
     }
 
