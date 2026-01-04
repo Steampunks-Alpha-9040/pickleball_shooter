@@ -84,63 +84,101 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     public static class Paths {
 
-        public PathChain testingAuto;
-        public PathChain PathIntakeClose;
-        public PathChain PathShootFirst;
-        public PathChain PathIntakeMiddle;
-        public PathChain PathShootSecond;
+        public PathChain IntakeHuman;
+        public PathChain ShootFirst;
+        public PathChain IntakeMiddleAndOpenGate;
+        public PathChain ShootSecond;
+        public PathChain IntakeClose;
+        public PathChain ShootThird;
+        public PathChain IntakeGate;
+        public PathChain ShootLast;
+        public PathChain LeaveShootingZone;
 
         public Paths(Follower follower) {
-            testingAuto = follower
+            IntakeHuman = follower
+                    .pathBuilder()
+                    .addPath(new BezierLine(new Pose(64.145, 8.790), new Pose(12.000, 9.000)))
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            ShootFirst = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(64.145, 8.79), new Pose(70.000, 8.79))
+                            new BezierLine(new Pose(12.000, 9.000), new Pose(48.000, 10.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
-            PathIntakeClose = follower
+
+            IntakeMiddleAndOpenGate = follower
                     .pathBuilder()
                     .addPath(
                             new BezierCurve(
-                                    new Pose(64.145, 8.790),
-                                    new Pose(51.908, 39.279),
+                                    new Pose(48.000, 10.000),
+                                    new Pose(50.000, 63.000),
+                                    new Pose(49.000, 60.000),
+                                    new Pose(14.000, 61.000)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            ShootSecond = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(14.000, 61.000),
+                                    new Pose(53.000, 54.000),
+                                    new Pose(64.145, 29.000)
+                            )
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            IntakeClose = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierCurve(
+                                    new Pose(64.145, 29.000),
+                                    new Pose(44.000, 38.000),
                                     new Pose(18.000, 36.000)
                             )
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            PathShootFirst = follower
+            ShootThird = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(18.000, 36.000), new Pose(48.000, 10.000))
+                            new BezierLine(new Pose(18.000, 36.000), new Pose(64.145, 29.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            PathIntakeMiddle = follower
+            IntakeGate = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierCurve(
-                                    new Pose(48.000, 10.000),
-                                    new Pose(49.919, 64.600),
-                                    new Pose(43.227, 61.345),
-                                    new Pose(18.000, 60.000)
-                            )
+                            new BezierLine(new Pose(64.145, 29.000), new Pose(14.000, 24.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
 
-            PathShootSecond = follower
+            ShootLast = follower
                     .pathBuilder()
                     .addPath(
-                            new BezierLine(new Pose(18.000, 60.000), new Pose(48.000, 10.000))
+                            new BezierLine(new Pose(14.000, 24.000), new Pose(64.145, 29.000))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
+
+            LeaveShootingZone = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(64.145, 29.000), new Pose(64.145, 35.000))
                     )
                     .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
                     .build();
         }
     }
-
 
     double shootFarDelay = 1.0;
     double Beginning = 1.0;
@@ -192,33 +230,51 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-//                flywheel.shootFlywheel(),
+                flywheel.shootFlywheel(),
                 new SequentialGroup(
-//                        sort(),
+                        sort(),
                         new Delay(Beginning),
-                        new FollowPath(paths.testingAuto)
-//                        safeShoot(),
-//                        new Delay(shootFarDelay),
-//                        stopShoot(),
-//                        intake(),
-//                        new FollowPath(paths.PathIntakeClose),
-//                        new Delay(intakeDelay),
-//                        intakeStop(),
-//                        sort(),
-//                        new FollowPath(paths.PathShootFirst),
-//                        safeShoot(),
-//                        new Delay(shootFarDelay),
-//                        stopShoot(),
-//                        intake(),
-//                        new FollowPath(paths.PathIntakeMiddle),
-//                        new Delay(intakeDelay),
-//                        sort(),
-//                        new FollowPath(paths.PathShootSecond),
-//                        intakeStop(),
-//                        safeShoot(),
-//                        new Delay(shootFarDelay)
-//                        stopShoot()
-                        )
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        intake(),
+                        new FollowPath(paths.IntakeHuman),
+                        new Delay(intakeDelay),
+                        intakeStop(),
+                        sort(),
+                        new FollowPath(paths.ShootFirst),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        intake(),
+                        new FollowPath(paths.IntakeMiddleAndOpenGate),
+                        new Delay(intakeDelay),
+                        intakeStop(),
+                        sort(),
+                        new FollowPath(paths.ShootSecond),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        intake(),
+                        new FollowPath(paths.IntakeClose),
+                        new Delay(intakeDelay),
+                        intakeStop(),
+                        sort(),
+                        new FollowPath(paths.ShootThird),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        intake(),
+                        new FollowPath(paths.IntakeGate),
+                        new Delay(intakeDelay),
+                        intakeStop(),
+                        sort(),
+                        new FollowPath(paths.ShootLast),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        new FollowPath(paths.LeaveShootingZone)
+                )
         );
     }
 
