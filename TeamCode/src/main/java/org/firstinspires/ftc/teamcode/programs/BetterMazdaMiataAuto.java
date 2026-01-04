@@ -19,7 +19,9 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.util.pedropathing.Constants;
+import org.firstinspires.ftc.teamcode.util.Drawing;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -58,9 +60,9 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
         opmodeTimer.resetTimer();
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-        follower = Constants.createFollower(hardwareMap);
+        follower = PedroComponent.follower();
         paths = new Paths(follower);
-        follower.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(180)));
+
 
         // Build paths
 
@@ -71,11 +73,20 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        follower.update(); // Update Pedro Pathing
-//        pathState = autonomousRoutine(); // Update autonomous state machine
 
         autonomousRoutine().schedule();
+        follower.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(180)));
+//        Drivebase.INSTANCE.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(90)));
         // Log values to Panels and Driver Station
+
+    }
+
+    @Override
+    public void onUpdate(){
+        follower.update(); // Update Pedro Pathing
+
+        Drawing.drawDebug(follower);
+
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.debug("X", follower.getPose().getX());
         panelsTelemetry.debug("Y", follower.getPose().getY());
@@ -92,13 +103,6 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
         public PathChain PathShootSecond;
 
         public Paths(Follower follower) {
-            testingAuto = follower
-                    .pathBuilder()
-                    .addPath(
-                            new BezierLine(new Pose(64.145, 8.79), new Pose(70.000, 8.79))
-                    )
-                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
-                    .build();
             PathIntakeClose = follower
                     .pathBuilder()
                     .addPath(
@@ -197,27 +201,27 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
                 new SequentialGroup(
 //                        sort(),
                         new Delay(Beginning),
-                        new FollowPath(paths.testingAuto)
+                        new FollowPath(paths.PathIntakeClose),
 //                        safeShoot(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-//                        new FollowPath(paths.PathIntakeClose),
-//                        new Delay(intakeDelay),
+                        new FollowPath(paths.PathIntakeClose),
+                        new Delay(intakeDelay),
 //                        intakeStop(),
 //                        sort(),
-//                        new FollowPath(paths.PathShootFirst),
+                        new FollowPath(paths.PathShootFirst),
 //                        safeShoot(),
-//                        new Delay(shootFarDelay),
+                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-//                        new FollowPath(paths.PathIntakeMiddle),
-//                        new Delay(intakeDelay),
+                        new FollowPath(paths.PathIntakeMiddle),
+                        new Delay(intakeDelay),
 //                        sort(),
-//                        new FollowPath(paths.PathShootSecond),
+                        new FollowPath(paths.PathShootSecond),
 //                        intakeStop(),
 //                        safeShoot(),
-//                        new Delay(shootFarDelay)
+                        new Delay(shootFarDelay)
 //                        stopShoot()
                         )
         );

@@ -56,6 +56,8 @@ public class Turret implements Subsystem {
         double offset=0;
         double maxTurretAngle=1.3;
         double minTurretAngle=-1.42;
+        double trueheading=Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
+        if(tru
 
         switch (Constants.OpModeConstants.side){
             case RED:
@@ -63,6 +65,9 @@ public class Turret implements Subsystem {
                         Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.REDscore.getX(),
                         Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
                 ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                redVal=((redVal+Math.PI)%(2*Math.PI))-Math.PI;
+
+
                 if(redVal>=minTurretAngle&&redVal<=maxTurretAngle){
                     return redVal;
                 }else if (redVal<minTurretAngle){
@@ -80,6 +85,7 @@ public class Turret implements Subsystem {
 
 
                 ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                blueVal=((blueVal+Math.PI)%(2*Math.PI))-Math.PI;
                 if(blueVal>=minTurretAngle&&blueVal<=maxTurretAngle){
                     return blueVal;
                 }else if (blueVal<minTurretAngle){

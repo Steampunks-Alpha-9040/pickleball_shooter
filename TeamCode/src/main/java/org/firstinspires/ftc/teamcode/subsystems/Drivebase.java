@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.follower.Follower;
+import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -108,8 +109,8 @@ public class Drivebase implements Subsystem {
 //        imu.setPosition(new Pose2D(DistanceUnit.INCH, fusedX, fusedY, AngleUnit.RADIANS, imu.getHeading(AngleUnit.RADIANS)));
     }
 
-    public void setStartingPose(double x, double y){
-        imu.setPosition(new Pose2D(DistanceUnit.INCH, x, y, AngleUnit.DEGREES, 0));
+    public void setStartingPose(Pose pose){
+        imu.setPosition(new Pose2D(DistanceUnit.INCH, pose.getX(), pose.getY(), AngleUnit.RADIANS, pose.getHeading()));
     }
 
 
