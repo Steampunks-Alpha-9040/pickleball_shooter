@@ -14,8 +14,8 @@ public class Constants {
     }
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(10, 150);
-        public static Vector2d REDscore = new Vector2d(144, 144);
+        public static Vector2d BLUEscore = new Vector2d(0, 140);
+        public static Vector2d REDscore = new Vector2d(140, 140);
     }
     public static class DrivebaseConstants {
         public static final String FR = "fr";
@@ -47,21 +47,23 @@ public class Constants {
         public static final double flywheel_kD = 0.5;
         public static final double flywheel_kF = 0.0;
 
-        public static final double hoodPositionToleranceRAD = 0.1;
+        public static final double hoodPositionToleranceRAD = 0.01;
 
-        public static final double hood_kP = 1.0;
+        public static final double hood_kP = 7.0;
         public static final double hood_kI = 0.0;
         public static final double hood_kD = 0.0;
         public static final double hood_kF = 0.0;
+
+        public static final double hoodStartingPos = (0.53756141+0.51696652)/2;
 
     }
 
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turretS";
-        public static final double turret_kP = 2.5; //The like main pushing force, the constant :)
+        public static final double turret_kP = 2; //The like main pushing force, the constant :)
         public static final double turret_kI = 0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double turret_kD = 4; //slows down/speeds up the closer/farther away u are
+        public static final double turret_kD = 0.5; //slows down/speeds up the closer/farther away u are
         public static final double turret_kF = 0; //friction, tune so when the turret barely moves
 
 
@@ -132,5 +134,6 @@ public class Constants {
 
 
     }
+
 
 }

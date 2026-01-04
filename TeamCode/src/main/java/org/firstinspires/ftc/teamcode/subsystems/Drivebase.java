@@ -35,6 +35,7 @@ public class Drivebase implements Subsystem {
     private MotorEx BR;
     private GoBildaPinpointDriver imu;
     private Pose2D botpose;
+
     private double gyroOffset;
 
     public void initialize(){
@@ -48,12 +49,12 @@ public class Drivebase implements Subsystem {
         imu.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
 
         imu.setOffsets(-0.215,-6.766, DistanceUnit.INCH);
-
         imu.setEncoderDirections(
                 GoBildaPinpointDriver.EncoderDirection.FORWARD,
                 GoBildaPinpointDriver.EncoderDirection.REVERSED
         );
         imu.setYawScalar(Constants.DrivebaseConstants.yawScalar);
+
     }
 
     public void periodic(){
@@ -96,7 +97,7 @@ public class Drivebase implements Subsystem {
 
     private void updateBotpose(){
 //        Pose2D cameraPose = Vision.INSTANCE.getRaw2D();
-//
+
 //        double sigmaK = Constants.DrivebaseConstants.constantSigmaOdo / (Constants.DrivebaseConstants.constantSigmaOdo + Vision.INSTANCE.getVisionSigma());
 //
 //        if (cameraPose == null){
@@ -118,7 +119,11 @@ public class Drivebase implements Subsystem {
     }
 
     public double getHoodQuadature(){
-        return (BR.getCurrentPosition()/4096)*2*Math.PI;
+        return (((((BR.getCurrentPosition()/4096)*2*Math.PI))*((double) 16 /265))+Constants.FlywheelConstants.hoodStartingPos);
+        //0.51696652 for calculated,0.53756141 for experimental
+        //(BR.getCurrentPosition()/4096)*2*Math.PI
+        //Big Gear Teeth:265
+        //Small Gear Teeth:16
     }
 
     public Command zeroGryo(){
@@ -128,12 +133,11 @@ public class Drivebase implements Subsystem {
     public Pose2D getBotpose(){
         return imu.getPosition();
     }
+
     public void zeroTurretQuadature(){
         FL.setCurrentPosition(0);
     }
-    public void zeroHoodQuadature(){
-        BR.setCurrentPosition(0);
-    }
+    public void zeroHoodQuadature(){BR.setCurrentPosition(0);}
 
 
 }

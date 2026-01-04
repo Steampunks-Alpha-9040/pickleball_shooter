@@ -59,6 +59,11 @@ public class PIDflywheel {
 
         previousError = error;
 
+        //makes it bang bang
+        if (error > 0){
+            return 1.0;
+        }
+
         if (setpoint == 0.0){
             return 0.0;
         }

@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import com.arcrobotics.ftclib.geometry.Vector2d;
+
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
@@ -22,7 +24,7 @@ public class Turret implements Subsystem {
     private double turretTargetAngle;
 
 
-    private PIDposition controller = new PIDposition(
+    private final PIDposition controller = new PIDposition(
             Constants.TurretConstants.turret_kP,
             Constants.TurretConstants.turret_kI,
             Constants.TurretConstants.turret_kD,
@@ -41,26 +43,53 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-//        turretTargetAngle = calculateTurretAngle();
-//        double pow = controller.calculate(turretQuad);
-//        turretM.setPower(-pow);
-//        turretS.setPower(-pow);
-        ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
+        turretTargetAngle = calculateTurretAngle();
+
+        setTurret();
+        moveTurret();
+
+        ActiveOpMode.telemetry().addData("turretTargetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
 
     public double calculateTurretAngle(){
+        double offset=0;
+        double maxTurretAngle=1.3;
+        double minTurretAngle=-1.42;
+
         switch (Constants.OpModeConstants.side){
             case RED:
-                return Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
-                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
-            case BLUE:
-                return Math.atan2(
-                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
+                double redVal=Math.atan2(
+                        Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.REDscore.getX(),
                         Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
+                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                if(redVal>=minTurretAngle&&redVal<=maxTurretAngle){
+                    return redVal;
+                }else if (redVal<minTurretAngle){
+                    return minTurretAngle;
+                }else if (redVal>maxTurretAngle){
+                    return maxTurretAngle;
+                }else{
+                    return 0;
+                }
+            case BLUE:
+                double blueVal=Math.atan2(
+                        Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.BLUEscore.getX(),
+                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
+
+
+
+                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                if(blueVal>=minTurretAngle&&blueVal<=maxTurretAngle){
+                    return blueVal;
+                }else if (blueVal<minTurretAngle){
+                    return minTurretAngle;
+                }else if (blueVal>maxTurretAngle){
+                    return maxTurretAngle;
+                }else{
+                    return 0;
+                }
+
 
             default:
                 return 0;
@@ -86,12 +115,15 @@ public class Turret implements Subsystem {
         }).requires(this);
     }
 
-    public Command trackTurret(){
-        return new InstantCommand(
-                () -> {
-                    controller.setSetpoint(turretTargetAngle);
-                }
-        );
+
+    private void setTurret(){
+        controller.setSetpoint(turretTargetAngle);
+    }
+
+    private void moveTurret(){
+        double pow = controller.calculate(turretQuad);
+        turretM.setPower(-pow);
+        turretS.setPower(-pow);
     }
 
 
