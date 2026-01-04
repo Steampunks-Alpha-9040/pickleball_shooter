@@ -85,12 +85,20 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     public static class Paths {
 
+        public PathChain testingAuto;
         public PathChain PathIntakeClose;
         public PathChain PathShootFirst;
         public PathChain PathIntakeMiddle;
         public PathChain PathShootSecond;
 
         public Paths(Follower follower) {
+            testingAuto = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(64.145, 8.79), new Pose(70.000, 8.79))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
             PathIntakeClose = follower
                     .pathBuilder()
                     .addPath(
@@ -185,30 +193,31 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                //flywheel.shootFlywheel(),
+//                flywheel.shootFlywheel(),
                 new SequentialGroup(
 //                        sort(),
                         new Delay(Beginning),
+                        new FollowPath(paths.testingAuto)
 //                        safeShoot(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-                        new FollowPath(paths.PathIntakeClose),
-                        new Delay(intakeDelay),
+//                        new FollowPath(paths.PathIntakeClose),
+//                        new Delay(intakeDelay),
 //                        intakeStop(),
 //                        sort(),
-                        new FollowPath(paths.PathShootFirst),
+//                        new FollowPath(paths.PathShootFirst),
 //                        safeShoot(),
-                        new Delay(shootFarDelay),
+//                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-                        new FollowPath(paths.PathIntakeMiddle),
-                        new Delay(intakeDelay),
+//                        new FollowPath(paths.PathIntakeMiddle),
+//                        new Delay(intakeDelay),
 //                        sort(),
-                        new FollowPath(paths.PathShootSecond),
+//                        new FollowPath(paths.PathShootSecond),
 //                        intakeStop(),
 //                        safeShoot(),
-                        new Delay(shootFarDelay)
+//                        new Delay(shootFarDelay)
 //                        stopShoot()
                         )
         );
