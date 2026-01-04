@@ -60,7 +60,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(180)));
 
         // Build paths
 
@@ -71,7 +71,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
     @Override
     public void onStartButtonPressed() {
         follower.update(); // Update Pedro Pathing
-//        pathState = autonomousPathUpdate(); // Update autonomous state machine
+        //pathState = autonomousPathUpdate(); // Update autonomous state machine
 
         autonomousRoutine().schedule();
         // Log values to Panels and Driver Station
@@ -84,12 +84,20 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     public static class Paths {
 
+        public PathChain testingAuto;
         public PathChain PathIntakeClose;
         public PathChain PathShootFirst;
         public PathChain PathIntakeMiddle;
         public PathChain PathShootSecond;
 
         public Paths(Follower follower) {
+            testingAuto = follower
+                    .pathBuilder()
+                    .addPath(
+                            new BezierLine(new Pose(64.145, 8.79), new Pose(70.000, 8.79))
+                    )
+                    .setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    .build();
             PathIntakeClose = follower
                     .pathBuilder()
                     .addPath(
@@ -184,30 +192,31 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                flywheel.shootFlywheel(),
+//                flywheel.shootFlywheel(),
                 new SequentialGroup(
 //                        sort(),
                         new Delay(Beginning),
+                        new FollowPath(paths.testingAuto)
 //                        safeShoot(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-                        new FollowPath(paths.PathIntakeClose),
-                        new Delay(intakeDelay),
+//                        new FollowPath(paths.PathIntakeClose),
+//                        new Delay(intakeDelay),
 //                        intakeStop(),
 //                        sort(),
-                        new FollowPath(paths.PathShootFirst),
+//                        new FollowPath(paths.PathShootFirst),
 //                        safeShoot(),
-                        new Delay(shootFarDelay),
+//                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-                        new FollowPath(paths.PathIntakeMiddle),
-                        new Delay(intakeDelay),
+//                        new FollowPath(paths.PathIntakeMiddle),
+//                        new Delay(intakeDelay),
 //                        sort(),
-                        new FollowPath(paths.PathShootSecond),
+//                        new FollowPath(paths.PathShootSecond),
 //                        intakeStop(),
 //                        safeShoot(),
-                        new Delay(shootFarDelay)
+//                        new Delay(shootFarDelay)
 //                        stopShoot()
                         )
         );
