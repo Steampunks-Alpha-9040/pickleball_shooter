@@ -41,10 +41,10 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        turretTargetAngle = calculateTurretAngle();
-        double pow = controller.calculate(turretQuad);
-        turretM.setPower(-pow);
-        turretS.setPower(-pow);
+//        turretTargetAngle = calculateTurretAngle();
+//        double pow = controller.calculate(turretQuad);
+//        turretM.setPower(-pow);
+//        turretS.setPower(-pow);
         ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
