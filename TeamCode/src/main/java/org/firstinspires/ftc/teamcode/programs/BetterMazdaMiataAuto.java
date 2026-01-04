@@ -34,8 +34,8 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
         addComponents(
                 new SubsystemComponent(
                         super.drivebase,
-                        super.indexer,
-                        super.feeder,
+//                        super.indexer,
+//                        super.feeder,
                         super.flywheel
                 ),
                 new PedroComponent(Constants::createFollower),
@@ -138,53 +138,53 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
     double Beginning = 1.0;
     double intakeDelay = 1.0;
 
-    public Command shoot() {
-        return new ParallelGroup(
-                feeder.setArmDown(),
-                feeder.turnWheelsOn()
-        );
-    }
-
-    public Command safeShoot() {
-        if (indexer.checkValid()) {
-            return shoot();
-        } else {
-            sort();
-            new Delay(0.5);
-        }
-        return shoot();
-    }
-
-    public Command stopShoot() {
-        return new ParallelGroup(
-                feeder.setArmUp(),
-                feeder.turnWheelsOff()
-        );
-    }
-
-    public Command sort() {
-        return new ParallelGroup(
-                indexer.autoSet()
-        );
-    }
-
-    public Command intake() {
-        return new SequentialGroup(
-                intake.spinIntake(),
-                indexer.spinIndexer()
-        );
-    }
-
-    public Command intakeStop() {
-        return new SequentialGroup(
-                intake.stopIntake(),
-                indexer.stopIndexer()
-        );
-    }
+//    public Command shoot() {
+//        return new ParallelGroup(
+//                feeder.setArmDown(),
+//                feeder.turnWheelsOn()
+//        );
+//    }
+//
+//    public Command safeShoot() {
+//        if (indexer.checkValid()) {
+//            return shoot();
+//        } else {
+//            sort();
+//            new Delay(0.5);
+//        }
+//        return shoot();
+//    }
+//
+//    public Command stopShoot() {
+//        return new ParallelGroup(
+//                feeder.setArmUp(),
+//                feeder.turnWheelsOff()
+//        );
+//    }
+//
+//    public Command sort() {
+//        return new ParallelGroup(
+//                indexer.autoSet()
+//        );
+//    }
+//
+//    public Command intake() {
+//        return new SequentialGroup(
+//                intake.spinIntake(),
+//                indexer.spinIndexer()
+//        );
+//    }
+//
+//    public Command intakeStop() {
+//        return new SequentialGroup(
+//                intake.stopIntake(),
+//                indexer.stopIndexer()
+//        );
+//    }
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                flywheel.shootFlywheel(),
+                //flywheel.shootFlywheel(),
                 new SequentialGroup(
 //                        sort(),
                         new Delay(Beginning),
