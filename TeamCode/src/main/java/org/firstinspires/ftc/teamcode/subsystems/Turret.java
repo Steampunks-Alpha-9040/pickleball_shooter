@@ -84,8 +84,10 @@ public class Turret implements Subsystem {
                         Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.BLUEscore.getX(),
                         Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
                 ) - trueheading;
-                ActiveOpMode.telemetry().addData("x pos", Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH));
-                ActiveOpMode.telemetry().addData("y pos", Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH));
+//                ActiveOpMode.telemetry().addData("x pos", Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH));
+//                ActiveOpMode.telemetry().addData("y pos", Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH));
+                ActiveOpMode.telemetry().addData("blueval", blueVal);
+                ActiveOpMode.telemetry().addData("trueheading", trueheading);
                 if(blueVal>=minTurretAngle&&blueVal<=maxTurretAngle){
                     return blueVal;
                 }else if (blueVal<minTurretAngle){
