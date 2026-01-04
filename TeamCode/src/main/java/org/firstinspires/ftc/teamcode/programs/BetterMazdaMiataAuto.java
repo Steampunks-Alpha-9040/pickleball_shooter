@@ -26,7 +26,7 @@ import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 
-@Autonomous(name = "Pedro Pathing Autonomous", group = "Autonomous")
+@Autonomous(name = "BetterMazda", group = "Autonomous")
 @Configurable // Panels
 public class BetterMazdaMiataAuto extends BaseOpMode {
 
@@ -60,7 +60,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
-        follower.setStartingPose(new Pose(72, 8, Math.toRadians(90)));
+        follower.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(180)));
 
         // Build paths
 
@@ -68,10 +68,11 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
         panelsTelemetry.update(telemetry);
     }
 
+
     @Override
     public void onStartButtonPressed() {
         follower.update(); // Update Pedro Pathing
-//        pathState = autonomousPathUpdate(); // Update autonomous state machine
+//        pathState = autonomousRoutine(); // Update autonomous state machine
 
         autonomousRoutine().schedule();
         // Log values to Panels and Driver Station
