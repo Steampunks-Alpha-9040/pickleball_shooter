@@ -60,7 +60,10 @@ public class Turret implements Subsystem {
         double offset=-Math.PI/2;
         double maxTurretAngle=1.3;
         double minTurretAngle=-1.42;
-        double trueheading=(Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset+2*Math.PI+Math.PI)%(2*Math.PI)-Math.PI;
+        double theta = Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS) + offset;
+        double trueheading = Math.atan2(Math.sin(theta), Math.cos(theta)); // always in (-π, π]
+
+
 
         switch (Constants.OpModeConstants.side){
             case RED:
