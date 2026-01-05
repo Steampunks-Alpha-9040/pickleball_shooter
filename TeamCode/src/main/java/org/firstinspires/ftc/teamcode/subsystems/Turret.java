@@ -39,7 +39,7 @@ public class Turret implements Subsystem {
         turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
         turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
 
-        turretQuad =0;
+        turretQuad = 0;
 
         //should be 0 it is scuffed though
     }

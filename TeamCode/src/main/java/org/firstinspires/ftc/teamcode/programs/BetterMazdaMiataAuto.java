@@ -57,6 +57,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 
     @Override
     public void onInit() {
+
         pathTimer = new Timer();
         opmodeTimer = new Timer();
         opmodeTimer.resetTimer();

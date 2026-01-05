@@ -28,13 +28,13 @@ public class Drivebase implements Subsystem {
 
     public static final Drivebase INSTANCE = new Drivebase();
     private Drivebase(){}
-    public static Follower follower;
 
     private MotorEx FL;
     private MotorEx FR;
     private MotorEx BL;
     private MotorEx BR;
     private GoBildaPinpointDriver imu;
+
     private Pose2D botpose;
 
     private double gyroOffset;
@@ -45,15 +45,6 @@ public class Drivebase implements Subsystem {
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
         imu = ActiveOpMode.hardwareMap().get(GoBildaPinpointDriver.class, Constants.DrivebaseConstants.IMU);
-        imu.recalibrateIMU();
-
-        imu.setEncoderResolution(GoBildaPinpointDriver.GoBildaOdometryPods.goBILDA_4_BAR_POD);
-
-        imu.setOffsets(-0.215,-6.766, DistanceUnit.INCH);
-        imu.setEncoderDirections(
-                GoBildaPinpointDriver.EncoderDirection.FORWARD,
-                GoBildaPinpointDriver.EncoderDirection.REVERSED
-        );
         imu.setYawScalar(Constants.DrivebaseConstants.yawScalar);
 
     }
@@ -111,6 +102,10 @@ public class Drivebase implements Subsystem {
 
     public void setStartingPose(Pose pose){
         imu.setPosition(new Pose2D(DistanceUnit.INCH, pose.getX(), pose.getY(), AngleUnit.RADIANS, pose.getHeading()));
+    }
+
+    public void setIMUHeading(double degree){
+        imu.setHeading(degree, AngleUnit.DEGREES);
     }
 
 
