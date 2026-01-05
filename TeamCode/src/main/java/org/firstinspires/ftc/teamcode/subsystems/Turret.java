@@ -58,7 +58,6 @@ public class Turret implements Subsystem {
 
     public double calculateTurretAngle(){
         double offset=0;
-        double goalAngle = Math.atan2(15,1);
         double maxTurretAngle=1.3;
         double minTurretAngle=-1.42;
 

@@ -111,7 +111,7 @@ public class Drivebase implements Subsystem {
 
     //We do this since the quadature is attached to the FL motor, and quadatures are only implemented for motors. We use servos for the turret :)
     public double getTurretQuadature(){
-        return -((FL.getCurrentPosition()/4096)/(Constants.TurretConstants.encoderToTurret)*2*Math.PI);
+        return ((FL.getCurrentPosition()/4096)/(Constants.TurretConstants.encoderToTurret)*2*Math.PI);
     }
 
     public double getHoodQuadature(){
