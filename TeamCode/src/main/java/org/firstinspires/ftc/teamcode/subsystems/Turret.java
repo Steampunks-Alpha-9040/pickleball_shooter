@@ -57,22 +57,18 @@ public class Turret implements Subsystem {
     }
 
     public double calculateTurretAngle(){
-        double offset=-Math.PI/2;
+        double offset=0;
+        double goalAngle = Math.atan2(15,1);
         double maxTurretAngle=1.3;
         double minTurretAngle=-1.42;
-        double theta = Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS) + offset;
-        double trueheading = Math.atan2(Math.sin(theta), Math.cos(theta)); // always in (-π, π]
-
-
 
         switch (Constants.OpModeConstants.side){
             case RED:
                 double redVal=Math.atan2(
-                        Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.REDscore.getX(),
-                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - trueheading;
-
-
+                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH),
+                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)
+                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS)+offset;
+                redVal = Math.atan2(Math.sin(redVal), Math.cos(redVal));
                 if(redVal>=minTurretAngle&&redVal<=maxTurretAngle){
                     return redVal;
                 }else if (redVal<minTurretAngle){
@@ -83,14 +79,11 @@ public class Turret implements Subsystem {
                     return 0;
                 }
             case BLUE:
-                double blueVal=Math.atan2(
-                        Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)-Constants.OpModeConstants.BLUEscore.getX(),
-                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - trueheading;
-//                ActiveOpMode.telemetry().addData("x pos", Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH));
-//                ActiveOpMode.telemetry().addData("y pos", Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH));
-                ActiveOpMode.telemetry().addData("blueval", blueVal);
-                ActiveOpMode.telemetry().addData("trueheading", trueheading);
+                double blueVal = Math.atan2(
+                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH),
+                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH)
+                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS) + offset;
+                blueVal = Math.atan2(Math.sin(blueVal), Math.cos(blueVal));
                 if(blueVal>=minTurretAngle&&blueVal<=maxTurretAngle){
                     return blueVal;
                 }else if (blueVal<minTurretAngle){
@@ -100,8 +93,6 @@ public class Turret implements Subsystem {
                 }else{
                     return 0;
                 }
-
-
             default:
                 return 0;
         }
