@@ -33,13 +33,11 @@ public class TeleOpBLUE extends BaseOpMode {
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         new ParallelGroup(
-                                indexer.spinIndexer(),
-                                feeder.transfer()
+                                feeder.turnWheelsOn()
                         )
                 ).whenBecomesFalse(
                         new ParallelGroup(
-                                indexer.stopIndexer(),
-                                feeder.store()
+                                feeder.turnWheelsOff()
                         )
                 );
 
@@ -74,13 +72,13 @@ public class TeleOpBLUE extends BaseOpMode {
                 drivebase.zeroGryo()
         );
 
-        Gamepads.gamepad2().a().whenBecomesTrue(
-                indexer.autoSet()
-        );
-
-        Gamepads.gamepad2().x().whenBecomesTrue(
-                indexer.oneRot()
-        );
+//        Gamepads.gamepad2().a().whenBecomesTrue(
+//                indexer.autoSet()
+//        );
+//
+//        Gamepads.gamepad2().x().whenBecomesTrue(
+//                indexer.oneRot()
+//        );
 
     }
 

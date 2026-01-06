@@ -73,7 +73,8 @@ public class Constants {
 
     public static class FeederConstants{
         public static final String feederArm = "feederArm";
-        public static final String feederWheel = "feederWheel";
+        public static final String feederWheel1 = "feeder1";
+        public static final String feederWheel2 = "feeder2";
 
         public static final double servoToArm = 48.0 / 30.0;
 

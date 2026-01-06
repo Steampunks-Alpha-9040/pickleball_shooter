@@ -7,6 +7,7 @@ import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 import dev.nextftc.hardware.impl.ServoEx;
 
@@ -15,14 +16,16 @@ public class Feeder implements Subsystem {
 
     public static Feeder INSTANCE = new Feeder();
 
-    private MotorEx feederWheel;
+    private CRServoEx feeder1;
+    private CRServoEx feeder2;
     private ServoEx feederArm;
 
 
 
     @Override
     public void initialize(){
-        feederWheel = new MotorEx(Constants.FeederConstants.feederWheel).brakeMode().reversed();
+        feeder1 = new CRServoEx(Constants.FeederConstants.feederWheel1);
+        feeder2 = new CRServoEx(Constants.FeederConstants.feederWheel2);
         feederArm = new ServoEx(Constants.FeederConstants.feederArm);
     }
 
@@ -61,13 +64,19 @@ public class Feeder implements Subsystem {
     public Command turnWheelsOn(){
         return new LambdaCommand()
                 .requires(this)
-                .setStart(() -> feederWheel.setPower(1));
+                .setStart(() -> {
+                    feeder1.setPower(1);
+                    feeder2.setPower(-1);
+                });
     }
 
     public Command turnWheelsOff(){
         return new LambdaCommand()
                 .requires(this)
-                .setStart(() -> feederWheel.setPower(0));
+                .setStart(() -> {
+                    feeder1.setPower(0);
+                    feeder2.setPower(0);
+                });
     }
 
 }
