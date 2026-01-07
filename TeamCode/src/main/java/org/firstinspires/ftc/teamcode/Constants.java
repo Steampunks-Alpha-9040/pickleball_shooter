@@ -55,7 +55,7 @@ public class Constants {
         public static final double hood_kF = 0.0;
 
         public static final double[][] flywheelVals = {
-                {72,17, -5000, 7} //far zone
+                {72,17, 5000, 7} //far zone
 
         };
 

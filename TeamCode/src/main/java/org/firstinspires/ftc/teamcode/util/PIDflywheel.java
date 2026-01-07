@@ -31,38 +31,37 @@ public class PIDflywheel {
 
 
     public double calculate(double currentRPM) {
-        double error = setpoint - currentRPM;
-
-        // --- TOLERANCE CHECK ---
-        if (Math.abs(error) <= tolerance) {
-            integral = 0;
-            previousError = error;
+        if (setpoint == 0.0) {
+            integral = 0.0;
+            previousError = 0.0;
             return 0.0;
         }
 
-        // Integral per loop
-        integral += error;
+        double error = setpoint - currentRPM;
 
         // Derivative per loop
         double derivative = error - previousError;
 
-        // PIDF output
-        double output =
-                (kP * error) +
-                        (kI * integral) +
-                        (kD * derivative) +
-                        kF;
+        // Only integrate when not within tolerance (prevents noise windup)
+        if (Math.abs(error) > tolerance) {
+            integral += error;
 
-        // Clamp
+            // clamp integral to prevent windup (tune these)
+            double iMin = -5000, iMax = 5000;
+            if (integral > iMax) integral = iMax;
+            if (integral < iMin) integral = iMin;
+        }
+
+        // Feedforward: keep at least ff even within tolerance
+        double ff = kF; // or kF * setpoint if that’s how you tuned it
+
+        double output = (kP * error) + (kI * integral) + (kD * derivative) + ff;
+
+        // Clamp output
         if (output > outputMax) output = outputMax;
         if (output < outputMin) output = outputMin;
 
         previousError = error;
-
-        if (setpoint == 0.0){
-            return 0.0;
-        }
-
         return output;
     }
 
