@@ -14,7 +14,7 @@ public class Constants {
     }
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(10, 150);
+        public static Vector2d BLUEscore = new Vector2d(5, 139);
         public static Vector2d REDscore = new Vector2d(144, 144);
     }
     public static class DrivebaseConstants {
@@ -53,6 +53,12 @@ public class Constants {
         public static final double hood_kI = 0.0;
         public static final double hood_kD = 0.0;
         public static final double hood_kF = 0.0;
+
+        public static final double[][] flywheelVals = {
+                {72,17, -5000, 7} //far zone
+
+        };
+
 
     }
 

@@ -26,8 +26,6 @@ public class TeleOpRED extends BaseOpMode {
 
         field.getField().setStyle("none", "white", 1.5);
 
-        drivebase.setStartingPose(72,72);
-
         drivebase.getMecanumDriver().schedule();
 
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
@@ -65,9 +63,6 @@ public class TeleOpRED extends BaseOpMode {
 //        ).whenBecomesFalse(
 //                turret.stopTurret()
 //        );
-        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
-                turret.trackTurret()
-        );
         Gamepads.gamepad1().b().and(
                 Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
         ).whenBecomesTrue(
@@ -82,11 +77,6 @@ public class TeleOpRED extends BaseOpMode {
 
         // Draw dot at current animated position
 //        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
-        field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH)); //flipped since x in pedro is y
-        field.getField().circle(1.5);
-        panels.getTelemetry().addData("quad", drivebase.getTurretQuadature());
-        panels.getTelemetry().addData("botpose", Util.poseUnitConvertor(DistanceUnit.METER,drivebase.getBotpose()));
-        timer.end();
         panels.getTelemetry().addData("LoopTime", timer.getMs());
         field.getField().update();
         panels.getTelemetry().update();

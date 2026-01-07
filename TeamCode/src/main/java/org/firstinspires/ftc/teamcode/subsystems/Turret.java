@@ -42,9 +42,10 @@ public class Turret implements Subsystem {
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
         turretTargetAngle = calculateTurretAngle();
+        controller.setSetpoint(turretTargetAngle);
         double pow = controller.calculate(turretQuad);
-        turretM.setPower(-pow);
-        turretS.setPower(-pow);
+        turretM.setPower(pow);
+        turretS.setPower(pow);
         ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
@@ -53,14 +54,14 @@ public class Turret implements Subsystem {
         switch (Constants.OpModeConstants.side){
             case RED:
                 return Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
-                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
+                        Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.REDscore.getY(),
+                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
+                ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
             case BLUE:
                 return Math.atan2(
-                        Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getBotpose().getX(DistanceUnit.INCH),
-                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getBotpose().getY(DistanceUnit.INCH)
-                ) - Drivebase.INSTANCE.getBotpose().getHeading(AngleUnit.RADIANS);
+                        Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.BLUEscore.getY(),
+                        Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
+                ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
 
             default:
                 return 0;

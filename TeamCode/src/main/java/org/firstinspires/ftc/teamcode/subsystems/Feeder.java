@@ -31,8 +31,6 @@ public class Feeder implements Subsystem {
 
     @Override
     public void periodic(){
-
-
     }
 
     public Command transfer(){

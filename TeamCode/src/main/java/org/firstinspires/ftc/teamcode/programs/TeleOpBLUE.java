@@ -2,8 +2,10 @@ package org.firstinspires.ftc.teamcode.programs;
 
 
 import com.bylazar.utils.LoopTimer;
+import com.pedropathing.geometry.Pose;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -26,19 +28,16 @@ public class TeleOpBLUE extends BaseOpMode {
 
         field.getField().setStyle("none", "white", 1.5);
 
-        drivebase.setStartingPose(72,0);
+        drivebase.setFollower(PedroComponent.follower());
+        drivebase.getFollower().setStartingPose(new Pose(72, 7, Math.toRadians(90)));
 
         drivebase.getMecanumDriver().schedule();
 
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        new ParallelGroup(
-                                feeder.turnWheelsOn()
-                        )
+                        feeder.turnWheelsOn()
                 ).whenBecomesFalse(
-                        new ParallelGroup(
-                                feeder.turnWheelsOff()
-                        )
+                        feeder.turnWheelsOff()
                 );
 
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
@@ -63,9 +62,6 @@ public class TeleOpBLUE extends BaseOpMode {
 //        ).whenBecomesFalse(
 //                turret.stopTurret()
 //        );
-        Gamepads.gamepad1().rightBumper().whenBecomesTrue(
-                turret.trackTurret()
-        );
         Gamepads.gamepad1().b().and(
                 Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
         ).whenBecomesTrue(
@@ -79,6 +75,8 @@ public class TeleOpBLUE extends BaseOpMode {
 //        Gamepads.gamepad2().x().whenBecomesTrue(
 //                indexer.oneRot()
 //        );
+        drivebase.zeroHoodQuadature();
+        drivebase.zeroTurretQuadature();
 
     }
 
@@ -88,11 +86,10 @@ public class TeleOpBLUE extends BaseOpMode {
 
         // Draw dot at current animated position
 //        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
-        field.getField().moveCursor(drivebase.getBotpose().getX(DistanceUnit.INCH), drivebase.getBotpose().getY(DistanceUnit.INCH)); //flipped since x in pedro is y
+        field.getField().moveCursor(drivebase.getFollower().getPose().getX(), drivebase.getFollower().getPose().getY()); //flipped since x in pedro is y
         field.getField().circle(1.5);
 
         panels.getTelemetry().addData("quad", drivebase.getTurretQuadature());
-        panels.getTelemetry().addData("botpose", Util.poseUnitConvertor(DistanceUnit.METER,drivebase.getBotpose()));
         timer.end();
         panels.getTelemetry().addData("LoopTime", timer.getMs());
         field.getField().update();
