@@ -21,6 +21,8 @@ public class Turret implements Subsystem {
 
     private double turretTargetAngle;
 
+    private Constants.Side side;
+
 
     private PIDposition controller = new PIDposition(
             Constants.TurretConstants.turret_kP,
@@ -40,18 +42,25 @@ public class Turret implements Subsystem {
 
     @Override
     public void periodic(){
-        turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        turretTargetAngle = calculateTurretAngle();
-        controller.setSetpoint(turretTargetAngle);
-        double pow = controller.calculate(turretQuad);
-        turretM.setPower(pow);
-        turretS.setPower(pow);
+        if (!ActiveOpMode.opModeInInit()) {
+            turretQuad = Drivebase.INSTANCE.getTurretQuadature();
+            turretTargetAngle = calculateTurretAngle();
+            controller.setSetpoint(turretTargetAngle);
+            double pow = controller.calculate(turretQuad);
+            turretM.setPower(pow);
+            turretS.setPower(pow);
+        }
         ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
 
+    public void setSide(Constants.Side side){
+        this.side = side;
+    }
+
+
     public double calculateTurretAngle(){
-        switch (Constants.OpModeConstants.side){
+        switch (side){
             case RED:
                 return Math.atan2(
                         Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.REDscore.getY(),

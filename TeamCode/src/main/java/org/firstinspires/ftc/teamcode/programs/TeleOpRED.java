@@ -22,7 +22,7 @@ public class TeleOpRED extends BaseOpMode {
 
     @Override
     public void onInit() {
-        Constants.OpModeConstants.side = Constants.Side.RED;
+        turret.setSide(Constants.Side.RED);
 
         field.getField().setStyle("none", "white", 1.5);
 

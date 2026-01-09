@@ -53,8 +53,8 @@ public class Drivebase implements Subsystem {
 
     public PedroDriverControlled getMecanumDriver(){
         return new PedroDriverControlled(
-                Gamepads.gamepad1().leftStickY(),
                 Gamepads.gamepad1().leftStickX(),
+                Gamepads.gamepad1().leftStickY(),
                 Gamepads.gamepad1().rightStickX(),
                 false
         );

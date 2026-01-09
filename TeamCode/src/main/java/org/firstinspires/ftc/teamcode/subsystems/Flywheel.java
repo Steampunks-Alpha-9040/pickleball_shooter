@@ -105,7 +105,7 @@ public class Flywheel implements Subsystem {
         if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
             return Constants.FlywheelConstants.flywheelVals[0][2];
         } else {
-            return 3000;
+            return -3000;
         }
     }
 

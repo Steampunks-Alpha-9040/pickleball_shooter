@@ -41,8 +41,8 @@ public class PIDposition {
         // Derivative
         double derivative = error - previousError;
 
-        // Feedforward example (arm)
-        double feedforward = kF * Math.cos(currentAngle);
+        // Feedforward
+        double feedforward = kF;
 
         double output =
                 kP * error +

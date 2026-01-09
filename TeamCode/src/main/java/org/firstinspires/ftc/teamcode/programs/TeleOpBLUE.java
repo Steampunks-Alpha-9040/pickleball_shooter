@@ -24,7 +24,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
     @Override
     public void onInit() {
-        Constants.OpModeConstants.side = Constants.Side.BLUE;
+        turret.setSide(Constants.Side.BLUE);
 
         field.getField().setStyle("none", "white", 1.5);
 
