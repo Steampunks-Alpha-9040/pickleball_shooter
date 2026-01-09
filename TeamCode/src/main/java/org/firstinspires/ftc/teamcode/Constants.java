@@ -42,9 +42,9 @@ public class Constants {
 
         public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
 
-        public static final double flywheel_kP = 2.0;
+        public static final double flywheel_kP = 1.5;
         public static final double flywheel_kI = 0.0;
-        public static final double flywheel_kD = 0.5;
+        public static final double flywheel_kD = 0.0;
         public static final double flywheel_kF = 0.0;
 
         public static final double hoodPositionToleranceRAD = 0.1;
