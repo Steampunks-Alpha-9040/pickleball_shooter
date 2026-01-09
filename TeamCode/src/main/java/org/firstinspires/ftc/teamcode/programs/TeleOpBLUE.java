@@ -72,9 +72,9 @@ public class TeleOpBLUE extends BaseOpMode {
 //                indexer.autoSet()
 //        );
 //
-//        Gamepads.gamepad2().x().whenBecomesTrue(
-//                indexer.oneRot()
-//        );
+        Gamepads.gamepad2().x().whenBecomesTrue(
+                indexer.oneRot()
+        );
         drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
 

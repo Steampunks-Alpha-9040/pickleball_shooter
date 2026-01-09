@@ -199,9 +199,9 @@ public class Indexer implements Subsystem {
 //        }
 //    }
 //
-//    public Command oneRot() {
-//        return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+TicksPerRot));
-//    }
+    public Command oneRot() {
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+TicksPerRot));
+    }
 
     public void spinIndexer(double power){
         INSTANCE.indexer.setPower(power);

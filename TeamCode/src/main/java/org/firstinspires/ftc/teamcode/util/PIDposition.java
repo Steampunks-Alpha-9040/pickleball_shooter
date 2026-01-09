@@ -21,7 +21,7 @@ public class PIDposition {
         this.tolerance = Math.abs(toleranceRadians);
     }
 
-
+    double clamp = 0.65;
 
     public void setSetpoint(double angleRadians) {
         this.setpoint = angleRadians;
@@ -34,34 +34,38 @@ public class PIDposition {
     public double calculate(double currentAngle) {
         double error = setpoint - currentAngle;
 
-        // --- TOLERANCE CHECK ---
         if (Math.abs(error) <= tolerance) {
             integral = 0;
-            previousError = error;
-            return 0.0;
         }
 
-        // Integral per loop
-        integral += error;
-
-        // Derivative per loop
+        // Derivative
         double derivative = error - previousError;
 
-        // PIDF output
-        double output =
-                (kP * error) +
-                        (kI * integral) +
-                        (kD * derivative) +
-                        kF;
+        // Feedforward example (arm)
+        double feedforward = kF * Math.cos(currentAngle);
 
-        // Clamp
-        if (output > outputMax) output = outputMax;
-        if (output < outputMin) output = outputMin;
+        double output =
+                kP * error +
+                        kI * integral +
+                        kD * derivative +
+                        feedforward;
+
+        // Clamp output
+        output = Math.max(outputMin, Math.min(outputMax, output));
+
+        // Anti-windup
+        if (Math.abs(output) < outputMax) {
+            integral += error;
+        }
 
         previousError = error;
 
+        if (output > clamp) {
+            output = clamp;
+        }
         return output;
     }
+
 
     public void reset() {
         integral = 0;

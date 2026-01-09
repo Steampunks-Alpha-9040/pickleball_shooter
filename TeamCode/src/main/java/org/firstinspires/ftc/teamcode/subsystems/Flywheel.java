@@ -47,7 +47,7 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void initialize(){
-        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).brakeMode().zeroed().reversed();
+        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).zeroed().reversed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
 
 
@@ -60,11 +60,14 @@ public class Flywheel implements Subsystem {
         shootFlywheel();
         spinHood();
 
-        flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
+        double power = flywheelCalculator.calculate(flywheelCurrentRPM);
+
+        flywheel.setPower(power);
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
         ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
         ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+        ActiveOpMode.telemetry().addData("power", power);
 
 
         ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());

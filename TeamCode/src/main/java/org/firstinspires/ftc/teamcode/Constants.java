@@ -40,11 +40,11 @@ public class Constants {
 
         public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
 
-        public static final double flywheelVelocityTolerance = 10.0; //10 rpm tolerance is probably good enough
+        public static final double flywheelVelocityTolerance = 2.0; //10 rpm tolerance is probably good enough
 
-        public static final double flywheel_kP = 2.0;
+        public static final double flywheel_kP = 0.005;
         public static final double flywheel_kI = 0.0;
-        public static final double flywheel_kD = 0.5;
+        public static final double flywheel_kD = 0.0;
         public static final double flywheel_kF = 0.0;
 
         public static final double hoodPositionToleranceRAD = 0.1;
@@ -55,7 +55,7 @@ public class Constants {
         public static final double hood_kF = 0.0;
 
         public static final double[][] flywheelVals = {
-                {72,17, -5000, 7} //far zone
+                {72,17, 5000, 7} //far zone
 
         };
 
@@ -100,10 +100,10 @@ public class Constants {
         public static final String rampLeftSensor = "rampLeftSensor";
         public static final double motorToIndexer = 0.0;
 
-        public static final double indexer_kP = 0.003; //The like main pushing force, the constant :)
+        public static final double indexer_kP = 0.08; //The like main pushing force, the constant :)
         public static final double indexer_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double indexer_kD = 0.005; //slows down/speeds up the closer/farther away u are
-        public static final double indexer_kF = 0.1; //friction, tune so when the turret barely moves
+        public static final double indexer_kD = 0.0003; //slows down/speeds up the closer/farther away u are
+        public static final double indexer_kF = 0.05; //friction, tune so when the turret barely moves
 
         public static final double indexer_DutyCycle = 0.3;
 
