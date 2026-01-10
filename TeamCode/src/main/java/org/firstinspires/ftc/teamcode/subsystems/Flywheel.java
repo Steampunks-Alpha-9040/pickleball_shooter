@@ -101,6 +101,10 @@ public class Flywheel implements Subsystem {
                 .requires(this);
     }
 
+    public Command spinHoodZero(){
+        return new InstantCommand(() -> hoodCalculator.setSetpoint(0));
+    }
+
     public double getFlywheelRPM(){
         if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
             return Constants.FlywheelConstants.flywheelVals[0][2];
