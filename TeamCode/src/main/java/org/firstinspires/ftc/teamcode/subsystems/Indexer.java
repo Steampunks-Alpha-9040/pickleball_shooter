@@ -46,7 +46,7 @@ public class Indexer implements Subsystem {
     }
 
 
-    private final PIDposition indexerCalculator = new PIDposition(Constants.IndexerConstants.indexer_kP,0,Constants.IndexerConstants.indexer_kD,Constants.IndexerConstants.indexer_kF,50);
+    private final PIDposition indexerCalculator = new PIDposition(Constants.IndexerConstants.indexer_kP,0,Constants.IndexerConstants.indexer_kD,Constants.IndexerConstants.indexer_kF,50, 0.4);
     private final ControlSystem maxSpeed =
             ControlSystem.builder()
 
