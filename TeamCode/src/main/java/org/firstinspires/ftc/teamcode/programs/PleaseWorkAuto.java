@@ -102,7 +102,7 @@ public class PleaseWorkAuto extends BaseOpMode {
                             new BezierCurve(
                                     new Pose(63.700, 8.690),
                                     new Pose(51.908, 39.279),
-                                    new Pose(18.000, 36.000)
+                                    new Pose(14.000, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -110,7 +110,7 @@ public class PleaseWorkAuto extends BaseOpMode {
 
             ShootFirst = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(18.000, 36.000),
+                                    new Pose(14.000, 36.000),
 
                                     new Pose(48.000, 11.000)
                             )
@@ -123,7 +123,7 @@ public class PleaseWorkAuto extends BaseOpMode {
                                     new Pose(48.000, 11.000),
                                     new Pose(54.247, 64.994),
                                     new Pose(45.587, 54.656),
-                                    new Pose(18.000, 60.000)
+                                    new Pose(14.000, 58.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(100), Math.toRadians(180))
 
@@ -131,7 +131,7 @@ public class PleaseWorkAuto extends BaseOpMode {
 
             SecondShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(18.000, 60.000),
+                                    new Pose(14.000, 58.000),
 
                                     new Pose(48.000, 11.000)
                             )
