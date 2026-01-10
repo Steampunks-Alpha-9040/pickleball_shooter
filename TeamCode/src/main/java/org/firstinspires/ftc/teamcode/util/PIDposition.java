@@ -52,7 +52,7 @@ public class PIDposition {
         double derivative = error - previousError;
 
         // Feedforward
-        double feedforward = kF;
+        double feedforward = (error < 0) ? -kF : kF;
 
         double output =
                 kP * error +

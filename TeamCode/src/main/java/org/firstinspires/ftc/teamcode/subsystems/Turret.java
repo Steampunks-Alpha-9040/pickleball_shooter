@@ -42,11 +42,11 @@ public class Turret implements Subsystem {
 
     @Override
     public void periodic(){
-        if (!ActiveOpMode.opModeInInit()) {
-            turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-            turretTargetAngle = calculateTurretAngle();
-            controller.setSetpoint(turretTargetAngle);
-            double pow = controller.calculate(turretQuad);
+        turretQuad = Drivebase.INSTANCE.getTurretQuadature();
+        turretTargetAngle = calculateTurretAngle();
+        controller.setSetpoint(turretTargetAngle);
+        double pow = controller.calculate(turretQuad);
+        if (ActiveOpMode.isStarted()) {
             turretM.setPower(pow);
             turretS.setPower(pow);
         }

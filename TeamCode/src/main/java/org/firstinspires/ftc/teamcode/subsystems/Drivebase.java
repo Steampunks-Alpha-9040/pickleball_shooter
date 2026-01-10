@@ -48,7 +48,7 @@ public class Drivebase implements Subsystem {
 
     public void periodic(){
         follower.update();
-        ActiveOpMode.telemetry().addData("pose", follower.getPose().getHeading());
+        ActiveOpMode.telemetry().addData("pose", follower.getPose());
     }
 
     public PedroDriverControlled getMecanumDriver(){
