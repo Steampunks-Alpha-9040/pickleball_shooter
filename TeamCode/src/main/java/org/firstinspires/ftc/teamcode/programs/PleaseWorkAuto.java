@@ -221,6 +221,8 @@ public class PleaseWorkAuto extends BaseOpMode {
                         new FollowPath(paths.ShootFirst),
                         safeShoot(),
                         new Delay(intakeDelay),
+                        new Delay(5),
+                        turret.sethome(true)
 //                        stopShoot(),
 //                        intake(),
 //                        new FollowPath(paths.SecondIntake),

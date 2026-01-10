@@ -23,6 +23,8 @@ public class Turret implements Subsystem {
 
     private Constants.Side side;
 
+    private boolean homed = false;
+
 
     private PIDposition controller = new PIDposition(
             Constants.TurretConstants.turret_kP,
@@ -34,6 +36,7 @@ public class Turret implements Subsystem {
 
     @Override
     public void initialize(){
+        homed = false;
         turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
         turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
 
@@ -45,6 +48,9 @@ public class Turret implements Subsystem {
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
         turretTargetAngle = physicalLimit();
         controller.setSetpoint(turretTargetAngle);
+        if (homed) {
+            controller.setSetpoint(0);
+        }
         double pow = controller.calculate(turretQuad);
         if (ActiveOpMode.isStarted()) {
             turretM.setPower(pow);
@@ -63,6 +69,10 @@ public class Turret implements Subsystem {
         if (calculateTurretAngle() < -Math.PI/2){
             return -Math.PI/2;
         } else return Math.min(calculateTurretAngle(), Math.PI / 2);
+    }
+
+    public void sethome(boolean bool) {
+        homed = bool;
     }
 
     public double calculateTurretAngle(){
