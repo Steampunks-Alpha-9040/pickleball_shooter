@@ -32,7 +32,7 @@ public class TeleOpRED extends BaseOpMode {
 
         turret.setSide(Constants.Side.RED);
 
-        drivebase.getMecanumDriver().schedule();
+        drivebase.getMecanumDriver(1).schedule();
 
         //Gamepad 1
         Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()

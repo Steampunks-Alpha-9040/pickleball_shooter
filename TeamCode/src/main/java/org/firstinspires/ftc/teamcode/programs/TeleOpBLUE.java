@@ -34,7 +34,7 @@ public class TeleOpBLUE extends BaseOpMode {
         turret.setSide(Constants.Side.BLUE);
         turret.setTurretQuad(0);
 
-        drivebase.getMecanumDriver().schedule();
+        drivebase.getMecanumDriver(0).schedule();
 
         //Gamepad 1
         Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()

@@ -25,7 +25,7 @@ public class testDriving extends NextFTCOpMode {
 
     @Override
     public void onInit(){
-        drivebase.getMecanumDriver().schedule();
+        drivebase.getMecanumDriver(0).schedule();
 
     }
 }

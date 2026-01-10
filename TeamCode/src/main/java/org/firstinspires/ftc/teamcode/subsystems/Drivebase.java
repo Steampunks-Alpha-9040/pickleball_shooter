@@ -53,13 +53,23 @@ public class Drivebase implements Subsystem {
         ActiveOpMode.telemetry().addData("pose", follower.getPose());
     }
 
-    public PedroDriverControlled getMecanumDriver(){
-        return new PedroDriverControlled(
-                Gamepads.gamepad1().leftStickY().negate(),
-                Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().rightStickX(),
-                false
-        );
+    public PedroDriverControlled getMecanumDriver(int side){
+        if (side == 0) {
+            return new PedroDriverControlled(
+                    Gamepads.gamepad1().leftStickY().negate(),
+                    Gamepads.gamepad1().leftStickX().negate(),
+                    Gamepads.gamepad1().rightStickX(),
+                    false
+            );
+        } else {
+            return new PedroDriverControlled(
+                    Gamepads.gamepad1().leftStickY(),
+                    Gamepads.gamepad1().leftStickX(),
+                    Gamepads.gamepad1().rightStickX(),
+                    false
+            );
+        }
+
     }
 
     //We do this since the quadature is attached to the FL motor, and quadatures are only implemented for motors. We use servos for the turret :)
