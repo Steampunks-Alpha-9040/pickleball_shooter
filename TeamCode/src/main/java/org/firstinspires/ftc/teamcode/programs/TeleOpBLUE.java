@@ -24,12 +24,14 @@ public class TeleOpBLUE extends BaseOpMode {
 
     @Override
     public void onInit() {
-        Constants.OpModeConstants.side = Constants.Side.BLUE;
+
 
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(72, 7, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72, 5, Math.toRadians(90)));
+
+        turret.setSide(Constants.Side.BLUE);
 
         drivebase.getMecanumDriver().schedule();
 

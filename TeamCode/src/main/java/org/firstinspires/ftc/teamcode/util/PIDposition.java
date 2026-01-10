@@ -13,15 +13,25 @@ public class PIDposition {
 
     private double tolerance;
 
+    private double clamp;
+
     public PIDposition(double kP, double kI, double kD, double kF, double toleranceRadians) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
         this.kF = kF;
         this.tolerance = Math.abs(toleranceRadians);
+        this.clamp = 1;
     }
 
-    double clamp = 0.65;
+    public PIDposition(double kP, double kI, double kD, double kF, double toleranceRadians, double clamp) {
+        this.kP = kP;
+        this.kI = kI;
+        this.kD = kD;
+        this.kF = kF;
+        this.tolerance = Math.abs(toleranceRadians);
+        this.clamp = clamp;
+    }
 
     public void setSetpoint(double angleRadians) {
         this.setpoint = angleRadians;
@@ -41,8 +51,8 @@ public class PIDposition {
         // Derivative
         double derivative = error - previousError;
 
-        // Feedforward example (arm)
-        double feedforward = kF * Math.cos(currentAngle);
+        // Feedforward
+        double feedforward = kF;
 
         double output =
                 kP * error +

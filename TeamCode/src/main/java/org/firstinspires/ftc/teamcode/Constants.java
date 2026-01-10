@@ -14,7 +14,7 @@ public class Constants {
     }
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(5, 139);
+        public static Vector2d BLUEscore = new Vector2d(0, 144);
         public static Vector2d REDscore = new Vector2d(144, 144);
     }
     public static class DrivebaseConstants {
@@ -45,13 +45,13 @@ public class Constants {
         public static final double flywheel_kP = 0.005;
         public static final double flywheel_kI = 0.0;
         public static final double flywheel_kD = 0.0;
-        public static final double flywheel_kF = 0.0;
+        public static final double flywheel_kF = 0;
 
-        public static final double hoodPositionToleranceRAD = 0.1;
+        public static final double hoodPositionToleranceRAD = 0.01;
 
         public static final double hood_kP = 1.0;
         public static final double hood_kI = 0.0;
-        public static final double hood_kD = 0.0;
+        public static final double hood_kD = 0.01;
         public static final double hood_kF = 0.0;
 
         public static final double[][] flywheelVals = {
@@ -65,13 +65,13 @@ public class Constants {
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turretS";
-        public static final double turret_kP = 2.5; //The like main pushing force, the constant :)
-        public static final double turret_kI = 0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double turret_kD = 4; //slows down/speeds up the closer/farther away u are
-        public static final double turret_kF = 0; //friction, tune so when the turret barely moves
+        public static final double turret_kP = 2; //The like main pushing force, the constant :)
+        public static final double turret_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
+        public static final double turret_kD = 0.01; //slows down/speeds up the closer/farther away u are
+        public static final double turret_kF = 0.04; //friction, tune so when the turret barely moves
 
 
-        public static final double turretTolerance_VisionAngleRad = 0.02;
+        public static final double turretTolerance_VisionAngleRad = 0.004;
 
         public static final double encoderToTurret = 145.0/60.0;
 

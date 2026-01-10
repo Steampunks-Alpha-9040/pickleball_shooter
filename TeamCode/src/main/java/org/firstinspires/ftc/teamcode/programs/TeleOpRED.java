@@ -2,12 +2,14 @@ package org.firstinspires.ftc.teamcode.programs;
 
 
 import com.bylazar.utils.LoopTimer;
+import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
 
 
@@ -22,23 +24,21 @@ public class TeleOpRED extends BaseOpMode {
 
     @Override
     public void onInit() {
-        Constants.OpModeConstants.side = Constants.Side.RED;
 
         field.getField().setStyle("none", "white", 1.5);
+
+        drivebase.setFollower(PedroComponent.follower());
+        drivebase.getFollower().setStartingPose(new Pose(72, 7, Math.toRadians(90)));
+
+        turret.setSide(Constants.Side.RED);
 
         drivebase.getMecanumDriver().schedule();
 
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        new ParallelGroup(
-                                indexer.spinIndexer(),
-                                feeder.transfer()
-                        )
+                        feeder.turnWheelsOn()
                 ).whenBecomesFalse(
-                        new ParallelGroup(
-                                indexer.stopIndexer(),
-                                feeder.store()
-                        )
+                        feeder.turnWheelsOff()
                 );
 
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
@@ -68,6 +68,16 @@ public class TeleOpRED extends BaseOpMode {
         ).whenBecomesTrue(
                 drivebase.zeroGryo()
         );
+
+//        Gamepads.gamepad2().a().whenBecomesTrue(
+//                indexer.autoSet()
+//        );
+//
+        Gamepads.gamepad2().x().whenBecomesTrue(
+                indexer.oneRot()
+        );
+        drivebase.zeroHoodQuadature();
+        drivebase.zeroTurretQuadature();
 
     }
 
