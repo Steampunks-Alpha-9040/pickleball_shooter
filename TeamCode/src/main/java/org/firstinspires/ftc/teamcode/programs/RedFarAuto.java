@@ -62,7 +62,7 @@ public class RedFarAuto extends BaseOpMode {
         turret.setSide(Constants.Side.BLUE);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(180)));
+        drivebase.getFollower().setStartingPose(new Pose(80.3, 8.69, Math.toRadians(0)));
 
         paths = new Paths(drivebase.getFollower());
 
@@ -235,6 +235,7 @@ public class RedFarAuto extends BaseOpMode {
                         spinIndexerFast(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
+                        spinIndexerSlow(),
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),

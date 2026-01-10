@@ -236,6 +236,7 @@ public class BlueFarAuto extends BaseOpMode {
                         spinIndexerFast(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
+                        spinIndexerSlow(),
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.ShootFirst),

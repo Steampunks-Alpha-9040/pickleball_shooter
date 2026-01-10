@@ -58,14 +58,14 @@ public class Drivebase implements Subsystem {
             return new PedroDriverControlled(
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX().negate(),
-                    Gamepads.gamepad1().rightStickX(),
+                    Gamepads.gamepad1().rightStickX().negate(),
                     false
             );
         } else {
             return new PedroDriverControlled(
                     Gamepads.gamepad1().leftStickY(),
                     Gamepads.gamepad1().leftStickX(),
-                    Gamepads.gamepad1().rightStickX(),
+                    Gamepads.gamepad1().rightStickX().negate(),
                     false
             );
         }
@@ -88,9 +88,9 @@ public class Drivebase implements Subsystem {
     public Command resetPose(int side){
         //0 is Blue
         if(side == 0){
-            return new InstantCommand(() -> getFollower().setStartingPose(new Pose(135.7,8.69,0)));
+            return new InstantCommand(() -> getFollower().setPose(new Pose(135.7,8.69,0)));
         } else {
-            return new InstantCommand(() -> getFollower().setStartingPose(new Pose(8.3,8.69,Math.PI)));
+            return new InstantCommand(() -> getFollower().setPose(new Pose(8.3,8.69,Math.PI)));
         }
     }
 

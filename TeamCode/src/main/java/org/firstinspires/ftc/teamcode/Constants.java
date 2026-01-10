@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.geometry.Vector2d;
+import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -8,11 +9,16 @@ import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.util.Util;
 
+@Configurable
 public class Constants {
 
     public enum Side{
         BLUE, RED
     }
+
+
+    public static double downPosition = 0.958;
+
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
         public static Vector2d BLUEscore = new Vector2d(5, 139);
@@ -57,7 +63,7 @@ public class Constants {
 
         public static final double[][] flywheelVals = {
                 {72,17, 5000, 4}, //far zone
-                {0,0, 4000, 0.3} //close zone
+                {0,0, 3000, 0.3} //close zone
 
         };
 

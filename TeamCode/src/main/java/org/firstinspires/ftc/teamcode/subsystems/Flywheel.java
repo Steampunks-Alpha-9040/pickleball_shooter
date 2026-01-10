@@ -108,7 +108,7 @@ public class Flywheel implements Subsystem {
         if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
             double deltaX = Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX();
             double deltaY = Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY();
-            return 9.44207*(Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))) + 4226.9704;
+            return 9.44207*(Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))) + 4101.9704;
         } else {
             return Constants.FlywheelConstants.flywheelVals[1][2];
         }
