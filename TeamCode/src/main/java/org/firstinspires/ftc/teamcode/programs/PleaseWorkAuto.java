@@ -60,7 +60,7 @@ public class PleaseWorkAuto extends BaseOpMode {
 
         follower = Constants.createFollower(hardwareMap);
         paths = new Paths(follower);
-        follower.setStartingPose(new Pose(64.145, 8.79, Math.toRadians(180)));
+        follower.setStartingPose(new Pose(63.7, 8.69, Math.toRadians(180)));
 
         // Build paths
 
