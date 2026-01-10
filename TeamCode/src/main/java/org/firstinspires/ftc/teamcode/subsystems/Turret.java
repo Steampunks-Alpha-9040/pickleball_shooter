@@ -135,5 +135,9 @@ public class Turret implements Subsystem {
         );
     }
 
+    public void setTurretQuad(double var){
+        turretQuad = var;
+    }
+
 
 }

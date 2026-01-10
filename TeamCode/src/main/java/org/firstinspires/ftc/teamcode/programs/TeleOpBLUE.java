@@ -32,6 +32,7 @@ public class TeleOpBLUE extends BaseOpMode {
         drivebase.getFollower().setStartingPose(new Pose(72, 8.69, Math.toRadians(90)));
 
         turret.setSide(Constants.Side.BLUE);
+        turret.setTurretQuad(0);
 
         drivebase.getMecanumDriver().schedule();
 
