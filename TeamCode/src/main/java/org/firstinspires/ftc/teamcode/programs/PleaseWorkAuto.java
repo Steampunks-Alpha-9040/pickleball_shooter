@@ -142,9 +142,7 @@ public class PleaseWorkAuto extends BaseOpMode {
     }
 
 
-    double shootFarDelay = 10.0;
-    double Beginning = 1.0;
-    double intakeDelay = 3.0;
+
 
     public Command shoot() {
         return new ParallelGroup(
@@ -203,29 +201,34 @@ public class PleaseWorkAuto extends BaseOpMode {
         );
     }
 
+    double shootFarDelay = 5.0;
+    double Beginning = 1.0;
+    double intakeDelay = 1.0;
+
     public Command autonomousRoutine() {
         return new ParallelGroup(
                 flywheel.shootFlywheel(),
                 new SequentialGroup(
+//                        stopShoot(),
 //                        sort(),
                         new Delay(Beginning),
 //                        safeShoot(),
-//                        new Delay(shootFarDelay),
+                        new Delay(shootFarDelay),
 //                        stopShoot(),
-                        intake(),
-                        spinIndexer(),
+//                        intake(),
+//                        spinIndexer(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
-                        intakeStop(),
+//                        intakeStop(),
 //                        sort(),
                         new FollowPath(paths.ShootFirst),
-                        safeShoot(),
-                        new Delay(intakeDelay),
-                        new Delay(5),
+//                        safeShoot(),
+                        new Delay(shootFarDelay),
+//                        stopShoot(),
                         turret.setHomeTrue(),
 //                        stopShoot(),
 //                        intake(),
-//                        new FollowPath(paths.SecondIntake),
+                        new FollowPath(paths.SecondIntake)
 //                        new Delay(intakeDelay),
 //                        intakeStop(),
 //                        sort(),
@@ -252,7 +255,7 @@ public class PleaseWorkAuto extends BaseOpMode {
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        new FollowPath(paths.LeaveShootingZone)
-                        zeroEverything()
+//                        zeroEverything()
                 )
         );
     }

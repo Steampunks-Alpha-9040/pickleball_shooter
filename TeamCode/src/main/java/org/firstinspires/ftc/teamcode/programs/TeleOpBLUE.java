@@ -29,7 +29,7 @@ public class TeleOpBLUE extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(48.000, 11.000, Math.toRadians(100)));
+        drivebase.getFollower().setStartingPose(new Pose(72, 8.69, Math.toRadians(90)));
 
         turret.setSide(Constants.Side.BLUE);
 
