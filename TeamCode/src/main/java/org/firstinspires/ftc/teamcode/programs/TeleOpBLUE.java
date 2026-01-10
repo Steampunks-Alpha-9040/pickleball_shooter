@@ -29,60 +29,57 @@ public class TeleOpBLUE extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(72, 8.69, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(90)));
 
         turret.setSide(Constants.Side.BLUE);
         turret.setTurretQuad(0);
 
         drivebase.getMecanumDriver().schedule();
 
-        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+        //Gamepad 1
+        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        intake.spinIntake()
+                ).whenBecomesFalse(
+                        intake.stopIntake()
+                );
+
+        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        indexer.spinIndexerFast()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
+                );
+
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        drivebase.resetPose(0)
+                );
+
+        //Gamepad 2
+        Gamepads.gamepad2().b().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         feeder.turnWheelsOn()
                 ).whenBecomesFalse(
                         feeder.turnWheelsOff()
                 );
 
-        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+        Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesFalse(
                         flywheel.stopFlywheel()
                 ).whenBecomesTrue(
                         flywheel.shootFlywheel()
                 );
-        Gamepads.gamepad1().b().toggleOnBecomesTrue()
+
+        Gamepads.gamepad2().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        feeder.setArmDown()
-                ).whenBecomesFalse(
-                        feeder.setArmUp()
-                );
-        Gamepads.gamepad1().a().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        intake.spinIntake()
-                ).whenBecomesFalse(
-                        intake.stopIntake()
-                );
-        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        indexer.spinIndexer()
+                        indexer.spinIndexerSlow()
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
 
-        Gamepads.gamepad1().b().and(
-                Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
-        ).whenBecomesTrue(
-                drivebase.zeroGryo()
-        );
-
-        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        drivebase.resetPose()
-                );
-
-
         drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
-
 
     }
 

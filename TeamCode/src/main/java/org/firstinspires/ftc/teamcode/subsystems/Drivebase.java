@@ -55,8 +55,8 @@ public class Drivebase implements Subsystem {
 
     public PedroDriverControlled getMecanumDriver(){
         return new PedroDriverControlled(
-                Gamepads.gamepad1().leftStickX(),
                 Gamepads.gamepad1().leftStickY().negate(),
+                Gamepads.gamepad1().leftStickX(),
                 Gamepads.gamepad1().rightStickX(),
                 false
         );
@@ -75,8 +75,13 @@ public class Drivebase implements Subsystem {
         return new InstantCommand(() -> gyroOffset = follower.getHeading());
     }
 
-    public Command resetPose(){
-        return new InstantCommand(() -> getFollower().setStartingPose(new Pose(135.7,8.69,Math.PI)));
+    public Command resetPose(int side){
+        //0 is Blue
+        if(side == 0){
+            return new InstantCommand(() -> getFollower().setStartingPose(new Pose(135.7,8.69,0)));
+        } else {
+            return new InstantCommand(() -> getFollower().setStartingPose(new Pose(8.3,8.69,Math.PI)));
+        }
     }
 
     public void setFollower(Follower follower){

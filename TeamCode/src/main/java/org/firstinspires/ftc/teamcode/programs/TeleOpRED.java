@@ -28,31 +28,54 @@ public class TeleOpRED extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(72, 7, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(80.3, 8.69, Math.toRadians(90)));
 
         turret.setSide(Constants.Side.RED);
 
         drivebase.getMecanumDriver().schedule();
 
-        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+        //Gamepad 1
+        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        intake.spinIntake()
+                ).whenBecomesFalse(
+                        intake.stopIntake()
+                );
+
+        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        indexer.spinIndexerFast()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
+                );
+
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        drivebase.resetPose(1)
+                );
+
+        //Gamepad 2
+        Gamepads.gamepad2().b().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         feeder.turnWheelsOn()
                 ).whenBecomesFalse(
                         feeder.turnWheelsOff()
                 );
 
-        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+        Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesFalse(
                         flywheel.stopFlywheel()
                 ).whenBecomesTrue(
                         flywheel.shootFlywheel()
                 );
-        Gamepads.gamepad1().a().toggleOnBecomesTrue()
+
+        Gamepads.gamepad2().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        intake.spinIntake()
+                        indexer.spinIndexerSlow()
                 ).whenBecomesFalse(
-                        intake.stopIntake()
+                        indexer.stopIndexer()
                 );
+
         drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
 

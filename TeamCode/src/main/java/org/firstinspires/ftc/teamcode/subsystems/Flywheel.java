@@ -106,7 +106,9 @@ public class Flywheel implements Subsystem {
 
     public double getFlywheelRPM(){
         if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
-            return 7.8125*Drivebase.INSTANCE.getFollower().getPose().getX()+4287.5;
+            double deltaX = Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX();
+            double deltaY = Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY();
+            return 9.44207*(Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))) + 4226.9704;
         } else {
             return Constants.FlywheelConstants.flywheelVals[1][2];
         }

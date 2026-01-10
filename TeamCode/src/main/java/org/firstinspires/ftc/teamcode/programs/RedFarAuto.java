@@ -20,18 +20,17 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 
-@Autonomous(name = "Testing Auto", group = "Autonomous")
+@Autonomous(name = "Red", group = "Autonomous")
 @Configurable // Panels
-public class PleaseWorkAuto extends BaseOpMode {
+public class RedFarAuto extends BaseOpMode {
 
-    public PleaseWorkAuto(){
+    public RedFarAuto(){
         addComponents(
                 new SubsystemComponent(
                         super.drivebase,
@@ -91,58 +90,67 @@ public class PleaseWorkAuto extends BaseOpMode {
     }
 
 
+
     public static class Paths {
         public PathChain FirstIntake;
-        public PathChain ShootFirst;
+        public PathChain FirstShoot;
         public PathChain SecondIntake;
         public PathChain SecondShoot;
+        public PathChain GoToWall;
 
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(63.700, 8.690),
-                                    new Pose(51.908, 39.279),
-                                    new Pose(14.000, 36.000)
+                                    new Pose(80.300, 8.690),
+                                    new Pose(92.092, 39.279),
+                                    new Pose(126.000, 36.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
                     .build();
 
-            ShootFirst = follower.pathBuilder().addPath(
+            FirstShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(14.000, 36.000),
+                                    new Pose(126.000, 36.000),
 
-                                    new Pose(48.000, 11.000)
+                                    new Pose(96.000, 11.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(100))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(80))
 
                     .build();
 
             SecondIntake = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(48.000, 11.000),
-                                    new Pose(54.247, 64.994),
-                                    new Pose(45.587, 54.656),
-                                    new Pose(14.000, 58.000)
+                                    new Pose(96.000, 11.000),
+                                    new Pose(89.753, 64.994),
+                                    new Pose(98.413, 54.656),
+                                    new Pose(126.000, 60.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(100), Math.toRadians(180))
+                    ).setLinearHeadingInterpolation(Math.toRadians(80), Math.toRadians(0))
 
                     .build();
 
             SecondShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(14.000, 58.000),
+                                    new Pose(126.000, 60.000),
 
-                                    new Pose(48.000, 11.000)
+                                    new Pose(96.000, 11.000)
                             )
-                    ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(100))
+                    ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(80))
+
+                    .build();
+
+            GoToWall = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(96.000, 11.000),
+
+                                    new Pose(80.300, 8.690)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(80), Math.toRadians(90))
 
                     .build();
         }
     }
-
-
-
 
     public Command shoot() {
         return new ParallelGroup(
@@ -187,9 +195,15 @@ public class PleaseWorkAuto extends BaseOpMode {
         );
     }
 
-    public Command spinIndexer() {
+    public Command spinIndexerSlow() {
         return new SequentialGroup(
-                indexer.spinIndexer()
+                indexer.spinIndexerSlow()
+        );
+    }
+
+    public Command spinIndexerFast() {
+        return new SequentialGroup(
+                indexer.spinIndexerFast()
         );
     }
 
@@ -211,33 +225,38 @@ public class PleaseWorkAuto extends BaseOpMode {
                 new SequentialGroup(
 //                        stopShoot(),
 //                        sort(),
+                        spinIndexerSlow(),
+                        intakeStop(),
                         new Delay(Beginning),
-//                        safeShoot(),
+                        safeShoot(),
                         new Delay(shootFarDelay),
-//                        stopShoot(),
-//                        intake(),
-                        spinIndexer(),
-                        new FollowPath(paths.FirstIntake),
-                        new Delay(intakeDelay),
-//                        intakeStop(),
-//                        sort(),
-                        new FollowPath(paths.ShootFirst),
-//                        safeShoot(),
-                        new Delay(shootFarDelay),
-//                        stopShoot(),
-//                        stopShoot(),
+                        stopShoot(),
                         intake(),
-                        new FollowPath(paths.SecondIntake),
+                        spinIndexerFast(),
+                        new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
                         intakeStop(),
 //                        sort(),
+                        new FollowPath(paths.FirstShoot),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        intake(),
+                        spinIndexerFast(),
+                        new FollowPath(paths.SecondIntake),
+                        new Delay(intakeDelay),
+                        intakeStop(),
+                        spinIndexerSlow(),
+//                        sort(),
                         new FollowPath(paths.SecondShoot),
+                        safeShoot(),
+                        new Delay(shootFarDelay),
+                        stopShoot(),
+                        new FollowPath((paths.GoToWall)),
                         flywheel.stopFlywheel(),
                         turret.setHomeTrue()
-//                        safeShoot(),
-//                        new Delay(shootFarDelay),
-//                        stopShoot()
 //                        intake(),
+//                        spinIndexerFast()
 //                        new FollowPath(paths.IntakeClose),
 //                        new Delay(intakeDelay),
 //                        intakeStop(),

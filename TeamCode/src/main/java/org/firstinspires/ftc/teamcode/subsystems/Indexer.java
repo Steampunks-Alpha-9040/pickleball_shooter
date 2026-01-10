@@ -54,8 +54,11 @@ public class Indexer implements Subsystem {
     }
 
 
-    public Command spinIndexer(){
+    public Command spinIndexerSlow(){
         return new InstantCommand(() -> indexer.setPower(0.2));
+    }
+    public Command spinIndexerFast(){
+        return new InstantCommand(() -> indexer.setPower(0.4));
     }
     public Command stopIndexer(){
         return new InstantCommand(() -> indexer.setPower(0.0));
