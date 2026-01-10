@@ -74,6 +74,10 @@ public class Drivebase implements Subsystem {
         return new InstantCommand(() -> gyroOffset = follower.getHeading());
     }
 
+    public Command resetPose(){
+        return new InstantCommand(() -> getFollower().setStartingPose(new Pose(135.7,8.69,Math.PI)));
+    }
+
     public void setFollower(Follower follower){
         this.follower = follower;
     }

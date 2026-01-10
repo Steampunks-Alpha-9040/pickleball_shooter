@@ -73,6 +73,12 @@ public class TeleOpBLUE extends BaseOpMode {
                 drivebase.zeroGryo()
         );
 
+        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        drivebase.resetPose()
+                );
+
+
         drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
 
