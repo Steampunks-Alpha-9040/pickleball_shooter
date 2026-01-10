@@ -19,7 +19,8 @@ import com.bylazar.telemetry.PanelsTelemetry;
 import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
-import org.firstinspires.ftc.teamcode.util.pedropathing.Constants;
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -31,36 +32,25 @@ import dev.nextftc.core.commands.groups.SequentialGroup;
 public class PleaseWorkAuto extends BaseOpMode {
 
     public PleaseWorkAuto(){
-        addComponents(
-                new SubsystemComponent(
-                        super.drivebase,
-                        super.indexer,
-                        super.feeder,
-                        super.flywheel
-                ),
-                new PedroComponent(Constants::createFollower),
-                BulkReadComponent.INSTANCE,
-                BindingsComponent.INSTANCE
-
-        );
+        super();
     }
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
-    public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
     private Paths paths; // Paths defined in the Paths class
-    private Timer pathTimer, opmodeTimer;
 
     @Override
     public void onInit() {
-        pathTimer = new Timer();
-        opmodeTimer = new Timer();
-        opmodeTimer.resetTimer();
+
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
-        follower = Constants.createFollower(hardwareMap);
-        paths = new Paths(follower);
-        follower.setStartingPose(new Pose(63.7, 8.69, Math.toRadians(180)));
+        drivebase.setFollower(PedroComponent.follower());
+
+        drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(180)));
+
+        turret.setSide(Constants.Side.BLUE);
+
+        paths = new Paths(drivebase.getFollower());
 
         // Build paths
 
@@ -70,16 +60,16 @@ public class PleaseWorkAuto extends BaseOpMode {
 
     @Override
     public void onStartButtonPressed() {
-        follower.update(); // Update Pedro Pathing
-        //pathState = autonomousPathUpdate(); // Update autonomous state machine
 
         autonomousRoutine().schedule();
         // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
-        panelsTelemetry.debug("X", follower.getPose().getX());
-        panelsTelemetry.debug("Y", follower.getPose().getY());
-        panelsTelemetry.debug("Heading", follower.getPose().getHeading());
         panelsTelemetry.update(telemetry);
+    }
+
+    @Override
+    public void onStop(){
+        Constants.DrivebaseConstants.autoEndPos = drivebase.getFollower().getPose();
     }
 
 
@@ -134,9 +124,9 @@ public class PleaseWorkAuto extends BaseOpMode {
     }
 
 
-    double shootFarDelay = 1.0;
+    double shootFarDelay = 10.0;
     double Beginning = 1.0;
-    double intakeDelay = 1.0;
+    double intakeDelay = 3.0;
 
     public Command shoot() {
         return new ParallelGroup(
@@ -170,15 +160,20 @@ public class PleaseWorkAuto extends BaseOpMode {
 
     public Command intake() {
         return new SequentialGroup(
-                intake.spinIntake(),
-                indexer.spinIndexer()
+                intake.spinIntake()
+
         );
     }
 
     public Command intakeStop() {
         return new SequentialGroup(
-                intake.stopIntake(),
-                indexer.stopIndexer()
+                intake.stopIntake()
+        );
+    }
+
+    public Command spinIndexer() {
+        return new SequentialGroup(
+                indexer.spinIndexer()
         );
     }
 
@@ -189,15 +184,16 @@ public class PleaseWorkAuto extends BaseOpMode {
 //                        sort(),
                         new Delay(Beginning),
 //                        safeShoot(),
-                        new Delay(shootFarDelay),
+//                        new Delay(shootFarDelay),
 //                        stopShoot(),
-//                        intake(),
+                        intake(),
+                        spinIndexer(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
-//                        intakeStop(),
+                        intakeStop(),
 //                        sort(),
                         new FollowPath(paths.ShootFirst),
-//                        safeShoot(),
+                        safeShoot(),
                         new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),

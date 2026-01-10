@@ -43,7 +43,7 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        turretTargetAngle = calculateTurretAngle();
+        turretTargetAngle = physicalLimit();
         controller.setSetpoint(turretTargetAngle);
         double pow = controller.calculate(turretQuad);
         if (ActiveOpMode.isStarted()) {
@@ -59,19 +59,26 @@ public class Turret implements Subsystem {
     }
 
 
+    public double physicalLimit(){
+        if (calculateTurretAngle() < -Math.PI/2){
+            return -Math.PI/2;
+        } else return Math.min(calculateTurretAngle(), Math.PI / 2);
+    }
+
     public double calculateTurretAngle(){
         switch (side){
             case RED:
-                return Math.atan2(
+                double redVal = Math.atan2(
                         Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.REDscore.getY(),
                         Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
                 ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
+                return Math.atan2(Math.sin(redVal), Math.cos(redVal));
             case BLUE:
-                return Math.atan2(
+                double blueVal = Math.atan2(
                         Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.BLUEscore.getY(),
                         Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
                 ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
-
+                return Math.atan2(Math.sin(blueVal), Math.cos(blueVal));
             default:
                 return 0;
         }
