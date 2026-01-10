@@ -222,7 +222,7 @@ public class PleaseWorkAuto extends BaseOpMode {
                         safeShoot(),
                         new Delay(intakeDelay),
                         new Delay(5),
-                        turret.sethome(true)
+                        turret.setHomeTrue(),
 //                        stopShoot(),
 //                        intake(),
 //                        new FollowPath(paths.SecondIntake),

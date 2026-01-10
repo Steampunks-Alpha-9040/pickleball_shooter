@@ -71,6 +71,13 @@ public class Turret implements Subsystem {
         } else return Math.min(calculateTurretAngle(), Math.PI / 2);
     }
 
+    public Command setHomeTrue() {
+        return new InstantCommand(
+                () -> {
+                    sethome(true);
+                }
+        );
+    }
     public void sethome(boolean bool) {
         homed = bool;
     }
