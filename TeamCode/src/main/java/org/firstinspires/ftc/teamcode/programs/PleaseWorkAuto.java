@@ -220,7 +220,7 @@ public class PleaseWorkAuto extends BaseOpMode {
 //                        sort(),
                         new FollowPath(paths.ShootFirst),
                         safeShoot(),
-                        new Delay(shootFarDelay),
+                        new Delay(intakeDelay),
 //                        stopShoot(),
 //                        intake(),
 //                        new FollowPath(paths.SecondIntake),
