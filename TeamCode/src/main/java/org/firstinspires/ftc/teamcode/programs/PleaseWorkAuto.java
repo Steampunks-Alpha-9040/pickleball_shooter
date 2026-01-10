@@ -183,7 +183,7 @@ public class PleaseWorkAuto extends BaseOpMode {
 
     public Command intakeStop() {
         return new SequentialGroup(
-                intake.stopIntake()
+                intake.slowIntake()
         );
     }
 
@@ -216,7 +216,7 @@ public class PleaseWorkAuto extends BaseOpMode {
                         new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
-//                        spinIndexer(),
+                        spinIndexer(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
 //                        intakeStop(),
@@ -225,14 +225,15 @@ public class PleaseWorkAuto extends BaseOpMode {
 //                        safeShoot(),
                         new Delay(shootFarDelay),
 //                        stopShoot(),
-                        turret.setHomeTrue(),
 //                        stopShoot(),
-//                        intake(),
-                        new FollowPath(paths.SecondIntake)
-//                        new Delay(intakeDelay),
-//                        intakeStop(),
+                        intake(),
+                        new FollowPath(paths.SecondIntake),
+                        new Delay(intakeDelay),
+                        intakeStop(),
 //                        sort(),
-//                        new FollowPath(paths.SecondShoot),
+                        new FollowPath(paths.SecondShoot),
+                        flywheel.stopFlywheel(),
+                        turret.setHomeTrue()
 //                        safeShoot(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot()

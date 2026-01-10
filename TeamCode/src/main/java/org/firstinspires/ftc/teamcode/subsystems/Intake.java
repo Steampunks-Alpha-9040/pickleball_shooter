@@ -42,6 +42,10 @@ public Command spinIntake() {
 public Command stopIntake() {
     return new RunToVelocity(intakeCalculator, 0.0).addRequirements(this);
 }
+
+public Command slowIntake() {
+    return new RunToVelocity(intakeCalculator,0.2).addRequirements(this);
+}
 }
 
 

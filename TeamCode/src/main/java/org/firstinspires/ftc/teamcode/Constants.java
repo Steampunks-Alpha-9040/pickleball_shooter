@@ -15,8 +15,8 @@ public class Constants {
     }
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(0, 144);
-        public static Vector2d REDscore = new Vector2d(144, 144);
+        public static Vector2d BLUEscore = new Vector2d(5, 139);
+        public static Vector2d REDscore = new Vector2d(139, 139);
     }
     public static class DrivebaseConstants {
         public static final String FR = "fr";

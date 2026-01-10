@@ -45,6 +45,7 @@ public class Drivebase implements Subsystem {
         FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
         BR = new MotorEx(Constants.DrivebaseConstants.BR).brakeMode();
+        BR.setCurrentPosition(0);
     }
 
     public void periodic(){

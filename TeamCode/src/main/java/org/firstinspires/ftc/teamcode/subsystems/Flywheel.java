@@ -50,7 +50,6 @@ public class Flywheel implements Subsystem {
         flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).zeroed().reversed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
 
-
     }
 
     @Override
@@ -107,7 +106,7 @@ public class Flywheel implements Subsystem {
 
     public double getFlywheelRPM(){
         if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
-            return Constants.FlywheelConstants.flywheelVals[0][2];
+            return 7.8125*Drivebase.INSTANCE.getFollower().getPose().getX()+4287.5;
         } else {
             return Constants.FlywheelConstants.flywheelVals[1][2];
         }
