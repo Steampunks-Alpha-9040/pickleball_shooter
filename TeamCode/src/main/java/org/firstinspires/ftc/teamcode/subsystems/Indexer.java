@@ -32,14 +32,20 @@ public class Indexer implements Subsystem {
     private final double TicksPerRot =  (Util.GoBILDA.RPM_1620.getCPR()) * (340.0/80.0);
 
     public int pattern = 0;
+
+    boolean stopPID = false;
     public void setPattern(int id) {
         pattern = id;
     }
 
+    double power = 0;
+
     @Override
     public void periodic() {
-//        double power = -indexerCalculator.calculate(indexer.getCurrentPosition());
-//        indexer.setPower(-power);
+        if (stopPID == false) {
+            double power = -indexerCalculator.calculate(indexer.getCurrentPosition());
+        }
+        indexer.setPower(-power);
 //        ActiveOpMode.telemetry().addData("Spindex Setpoint:", indexerCalculator.getSetpoint());
 //        ActiveOpMode.telemetry().addData("Power Spindex:", power);
 //        ActiveOpMode.telemetry().addData("Spindex Encoder:", indexer.getCurrentPosition());
@@ -200,10 +206,27 @@ public class Indexer implements Subsystem {
 //    }
 //
     public Command oneRot() {
+        stopPID = false;
         return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+TicksPerRot));
     }
 
+    public Command shootThree() {
+        stopPID = false;
+        return oneRot();
+    }
+
+    public Command shootOne() {
+        stopPID = false;
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+ TicksPerRot/3));
+    }
+
+    public Command shootTwo() {
+        stopPID = false;
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+ 2* TicksPerRot/3));
+    }
+
     public void spinIndexer(double power){
+        stopPID = true;
         INSTANCE.indexer.setPower(power);
     }
 
