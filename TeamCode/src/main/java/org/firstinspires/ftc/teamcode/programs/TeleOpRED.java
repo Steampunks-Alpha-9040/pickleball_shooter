@@ -75,6 +75,12 @@ public class TeleOpRED extends BaseOpMode {
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
+        Gamepads.gamepad2().y().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        feeder.setArmDown()
+                ).whenBecomesFalse(
+                        feeder.setArmUp()
+                );
 
         drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
