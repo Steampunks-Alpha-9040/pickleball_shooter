@@ -29,6 +29,7 @@ public class TeleOpBLUE extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
+        drivebase.getFollower().setStartingPose(new Pose(72, 5, Math.toRadians(90)));
 
         turret.setSide(Constants.Side.BLUE);
 
@@ -47,33 +48,48 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesTrue(
                         flywheel.shootFlywheel()
                 );
-        Gamepads.gamepad1().b().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        feeder.setArmDown()
-                ).whenBecomesFalse(
-                        feeder.setArmUp()
-                );
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         intake.spinIntake()
                 ).whenBecomesFalse(
                         intake.stopIntake()
                 );
-        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        indexer.spinIndexer()
-                ).whenBecomesFalse(
-                        indexer.stopIndexer()
-                );
-
+//        Gamepads.gamepad1().dpadRight().whenBecomesTrue(
+//                turret.spinTurretRight()
+//        ).whenBecomesFalse(
+//                turret.stopTurret()
+//        );
+//        Gamepads.gamepad1().dpadLeft().whenBecomesTrue(
+//                turret.spinTurretLeft()
+//        ).whenBecomesFalse(
+//                turret.stopTurret()
+//        );
         Gamepads.gamepad1().b().and(
                 Gamepads.gamepad1().rightTrigger().greaterThan(0.2)
         ).whenBecomesTrue(
                 drivebase.zeroGryo()
         );
 
-//        drivebase.zeroHoodQuadature();
-//        drivebase.zeroTurretQuadature();
+//        Gamepads.gamepad2().a().whenBecomesTrue(
+//                indexer.autoSet()
+//        );
+//
+        Gamepads.gamepad2().x().whenBecomesTrue(
+                indexer.shootThree()
+        );
+        drivebase.zeroHoodQuadature();
+        drivebase.zeroTurretQuadature();
+
+        Gamepads.gamepad2().y().whenBecomesTrue(
+                indexer.shootTwo()
+        );
+
+        Gamepads.gamepad2().y().whenBecomesTrue(
+                indexer.shootTwo()
+        );
+        Gamepads.gamepad2().b().whenBecomesTrue(
+                indexer.shootOne()
+        );
 
 
     }
@@ -94,7 +110,5 @@ public class TeleOpBLUE extends BaseOpMode {
         panels.getTelemetry().update();
         telemetry.update();
     }
-
-
 }
 

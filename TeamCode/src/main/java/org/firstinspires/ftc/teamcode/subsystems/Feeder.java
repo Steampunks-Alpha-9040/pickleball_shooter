@@ -25,7 +25,7 @@ public class Feeder implements Subsystem {
 
     @Override
     public void initialize(){
-        feeder = new MotorEx(Constants.FeederConstants.feeder).reversed();
+        feeder = new MotorEx(Constants.FeederConstants.feeder);
         feederArm = new ServoEx(Constants.FeederConstants.feederArm);
     }
 
@@ -48,15 +48,12 @@ public class Feeder implements Subsystem {
     }
 
     public Command setArmDown(){
-        return new LambdaCommand()
-                .requires(this)
-                .setStart(() -> feederArm.setPosition(0.65));
+        return new InstantCommand(() -> feederArm.setPosition(0.9));
+
     }
 
     public Command setArmUp(){
-        return new LambdaCommand()
-                .requires(this)
-                .setStart(() -> feederArm.setPosition(0));
+        return new InstantCommand(() -> feederArm.setPosition(0.0));
     }
 
     public Command turnWheelsOn(){

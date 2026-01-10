@@ -207,7 +207,8 @@ public class PedroAuto extends BaseOpMode {
     public Command shoot() {
         return new ParallelGroup(
                 feeder.setArmDown(),
-                feeder.turnWheelsOn()
+                feeder.turnWheelsOn(),
+                indexer.spinIndexer()
         );
     }
 

@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.arcrobotics.ftclib.geometry.Vector2d;
-import com.pedropathing.geometry.Pose;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
@@ -31,7 +30,7 @@ public class Constants {
         public static final double yawScalar = 1;
         public static final double constantSigmaOdo = 0.1; //todo: tune this value.
 
-        public static Pose autoEndPos = new Pose();
+        public static final Pose2D startingPose = new Pose2D(DistanceUnit.INCH, 72, 0, AngleUnit.DEGREES, 0);
 
     }
 
@@ -101,7 +100,7 @@ public class Constants {
         public static final String rampLeftSensor = "rampLeftSensor";
         public static final double motorToIndexer = 0.0;
 
-        public static final double indexer_kP = 0.007; //The like main pushing force, the constant :)
+        public static final double indexer_kP = 0.08; //The like main pushing force, the constant :)
         public static final double indexer_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
         public static final double indexer_kD = 0.0003; //slows down/speeds up the closer/farther away u are
         public static final double indexer_kF = 0.05; //friction, tune so when the turret barely moves
@@ -121,7 +120,7 @@ public class Constants {
         public static final double intake_kF = 0.05; // feedforward, tweak if needed
 
         // target speed for intake (can be 0.5 or whatever works for your motor)
-        public static final double intakeSpeed = 0.4;
+        public static final double intakeSpeed = 0.6;
 
         // name of the motor in the hardware map
         public static final String intakeName = "intake";

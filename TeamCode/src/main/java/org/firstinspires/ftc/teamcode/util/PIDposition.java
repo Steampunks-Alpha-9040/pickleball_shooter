@@ -73,14 +73,6 @@ public class PIDposition {
         if (output > clamp) {
             output = clamp;
         }
-
-        if (output < -clamp) {
-            output = -clamp;
-        }
-        if (Math.abs(error) <= tolerance) {
-            output = 0;
-        }
-
         return output;
     }
 

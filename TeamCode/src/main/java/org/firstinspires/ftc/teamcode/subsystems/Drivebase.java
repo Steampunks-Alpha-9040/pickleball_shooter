@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.follower.Follower;
-import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -55,7 +54,7 @@ public class Drivebase implements Subsystem {
     public PedroDriverControlled getMecanumDriver(){
         return new PedroDriverControlled(
                 Gamepads.gamepad1().leftStickX(),
-                Gamepads.gamepad1().leftStickY().negate(),
+                Gamepads.gamepad1().leftStickY(),
                 Gamepads.gamepad1().rightStickX(),
                 false
         );
@@ -80,10 +79,6 @@ public class Drivebase implements Subsystem {
 
     public Follower getFollower(){
         return follower;
-    }
-
-    public Command setPose(Pose pose){
-        return new InstantCommand(()-> follower.setPose(pose));
     }
 
     public void zeroTurretQuadature(){
