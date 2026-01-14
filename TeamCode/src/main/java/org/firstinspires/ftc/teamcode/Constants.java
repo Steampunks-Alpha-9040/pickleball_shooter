@@ -17,7 +17,7 @@ public class Constants {
     }
 
 
-    public static double downPosition = 0.958;
+    public static double downPosition = 0.98;
 
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
