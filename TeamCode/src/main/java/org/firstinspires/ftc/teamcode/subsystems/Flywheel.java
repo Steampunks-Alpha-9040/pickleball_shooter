@@ -99,8 +99,13 @@ public class Flywheel implements Subsystem {
     }
 
 
+<<<<<<< Updated upstream
     public Command shootFlywheel(){
         return new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelTarget));
+=======
+    public Command shootFlywheel(int side){
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getFlywheelRPM(side)));
+>>>>>>> Stashed changes
     }
 
     public Command stopFlywheel(){
@@ -127,6 +132,39 @@ public class Flywheel implements Subsystem {
         return new InstantCommand(() -> hoodTarget -= 0.05);
     }
 
+<<<<<<< Updated upstream
+=======
+    public Command spinHoodZero(){
+        return new InstantCommand(() -> hoodCalculator.setSetpoint(0));
+    }
+
+    public double getFlywheelRPM(int side){
+        if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
+            if (side == 0) {
+                double deltaX = Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX();
+                double deltaY = Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY();
+                return 9.44207*(Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))) + 4000;
+            } else {
+                double deltaX = Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX();
+                double deltaY = Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY();
+                return 9.44207*(Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))) + 4000;
+            }
+
+        } else {
+            return Constants.FlywheelConstants.flywheelVals[1][2];
+        }
+    }
+
+    public double getHoodAngle(){
+        if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
+            return Constants.FlywheelConstants.flywheelVals[0][3];
+        } else {
+            return Constants.FlywheelConstants.flywheelVals[1][3];
+        }
+    }
+
+
+>>>>>>> Stashed changes
     public Command stopHood(){
         return new LambdaCommand()
                 .setStart(() -> hood.setPower(0.0))

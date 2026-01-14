@@ -2,39 +2,37 @@ package org.firstinspires.ftc.teamcode.programs;
 
 
 import com.bylazar.utils.LoopTimer;
+import com.pedropathing.geometry.Pose;
 
-import dev.nextftc.ftc.ActiveOpMode;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
+import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.Util;
+
+import dev.nextftc.core.commands.groups.ParallelGroup;
+import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
 
-import org.firstinspires.ftc.robotcore.internal.hardware.android.GpioPin;
-import org.firstinspires.ftc.teamcode.Constants;
 
-
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOpBlue", group = "TeleOp")
-public class TeleOpBLUE extends BaseOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOpRED", group = "TeleOp")
+public class TeleOpRED extends BaseOpMode {
     private LoopTimer timer = new LoopTimer();
 
-    public TeleOpBLUE() {
+    public TeleOpRED() {
         super();
     }
 
 
     @Override
     public void onInit() {
-        Constants.OpModeConstants.side = Constants.Side.BLUE;
 
         field.getField().setStyle("none", "white", 1.5);
 
-<<<<<<< Updated upstream
-        drivebase.getMecanumDriver().schedule();
-=======
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(80.3, 8.69, Math.toRadians(90)));
 
-        turret.setSide(Constants.Side.BLUE);
-        turret.setTurretQuad(0);
+        turret.setSide(Constants.Side.RED);
 
-        drivebase.getMecanumDriver(0).schedule();
+        drivebase.getMecanumDriver(1).schedule();
 
         //Gamepad 1
         Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
@@ -53,7 +51,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        drivebase.resetPose(0)
+                        drivebase.resetPose(1)
                 );
 
         //Gamepad 2
@@ -64,7 +62,7 @@ public class TeleOpBLUE extends BaseOpMode {
                         feeder.turnWheelsOff()
                 );
 
-        int side = 0;
+        int side = 1;
 
         Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesFalse(
@@ -85,17 +83,22 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         feeder.setArmUp()
                 );
->>>>>>> Stashed changes
 
-
-        drivebase.setIMUHeading(180);
-        drivebase.zeroTurretQuadature();
         drivebase.zeroHoodQuadature();
+        drivebase.zeroTurretQuadature();
 
     }
 
     @Override
-    public void onUpdate(){
-        ActiveOpMode.telemetry().update();
+    public void onUpdate() {
+        timer.start();
+
+        // Draw dot at current animated position
+//        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
+        panels.getTelemetry().addData("LoopTime", timer.getMs());
+        field.getField().update();
+        panels.getTelemetry().update();
+        telemetry.update();
     }
 }
+
