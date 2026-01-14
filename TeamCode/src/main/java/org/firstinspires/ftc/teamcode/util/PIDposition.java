@@ -13,15 +13,25 @@ public class PIDposition {
 
     private double tolerance;
 
+    private double clamp;
+
     public PIDposition(double kP, double kI, double kD, double kF, double toleranceRadians) {
         this.kP = kP;
         this.kI = kI;
         this.kD = kD;
         this.kF = kF;
         this.tolerance = Math.abs(toleranceRadians);
+        this.clamp = 1;
     }
 
-
+    public PIDposition(double kP, double kI, double kD, double kF, double toleranceRadians, double clamp) {
+        this.kP = kP;
+        this.kI = kI;
+        this.kD = kD;
+        this.kF = kF;
+        this.tolerance = Math.abs(toleranceRadians);
+        this.clamp = clamp;
+    }
 
     public void setSetpoint(double angleRadians) {
         this.setpoint = angleRadians;
@@ -34,34 +44,46 @@ public class PIDposition {
     public double calculate(double currentAngle) {
         double error = setpoint - currentAngle;
 
-        // --- TOLERANCE CHECK ---
         if (Math.abs(error) <= tolerance) {
             integral = 0;
-            previousError = error;
-            return 0.0;
         }
 
-        // Integral per loop
-        integral += error;
-
-        // Derivative per loop
+        // Derivative
         double derivative = error - previousError;
 
-        // PIDF output
-        double output =
-                (kP * error) +
-                        (kI * integral) +
-                        (kD * derivative) +
-                        kF;
+        // Feedforward
+        double feedforward = (error < 0) ? -kF : kF;
 
-        // Clamp
-        if (output > outputMax) output = outputMax;
-        if (output < outputMin) output = outputMin;
+        double output =
+                kP * error +
+                        kI * integral +
+                        kD * derivative +
+                        feedforward;
+
+        // Clamp output
+        output = Math.max(outputMin, Math.min(outputMax, output));
+
+        // Anti-windup
+        if (Math.abs(output) < outputMax) {
+            integral += error;
+        }
 
         previousError = error;
 
+        if (output > clamp) {
+            output = clamp;
+        }
+
+        if (output < -clamp) {
+            output = -clamp;
+        }
+        if (Math.abs(error) <= tolerance) {
+            output = 0;
+        }
+
         return output;
     }
+
 
     public void reset() {
         integral = 0;
