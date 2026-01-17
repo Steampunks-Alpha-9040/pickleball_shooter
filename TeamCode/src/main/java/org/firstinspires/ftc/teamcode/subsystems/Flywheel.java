@@ -43,9 +43,6 @@ public class Flywheel implements Subsystem {
             Constants.FlywheelConstants.hoodPositionToleranceRAD
     );
 
-    private RelativeShooting relativeShooting = new RelativeShooting();
-
-
     private Flywheel(){}
 
     @Override
@@ -58,10 +55,10 @@ public class Flywheel implements Subsystem {
     @Override
     public void periodic(){
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
-
+        RelativeShooting relativeShooting = new RelativeShooting();
         relativeShooting.update();
 
-        shootFlywheel();
+        shootFlywheel(400 * (relativeShooting.getv_shot() + 2));
         spinHood();
 
         double power = flywheelCalculator.calculate(flywheelCurrentRPM);
@@ -69,20 +66,25 @@ public class Flywheel implements Subsystem {
         flywheel.setPower(power);
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
-        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+//        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
+//        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
         ActiveOpMode.telemetry().addData("power", power);
+        ActiveOpMode.telemetry().addData("RelativeFlywheel", relativeShooting.getv_shot());
 
 
         ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("flywheelVeloCurrent", (flywheelCurrentRPM));
-        ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
-        ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
+//        ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
+//        ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
 
 
     public Command shootFlywheel(){
-        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM()));
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getFlywheelRPM()));
+    }
+
+    public Command shootFlywheel(double flywheelRPM){
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM));
     }
 
     public Command stopFlywheel(){
@@ -120,7 +122,8 @@ public class Flywheel implements Subsystem {
     }
 
     public double getRelativeFlyWheelRPM(){
-        return 400 * (2 + relativeShooting.getv_shot());
+//        return 400 * (2 + relativeShooting.getv_shot());
+        return 0;
     }
 
     public double getHoodAngle(){

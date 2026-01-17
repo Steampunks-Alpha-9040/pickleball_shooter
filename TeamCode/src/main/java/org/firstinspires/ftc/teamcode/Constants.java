@@ -149,7 +149,7 @@ public class Constants {
 
     public static class RelativeShootingConstants{
 
-        public static final double airTime = 1;
+        public static final double airTime = 20;
 
     }
 

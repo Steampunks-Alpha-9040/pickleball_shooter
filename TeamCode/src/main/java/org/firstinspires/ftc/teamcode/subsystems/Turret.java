@@ -35,7 +35,7 @@ public class Turret implements Subsystem {
             Constants.TurretConstants.turret_kF,
             Constants.TurretConstants.turretTolerance_VisionAngleRad);
 
-    private RelativeShooting relativeShooting = new RelativeShooting();
+//    private RelativeShooting relativeShooting = new RelativeShooting();
 
 
     @Override
@@ -50,8 +50,10 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
+        RelativeShooting relativeShooting = new RelativeShooting();
         relativeShooting.update();
-        turretTargetAngle = relativephysicalLimit();
+
+        turretTargetAngle = -relativeShooting.getTurretTarget();
         controller.setSetpoint(turretTargetAngle);
         if (homed) {
             controller.setSetpoint(0);
@@ -61,7 +63,8 @@ public class Turret implements Subsystem {
             turretM.setPower(pow);
             turretS.setPower(pow);
         }
-        ActiveOpMode.telemetry().addData("homed: ", homed);
+//        ActiveOpMode.telemetry().addData("homed: ", homed);
+        ActiveOpMode.telemetry().addData("RelativeTurret", relativeShooting.getTurretTarget());
         ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
         ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
     }
@@ -98,13 +101,13 @@ public class Turret implements Subsystem {
         switch (side){
             case RED:
                 double redVal = Math.atan2(
-                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY(),
+                        -Constants.OpModeConstants.REDscore.getY() + Drivebase.INSTANCE.getFollower().getPose().getY(),
                         Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
                 ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
                 return Math.atan2(Math.sin(redVal), Math.cos(redVal));
             case BLUE:
                 double blueVal = Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY(),
+                        -Constants.OpModeConstants.BLUEscore.getY() + Drivebase.INSTANCE.getFollower().getPose().getY(),
                         Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
                 ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
                 return Math.atan2(Math.sin(blueVal), Math.cos(blueVal));
@@ -114,7 +117,8 @@ public class Turret implements Subsystem {
     }
 
     public double calculateRelatvieTurretAngle(){
-        return relativeShooting.getTurretTarget();
+//        return relativeShooting.getTurretTarget();
+        return 0;
     }
 
     public Command spinTurretRight(){
