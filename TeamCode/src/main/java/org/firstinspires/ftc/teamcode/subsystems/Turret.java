@@ -35,7 +35,7 @@ public class Turret implements Subsystem {
             Constants.TurretConstants.turret_kF,
             Constants.TurretConstants.turretTolerance_VisionAngleRad);
 
-//    private RelativeShooting relativeShooting = new RelativeShooting();
+    private RelativeShooting relativeShooting = new RelativeShooting();
 
 
     @Override
@@ -43,14 +43,12 @@ public class Turret implements Subsystem {
         homed = false;
         turretM = new CRServoEx(Constants.TurretConstants.turretMasterName);
         turretS = new CRServoEx(Constants.TurretConstants.turretSlaveName);
-
         turretQuad = 0;
     }
 
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        RelativeShooting relativeShooting = new RelativeShooting();
         relativeShooting.update();
 
         turretTargetAngle = -relativeShooting.getTurretTarget();
@@ -117,8 +115,7 @@ public class Turret implements Subsystem {
     }
 
     public double calculateRelatvieTurretAngle(){
-//        return relativeShooting.getTurretTarget();
-        return 0;
+        return relativeShooting.getTurretTarget();
     }
 
     public Command spinTurretRight(){

@@ -27,6 +27,8 @@ public class Flywheel implements Subsystem {
 
     private CRServoEx hood;
 
+    private RelativeShooting relativeShooting = new RelativeShooting();
+
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
             Constants.FlywheelConstants.flywheel_kI,
@@ -49,16 +51,14 @@ public class Flywheel implements Subsystem {
     public void initialize(){
         flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).zeroed().reversed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
-
     }
 
     @Override
     public void periodic(){
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
-        RelativeShooting relativeShooting = new RelativeShooting();
         relativeShooting.update();
 
-        shootFlywheel(400 * (relativeShooting.getv_shot() + 2));
+        shootFlywheel();
         spinHood();
 
         double power = flywheelCalculator.calculate(flywheelCurrentRPM);
@@ -69,7 +69,7 @@ public class Flywheel implements Subsystem {
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
         ActiveOpMode.telemetry().addData("power", power);
-        ActiveOpMode.telemetry().addData("RelativeFlywheel", relativeShooting.getv_shot());
+        ActiveOpMode.telemetry().addData("RelativeFlywheel", relativeShooting.getEffectiveDistance());
 
 
         ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
@@ -84,7 +84,9 @@ public class Flywheel implements Subsystem {
     }
 
     public Command shootFlywheel(double flywheelRPM){
-        return new InstantCommand(() -> flywheelCalculator.setSetpoint(flywheelRPM));
+        return new InstantCommand(() -> {
+            flywheelCalculator.setSetpoint(flywheelRPM);
+        });
     }
 
     public Command stopFlywheel(){
@@ -112,13 +114,8 @@ public class Flywheel implements Subsystem {
     }
 
     public double getFlywheelRPM(){
-        if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
-            double deltaX = Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX();
-            double deltaY = Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY();
-            return 9.44207*(Math.sqrt((deltaX * deltaX) + (deltaY * deltaY))) + 4000;
-        } else {
-            return Constants.FlywheelConstants.flywheelVals[1][2];
-        }
+        //Need to find new Formula for RMP based on Distance
+        return 9.44207 * relativeShooting.getEffectiveDistance() + 4000;
     }
 
     public double getRelativeFlyWheelRPM(){

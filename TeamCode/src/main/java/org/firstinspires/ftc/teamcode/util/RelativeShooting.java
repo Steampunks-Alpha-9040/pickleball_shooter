@@ -6,77 +6,103 @@ import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 public class RelativeShooting {
-    //Velocity
-    private double v_x = Drivebase.INSTANCE.getFollower().getVelocity().getXComponent();
-    private  double v_y = Drivebase.INSTANCE.getFollower().getVelocity().getYComponent();
 
-    //Position & Heading
-    private double position_x = Drivebase.INSTANCE.getFollower().getPose().getX();
-    private double position_y = Drivebase.INSTANCE.getFollower().getPose().getY();
-    private double robotHeading = Drivebase.INSTANCE.getFollower().getPose().getHeading();
+    private double effectiveDistance;         // required ball exit velocity
+    private double turretTarget;  // turret angle relative to robot
 
-    //Math
-    private double phi = calculateRobotGoalAngle();
+    public RelativeShooting() {}
 
-    private double v_radial = v_y * Math.cos(phi - robotHeading) + v_x * Math.sin(phi - robotHeading);
-    private double v_tangent = v_y * Math.sin(phi - robotHeading) - v_x * Math.cos(phi - robotHeading);
+    public void update() {
+        com.pedropathing.follower.Follower follower = Drivebase.INSTANCE.getFollower();
+        if (follower == null) return; // safety during init
 
-    private double distance = calculateRobotGoalDistance();
+        // --- Robot state (field frame) ---
+        double vX = follower.getVelocity().getXComponent();
+        double vY = follower.getVelocity().getYComponent();
 
-    private double v_shot = distance / Constants.RelativeShootingConstants.airTime - v_radial;
+        // --- Tolerance Check ---
+        if(vX < Constants.RelativeShootingConstants.velocityTolerance){
+            vX = 0;
+        }
+        if(vY < Constants.RelativeShootingConstants.velocityTolerance){
+            vY = 0;
+        }
 
-    private double turretTarget = phi + Math.atan2(v_tangent,v_shot) - robotHeading;
+        double posX = follower.getPose().getX();
+        double posY = follower.getPose().getY();
+        double heading = follower.getPose().getHeading();
 
-    public RelativeShooting(){
+        // --- Target geometry ---
+        double phi = calculateRobotGoalAngle(posX, posY);
+        double distance = calculateRobotGoalDistance(posX, posY);
 
+        // Angle from robot forward to goal
+        double dTheta = phi - heading;
+
+        // --- Decompose robot velocity ---
+        double vRadial = vY * Math.cos(dTheta) - vX * Math.sin(dTheta);
+
+        double vTangent = vY * Math.sin(dTheta) + vX * Math.cos(dTheta);
+
+        double vShot = distance / Constants.RelativeShootingConstants.airTime - vRadial;
+
+//        if(vShot < 0){
+//            Constants.RelativeShootingConstants.allowShootOnMove = false;
+//        }
+
+        // --- Flywheel + Turret + Hood Values
+        // --- Effective Distance needs to be used to calculate FlywheelRPM and HoodAngle ---
+        effectiveDistance = Constants.RelativeShootingConstants.airTime * Math.sqrt(vTangent * vTangent + vShot * vShot);
+
+        turretTarget = phi + Math.atan2(vTangent, vShot) - heading;
+        turretTarget = Math.atan2(Math.sin(turretTarget),Math.cos(turretTarget));
     }
 
-    //Setters
-    public void setv_shot(double update){ v_shot = update; }
-    public void setTurretTarget(double update){ turretTarget = update; }
+    // ---------------- GETTERS ----------------
 
-    //Getters
-    public double getv_shot() { return v_shot; }
-    public double getTurretTarget() { return turretTarget; }
-
-
-    public void update(){
-        RelativeShooting temp = new RelativeShooting();
-        setv_shot(temp.getv_shot());
-        setTurretTarget(temp.getTurretTarget());
+    public double getEffectiveDistance() {
+        return effectiveDistance;
     }
 
+    public double getTurretTarget() {
+        return turretTarget;
+    }
 
-    public double calculateRobotGoalAngle(){
-        switch (side){
+    // ---------------- HELPERS ----------------
+
+    private double calculateRobotGoalAngle(double posX, double posY) {
+        switch (side) {
             case RED:
                 return Math.atan2(
-                        Constants.OpModeConstants.REDscore.getY() - position_y,
-                        Constants.OpModeConstants.REDscore.getX() - position_x
+                        Constants.OpModeConstants.REDscore.getY() - posY,
+                        Constants.OpModeConstants.REDscore.getX() - posX
                 );
             case BLUE:
                 return Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getY() - position_y,
-                        Constants.OpModeConstants.BLUEscore.getX() - position_x
+                        Constants.OpModeConstants.BLUEscore.getY() - posY,
+                        Constants.OpModeConstants.BLUEscore.getX() - posX
                 );
             default:
-                return 0;
+                return 0.0;
         }
     }
 
-    public double calculateRobotGoalDistance(){
-        switch (side){
+    private double calculateRobotGoalDistance(double posX, double posY) {
+        double dx, dy;
+
+        switch (side) {
             case RED:
-                double redY =Constants.OpModeConstants.REDscore.getY() - position_y;
-                double redX = Constants.OpModeConstants.REDscore.getX() - position_x;
-                return Math.sqrt(redY * redY + redX * redX);
+                dx = Constants.OpModeConstants.REDscore.getX() - posX;
+                dy = Constants.OpModeConstants.REDscore.getY() - posY;
+                break;
             case BLUE:
-                double blueY =Constants.OpModeConstants.BLUEscore.getY() - position_y;
-                double blueX = Constants.OpModeConstants.BLUEscore.getX() - position_x;
-                return Math.sqrt(blueY * blueY + blueX * blueX);
+                dx = Constants.OpModeConstants.BLUEscore.getX() - posX;
+                dy = Constants.OpModeConstants.BLUEscore.getY() - posY;
+                break;
             default:
-                return 0;
+                return 0.0;
         }
-    }
 
+        return Math.hypot(dx, dy);
+    }
 }
