@@ -51,7 +51,7 @@ public class Turret implements Subsystem {
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
         relativeShooting.update();
 
-        turretTargetAngle = -relativeShooting.getTurretTarget();
+        turretTargetAngle = -relativePhysicalLimit();
         controller.setSetpoint(turretTargetAngle);
         if (homed) {
             controller.setSetpoint(0);
@@ -63,8 +63,8 @@ public class Turret implements Subsystem {
         }
 //        ActiveOpMode.telemetry().addData("homed: ", homed);
         ActiveOpMode.telemetry().addData("RelativeTurret", relativeShooting.getTurretTarget());
-        ActiveOpMode.telemetry().addData("targetAngle", turretTargetAngle);
-        ActiveOpMode.telemetry().addData("turretEncoder", turretQuad);
+        ActiveOpMode.telemetry().addData("targetAngle", -turretTargetAngle);
+        ActiveOpMode.telemetry().addData("turretEncoder", -turretQuad);
     }
 
     public void setSide(Constants.Side side){
@@ -78,10 +78,10 @@ public class Turret implements Subsystem {
         } else return Math.min(calculateTurretAngle(), Math.PI / 2);
     }
 
-    public double relativephysicalLimit(){
-        if (calculateRelatvieTurretAngle() < -Math.PI/2){
+    public double relativePhysicalLimit(){
+        if (calculateRelativeTurretAngle() < -Math.PI/2){
             return -Math.PI/2;
-        } else return Math.min(calculateRelatvieTurretAngle(), Math.PI / 2);
+        } else return Math.min(calculateRelativeTurretAngle(), Math.PI / 2);
     }
 
     public Command setHomeTrue() {
@@ -114,7 +114,7 @@ public class Turret implements Subsystem {
         }
     }
 
-    public double calculateRelatvieTurretAngle(){
+    public double calculateRelativeTurretAngle(){
         return relativeShooting.getTurretTarget();
     }
 

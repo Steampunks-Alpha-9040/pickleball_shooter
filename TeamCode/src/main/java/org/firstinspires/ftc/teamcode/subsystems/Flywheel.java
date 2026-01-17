@@ -68,12 +68,12 @@ public class Flywheel implements Subsystem {
 
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+
         ActiveOpMode.telemetry().addData("power", power);
         ActiveOpMode.telemetry().addData("RelativeFlywheel", relativeShooting.getEffectiveDistance());
-
-
         ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("flywheelVeloCurrent", (flywheelCurrentRPM));
+
 //        ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
 //        ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
     }
