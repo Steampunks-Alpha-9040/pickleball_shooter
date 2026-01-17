@@ -35,7 +35,7 @@ public class Indexer implements Subsystem {
     public int greenLocation;
     public int pattern = 0;
 
-    boolean stopPID = false;
+    boolean stopPID = true;
     public void setPattern(int id) {
         pattern = id;
     }
@@ -50,9 +50,24 @@ public class Indexer implements Subsystem {
     @Override
     public void initialize(){
         indexer1 = new CRServoEx(Constants.IndexerConstants.indexer1);
-        indexer1 = new CRServoEx(Constants.IndexerConstants.indexer2);
+        indexer2 = new CRServoEx(Constants.IndexerConstants.indexer2);
         indexerEncoder = ActiveOpMode.hardwareMap().analogInput.get("indexerEncoder");
         contPID.enableContinuousInput(-Math.PI, Math.PI);
+        contPID.setTolerance(0.05);
+        color1 = ActiveOpMode.hardwareMap().get(ColorSensor.class, "color1");
+        color2 = ActiveOpMode.hardwareMap().get(ColorSensor.class, "color2");
+        color3 = ActiveOpMode.hardwareMap().get(ColorSensor.class, "color3");
+    }
+
+    @Override
+    public void periodic() {
+        double power = contPID.calculate(getPos());
+        if (!stopPID) {
+            indexer1.setPower(power);
+            indexer2.setPower(power);
+        }
+
+
     }
 
     public Command setPos(double rad) {
@@ -83,11 +98,23 @@ public class Indexer implements Subsystem {
     }
 
     public boolean ready() {
-        if (contPID.getPositionError() < contPID.getTolerance()[0] + 0.02) {
+        if (Math.abs(contPID.getPositionError()) < contPID.getTolerance()[0] + 0.02) {
             return true;
         } else {
             return false;
         }
+    }
+
+    public void setStopPID(boolean stopPID) {
+        this.stopPID = stopPID;
+    }
+
+    public Command startPID() {
+        return new InstantCommand(() -> setStopPID(false));
+    }
+
+    public Command stopPID() {
+        return new InstantCommand(() -> setStopPID(true));
     }
 
     public Command detectCommand() {
@@ -98,7 +125,7 @@ public class Indexer implements Subsystem {
     }
 
     public int detectHelper() {
-        if (contPID.getSetPoint() == 0) {
+        if (Math.abs(contPID.getSetPoint()) < 1e-3) {
             if (color1.green() > 100) {
                 return 1;
             }
@@ -108,7 +135,7 @@ public class Indexer implements Subsystem {
             if (color3.green() > 100) {
                 return 3;
             }
-        } else if (contPID.getSetPoint() == 2*Math.PI/3) {
+        } else if (Math.abs(contPID.getSetPoint()) - 2*Math.PI/3 < 1e-3) {
             if (color1.green() > 100) {
                 return 2;
             }
@@ -118,7 +145,7 @@ public class Indexer implements Subsystem {
             if (color3.green() > 100) {
                 return 1;
             }
-        } else if (contPID.getSetPoint() == -2*Math.PI/3) {
+        } else if (Math.abs(contPID.getSetPoint()) + 2*Math.PI/3 < 1e-3) {
             if (color1.green() > 100) {
                 return 3;
             }
@@ -135,11 +162,11 @@ public class Indexer implements Subsystem {
     }
 
     public Command detectColor() {
-        return new SequentialGroup(moveToDetect(), new WaitUntil(() -> ready()), detectCommand(), );
+        return new SequentialGroup(moveToDetect(), new WaitUntil(() -> ready()), detectCommand());
     }
 
     public Command sort() {
-        return new SequentialGroup(detectColor(), moveToSort());
+        return new SequentialGroup(startPID(), detectColor(), moveToSort());
     }
 
     public Command moveToSort() {
@@ -148,33 +175,37 @@ public class Indexer implements Subsystem {
             return new NullCommand();
         }
         if (greenLocation == 1) {
-            return new InstantCommand(() -> setPos(Math.PI/3));
+            return setPos(Math.PI/3);
         }
         if (greenLocation == 2) {
-            return new InstantCommand(() -> setPos(Math.PI));
+            return setPos(Math.PI);
         }
         if (greenLocation == 3) {
-            return new InstantCommand(() -> setPos(-Math.PI/3));
+            return setPos(-Math.PI/3);
+        } else {
+            return new NullCommand();
         }
-
     }
 
 
     public Command spinIndexerSlow(){
         return new InstantCommand(() ->
-        {indexer1.setPower(0.5);
+        {stopPID();
+            indexer1.setPower(0.5);
         indexer2.setPower(0.5);
         });
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() ->
-        {indexer1.setPower(0.8);
+        {stopPID();
+            indexer1.setPower(0.8);
             indexer2.setPower(0.8);
         });
     }
     public Command stopIndexer(){
         return new InstantCommand(() ->
-        {indexer1.setPower(0.0);
+        {stopPID();
+            indexer1.setPower(0.0);
             indexer2.setPower(0.0);
         });
     }
