@@ -3,7 +3,9 @@ package org.firstinspires.ftc.teamcode.subsystems;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.R;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
+import org.firstinspires.ftc.teamcode.util.RelativeShooting;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
@@ -33,6 +35,8 @@ public class Turret implements Subsystem {
             Constants.TurretConstants.turret_kF,
             Constants.TurretConstants.turretTolerance_VisionAngleRad);
 
+    private RelativeShooting relativeShooting = new RelativeShooting();
+
 
     @Override
     public void initialize(){
@@ -46,7 +50,8 @@ public class Turret implements Subsystem {
     @Override
     public void periodic(){
         turretQuad = Drivebase.INSTANCE.getTurretQuadature();
-        turretTargetAngle = physicalLimit();
+        relativeShooting.update();
+        turretTargetAngle = relativephysicalLimit();
         controller.setSetpoint(turretTargetAngle);
         if (homed) {
             controller.setSetpoint(0);
@@ -72,6 +77,12 @@ public class Turret implements Subsystem {
         } else return Math.min(calculateTurretAngle(), Math.PI / 2);
     }
 
+    public double relativephysicalLimit(){
+        if (calculateRelatvieTurretAngle() < -Math.PI/2){
+            return -Math.PI/2;
+        } else return Math.min(calculateRelatvieTurretAngle(), Math.PI / 2);
+    }
+
     public Command setHomeTrue() {
         return new InstantCommand(
                 () -> {
@@ -87,19 +98,23 @@ public class Turret implements Subsystem {
         switch (side){
             case RED:
                 double redVal = Math.atan2(
-                        Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.REDscore.getY(),
+                        Constants.OpModeConstants.REDscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY(),
                         Constants.OpModeConstants.REDscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
                 ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
                 return Math.atan2(Math.sin(redVal), Math.cos(redVal));
             case BLUE:
                 double blueVal = Math.atan2(
-                        Drivebase.INSTANCE.getFollower().getPose().getY() - Constants.OpModeConstants.BLUEscore.getY(),
+                        Constants.OpModeConstants.BLUEscore.getY() - Drivebase.INSTANCE.getFollower().getPose().getY(),
                         Constants.OpModeConstants.BLUEscore.getX() - Drivebase.INSTANCE.getFollower().getPose().getX()
                 ) + Drivebase.INSTANCE.getFollower().getPose().getHeading();
                 return Math.atan2(Math.sin(blueVal), Math.cos(blueVal));
             default:
                 return 0;
         }
+    }
+
+    public double calculateRelatvieTurretAngle(){
+        return relativeShooting.getTurretTarget();
     }
 
     public Command spinTurretRight(){

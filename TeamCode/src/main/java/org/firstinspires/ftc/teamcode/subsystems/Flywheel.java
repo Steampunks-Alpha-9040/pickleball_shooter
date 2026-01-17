@@ -6,6 +6,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
+import org.firstinspires.ftc.teamcode.util.RelativeShooting;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
@@ -42,6 +43,8 @@ public class Flywheel implements Subsystem {
             Constants.FlywheelConstants.hoodPositionToleranceRAD
     );
 
+    private RelativeShooting relativeShooting = new RelativeShooting();
+
 
     private Flywheel(){}
 
@@ -55,6 +58,8 @@ public class Flywheel implements Subsystem {
     @Override
     public void periodic(){
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
+
+        relativeShooting.update();
 
         shootFlywheel();
         spinHood();
@@ -77,7 +82,7 @@ public class Flywheel implements Subsystem {
 
 
     public Command shootFlywheel(){
-        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getFlywheelRPM()));
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM()));
     }
 
     public Command stopFlywheel(){
@@ -112,6 +117,10 @@ public class Flywheel implements Subsystem {
         } else {
             return Constants.FlywheelConstants.flywheelVals[1][2];
         }
+    }
+
+    public double getRelativeFlyWheelRPM(){
+        return 400 * (2 + relativeShooting.getv_shot());
     }
 
     public double getHoodAngle(){
