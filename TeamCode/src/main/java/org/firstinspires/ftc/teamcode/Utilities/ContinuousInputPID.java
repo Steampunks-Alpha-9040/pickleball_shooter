@@ -220,6 +220,18 @@ public class ContinuousInputPID {
         input -= numMin * modulus;
         return input;
     }
+
+    public double error(double pv, double sp) {
+        double error;
+        if (m_continuous) {
+            double errorBound = (m_maximumInput - m_minimumInput) / 2.0;
+            error = inputModulus(sp - pv, -errorBound, errorBound);
+
+        } else {
+            error = sp - pv;
+        }
+        return errorVal_p;
+    }
     public double calculate(double pv) {
         prevErrorVal = errorVal_p;
 
