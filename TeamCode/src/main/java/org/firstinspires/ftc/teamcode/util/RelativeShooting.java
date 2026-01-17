@@ -17,6 +17,7 @@ public class RelativeShooting {
         if (follower == null) return; // safety during init
 
         // --- Robot state (field frame) ---
+        // Need to figure out units
         double vX = follower.getVelocity().getXComponent();
         double vY = follower.getVelocity().getYComponent();
 
@@ -103,6 +104,7 @@ public class RelativeShooting {
                 return 0.0;
         }
 
-        return Math.hypot(dx, dy);
+        //0.0254: Convert to Meters
+        return 0.0254 * Math.hypot(dx, dy);
     }
 }
