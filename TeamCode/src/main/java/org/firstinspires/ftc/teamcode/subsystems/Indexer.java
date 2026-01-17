@@ -1,28 +1,20 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 
-import android.graphics.Color;
-
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.Utilities.ContinuousInputPID;
-import org.firstinspires.ftc.teamcode.util.PIDposition;
-import org.firstinspires.ftc.teamcode.util.Util;
 
-import dev.nextftc.control.ControlSystem;
-import dev.nextftc.control.KineticState;
-import dev.nextftc.control.feedback.PIDElement;
 import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.delays.WaitUntil;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.core.commands.utility.LambdaCommand;
+import dev.nextftc.core.commands.utility.NullCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
-import dev.nextftc.hardware.controllable.RunToPosition;
 import dev.nextftc.hardware.impl.CRServoEx;
-import dev.nextftc.hardware.impl.MotorEx;
 
 public class Indexer implements Subsystem {
 
@@ -40,6 +32,7 @@ public class Indexer implements Subsystem {
     ColorSensor color1;
     ColorSensor color2;
     ColorSensor color3;
+    public int greenLocation;
     public int pattern = 0;
 
     boolean stopPID = false;
@@ -89,10 +82,81 @@ public class Indexer implements Subsystem {
 
     }
 
-    public Command detectColor() {
-        return new SequentialGroup(
+    public boolean ready() {
+        if (contPID.getPositionError() < contPID.getTolerance()[0] + 0.02) {
+            return true;
+        } else {
+            return false;
+        }
+    }
 
-        )
+    public Command detectCommand() {
+        return new InstantCommand(() -> detect());
+    }
+    public void detect() {
+        greenLocation = detectHelper();
+    }
+
+    public int detectHelper() {
+        if (contPID.getSetPoint() == 0) {
+            if (color1.green() > 100) {
+                return 1;
+            }
+            if (color2.green() > 100) {
+                return 2;
+            }
+            if (color3.green() > 100) {
+                return 3;
+            }
+        } else if (contPID.getSetPoint() == 2*Math.PI/3) {
+            if (color1.green() > 100) {
+                return 2;
+            }
+            if (color2.green() > 100) {
+                return 3;
+            }
+            if (color3.green() > 100) {
+                return 1;
+            }
+        } else if (contPID.getSetPoint() == -2*Math.PI/3) {
+            if (color1.green() > 100) {
+                return 3;
+            }
+            if (color2.green() > 100) {
+                return 1;
+            }
+            if (color3.green() > 100) {
+                return 2;
+            }
+        } else {
+            return 0;
+        }
+        return 0;
+    }
+
+    public Command detectColor() {
+        return new SequentialGroup(moveToDetect(), new WaitUntil(() -> ready()), detectCommand(), );
+    }
+
+    public Command sort() {
+        return new SequentialGroup(detectColor(), moveToSort());
+    }
+
+    public Command moveToSort() {
+        double target;
+        if (greenLocation == 0) {
+            return new NullCommand();
+        }
+        if (greenLocation == 1) {
+            return new InstantCommand(() -> setPos(Math.PI/3));
+        }
+        if (greenLocation == 2) {
+            return new InstantCommand(() -> setPos(Math.PI));
+        }
+        if (greenLocation == 3) {
+            return new InstantCommand(() -> setPos(-Math.PI/3));
+        }
+
     }
 
 
