@@ -49,7 +49,7 @@ public class Constants {
 
         public static final double flywheelVelocityTolerance = 2.0; //10 rpm tolerance is probably good enough
 
-        public static final double flywheel_kP = 0.005;
+        public static final double flywheel_kP = 0.006;
         public static final double flywheel_kI = 0.0;
         public static final double flywheel_kD = 0.0;
         public static final double flywheel_kF = 0;
@@ -153,6 +153,8 @@ public class Constants {
         public static final double velocityTolerance = 50.0;
         public static boolean allowShootOnMove = true;
         public static final double maxTurretAdjustment = 45.0;
+
+        public static double flywheelRPM = 4000.0;
     }
 
 }

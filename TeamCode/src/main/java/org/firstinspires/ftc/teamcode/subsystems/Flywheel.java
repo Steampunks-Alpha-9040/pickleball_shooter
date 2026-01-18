@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import com.bylazar.telemetry.PanelsTelemetry;
-import com.qualcomm.robotcore.hardware.AnalogInput;
-
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
@@ -10,7 +7,6 @@ import org.firstinspires.ftc.teamcode.util.RelativeShooting;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
@@ -115,7 +111,16 @@ public class Flywheel implements Subsystem {
 
     public double getFlywheelRPM(){
         //Need to find new Formula for RMP based on Distance
-        return 9.44207 * relativeShooting.getEffectiveDistance() + 4000;
+        return Constants.RelativeShootingConstants.flywheelRPM;
+    }
+
+    public void changeRPMmethod(double change) {
+        Constants.RelativeShootingConstants.flywheelRPM += change;
+    }
+
+    public Command changeRPM(double change){
+        return new InstantCommand(() -> changeRPMmethod(change));
+
     }
 
     public double getRelativeFlyWheelRPM(){
