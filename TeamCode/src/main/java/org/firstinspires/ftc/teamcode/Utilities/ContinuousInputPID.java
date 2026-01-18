@@ -142,9 +142,9 @@ public class ContinuousInputPID {
      * @param sp The desired setpoint.
      */
     public void setSetPoint(double sp) {
-        setPoint = sp;
-        errorVal_p = setPoint - measuredValue;
-        errorVal_v = (errorVal_p - prevErrorVal) / period;
+        setPoint = sp;    //COMMENTING THIS OUT MIGHT HAVE BROKEN IT BTW
+//        errorVal_p = setPoint - measuredValue;
+//        errorVal_v = (errorVal_p - prevErrorVal) / period;
     }
 
     /**
@@ -230,7 +230,7 @@ public class ContinuousInputPID {
         } else {
             error = sp - pv;
         }
-        return errorVal_p;
+        return Math.abs(error);
     }
     public double calculate(double pv) {
         prevErrorVal = errorVal_p;

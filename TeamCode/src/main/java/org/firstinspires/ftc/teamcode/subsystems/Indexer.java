@@ -81,15 +81,16 @@ public class Indexer implements Subsystem {
     }
 
     public Command moveToDetect() {
-        if (contPID.error(getPos(),0) < contPID.error(getPos(), 2*Math.PI/3)
-        && contPID.error(getPos(), 0) < contPID.error(getPos(), -2*Math.PI/3)){
+        double pos = getPos();
+        if (contPID.error(pos,0) < contPID.error(pos, 2*Math.PI/3)
+        && contPID.error(pos, 0) < contPID.error(pos, -2*Math.PI/3)){
             return new InstantCommand(() -> contPID.setSetPoint(0));
         }
-        if (contPID.error(getPos(),2*Math.PI/3) < contPID.error(getPos(), 0)
-                && contPID.error(getPos(), 2*Math.PI/3) < contPID.error(getPos(), -2*Math.PI/3)){
+        if (contPID.error(pos,2*Math.PI/3) < contPID.error(pos, 0)
+                && contPID.error(pos, 2*Math.PI/3) < contPID.error(pos, -2*Math.PI/3)){
             return new InstantCommand(() -> contPID.setSetPoint(2*Math.PI/3));
-        }if (contPID.error(getPos(),-2*Math.PI/3) < contPID.error(getPos(), 2*Math.PI/3)
-                && contPID.error(getPos(), -2*Math.PI/3) < contPID.error(getPos(), 0)){
+        }if (contPID.error(pos,-2*Math.PI/3) < contPID.error(pos, 2*Math.PI/3)
+                && contPID.error(pos, -2*Math.PI/3) < contPID.error(pos, 0)){
             return new InstantCommand(() -> contPID.setSetPoint(-2*Math.PI/3));
         } else {
             return new InstantCommand(() -> contPID.setSetPoint(0));
@@ -135,7 +136,7 @@ public class Indexer implements Subsystem {
             if (color3.green() > 100) {
                 return 3;
             }
-        } else if (Math.abs(contPID.getSetPoint()) - 2*Math.PI/3 < 1e-3) {
+        } else if (Math.abs(contPID.getSetPoint() - 2*Math.PI/3) < 1e-3) {
             if (color1.green() > 100) {
                 return 2;
             }
@@ -145,7 +146,7 @@ public class Indexer implements Subsystem {
             if (color3.green() > 100) {
                 return 1;
             }
-        } else if (Math.abs(contPID.getSetPoint()) + 2*Math.PI/3 < 1e-3) {
+        } else if (Math.abs(contPID.getSetPoint() + 2*Math.PI/3) < 1e-3) {
             if (color1.green() > 100) {
                 return 3;
             }
@@ -190,21 +191,21 @@ public class Indexer implements Subsystem {
 
     public Command spinIndexerSlow(){
         return new InstantCommand(() ->
-        {stopPID();
+        {setStopPID(true);
             indexer1.setPower(0.5);
         indexer2.setPower(0.5);
         });
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() ->
-        {stopPID();
+        {setStopPID(true);
             indexer1.setPower(0.8);
             indexer2.setPower(0.8);
         });
     }
     public Command stopIndexer(){
         return new InstantCommand(() ->
-        {stopPID();
+        {setStopPID(true);
             indexer1.setPower(0.0);
             indexer2.setPower(0.0);
         });
