@@ -15,13 +15,11 @@ public class Constants {
     public enum Side{
         BLUE, RED
     }
-
-
-    public static double downPosition = 0.98;
+    public static double downPosition = 0.92;
 
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(5, 139);
+        public static Vector2d BLUEscore = new Vector2d(8, 136);
         public static Vector2d REDscore = new Vector2d(139, 139);
     }
     public static class DrivebaseConstants {
@@ -63,7 +61,7 @@ public class Constants {
 
         public static final double[][] flywheelVals = {
                 {72,17, 5000, 4.8}, //far zone
-                {0,0, 3000, 0.3} //close zone
+                {0,0, 3000, 0.9} //close zone
 
         };
 
@@ -73,13 +71,11 @@ public class Constants {
     public static class TurretConstants {
         public static final String turretMasterName = "turretM";
         public static final String turretSlaveName = "turretS";
-        public static final double turret_kP = 1.1; //The like main pushing force, the constant :)
-        public static final double turret_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double turret_kD = 1; //slows down/speeds up the closer/farther away u are
-        public static final double turret_kF = 0.04; //friction, tune so when the turret barely moves
-
-
-        public static final double turretTolerance_VisionAngleRad = 0.001;
+        public static double turret_kP = 1; //The like main pushing force, the constant :)
+        public static double turret_kI = 0.005; //The more you aren't making it to the setpoint, the more you increase this
+        public static double turret_kD = 0.5; //slows down/speeds up the closer/farther away u are
+        public static double turret_kF = 0.02; //friction, tune so when the turret barely moves
+        public static double turretTolerance_VisionAngleRad = 0.001;
 
         public static final double encoderToTurret = 145.0/60.0;
 

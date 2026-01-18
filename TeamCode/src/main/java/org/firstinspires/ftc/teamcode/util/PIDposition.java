@@ -15,6 +15,16 @@ public class PIDposition {
 
     private double clamp;
 
+    private double clampIntegral = 0.1;
+
+    public void setPID(double kP, double kI, double kD, double kF, double tolerance){
+        this.kP = kP;
+        this.kI = kI;
+        this.kD = kD;
+        this.kF = kF;
+        this.tolerance = Math.abs(tolerance);
+    }
+
     public PIDposition(double kP, double kI, double kD, double kF, double toleranceRadians) {
         this.kP = kP;
         this.kI = kI;
@@ -64,7 +74,7 @@ public class PIDposition {
         output = Math.max(outputMin, Math.min(outputMax, output));
 
         // Anti-windup
-        if (Math.abs(output) < outputMax) {
+        if (Math.abs(output) < outputMax / 10) {
             integral += error;
         }
 
@@ -83,6 +93,8 @@ public class PIDposition {
 
         return output;
     }
+
+
 
 
     public void reset() {

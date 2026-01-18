@@ -155,5 +155,16 @@ public class Turret implements Subsystem {
         turretQuad = var;
     }
 
+    public Command changePID(){
+        return new InstantCommand(() -> {
+            controller.setPID(
+                    Constants.TurretConstants.turret_kP,
+                    Constants.TurretConstants.turret_kI,
+                    Constants.TurretConstants.turret_kD,
+                    Constants.TurretConstants.turret_kF,
+                    Constants.TurretConstants.turretTolerance_VisionAngleRad);
+        });
+    }
+
 
 }

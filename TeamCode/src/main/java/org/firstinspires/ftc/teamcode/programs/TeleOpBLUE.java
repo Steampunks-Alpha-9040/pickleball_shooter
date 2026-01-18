@@ -29,7 +29,9 @@ public class TeleOpBLUE extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(96, 96, Math.toRadians(90)));
+        drivebase.INSTANCE.getBR().setCurrentPosition(0);
+        drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
         turret.setSide(Constants.Side.BLUE);
         turret.setTurretQuad(0);
@@ -58,15 +60,20 @@ public class TeleOpBLUE extends BaseOpMode {
 
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.changeRPM(100)
+                        flywheel.changeRPM(50)
                 ).whenBecomesFalse(
-                        flywheel.changeRPM(100)                );
+                        flywheel.changeRPM(50)                );
 
         Gamepads.gamepad1().b().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.changeRPM(-100)
+                        flywheel.changeRPM(-50)
                 ).whenBecomesFalse(
-                        flywheel.changeRPM(-100)                );
+                        flywheel.changeRPM(-50)                );
+
+        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        turret.changePID()
+                );
 
         //Gamepad 2
         Gamepads.gamepad2().b().toggleOnBecomesTrue()

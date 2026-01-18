@@ -40,6 +40,9 @@ public class Drivebase implements Subsystem {
     private Pose2D botpose;
     private double gyroOffset;
 
+    public MotorEx getBR(){ return BR; }
+    public MotorEx getFL(){ return FL; }
+
     public void initialize(){
         FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
         FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
