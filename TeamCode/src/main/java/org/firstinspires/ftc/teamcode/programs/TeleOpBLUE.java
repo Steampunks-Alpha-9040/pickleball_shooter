@@ -53,26 +53,32 @@ public class TeleOpBLUE extends BaseOpMode {
                         indexer.stopIndexer()
                 );
 
-        Gamepads.gamepad1().x().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        drivebase.resetPose(0)
-                );
-
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         flywheel.changeRPM(50)
                 ).whenBecomesFalse(
-                        flywheel.changeRPM(50)                );
+                        flywheel.changeRPM(50)
+                );
 
         Gamepads.gamepad1().b().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         flywheel.changeRPM(-50)
                 ).whenBecomesFalse(
-                        flywheel.changeRPM(-50)                );
+                        flywheel.changeRPM(-50)
+                );
 
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        turret.changePID()
+                        flywheel.changeTestHoodAngle(0.1)
+                ).whenBecomesFalse(
+                        flywheel.changeTestHoodAngle(0.1)
+                );
+
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeTestHoodAngle(-0.1)
+                ).whenBecomesFalse(
+                        flywheel.changeTestHoodAngle(-0.1)
                 );
 
         //Gamepad 2

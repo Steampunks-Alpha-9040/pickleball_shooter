@@ -7,7 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 public class RelativeShooting {
 
-    private double effectiveDistance;         // required ball exit velocity
+    private double effectiveDistance; // required ball exit velocity
     private double turretTarget;  // turret angle relative to robot
 
     public RelativeShooting() {}
@@ -22,10 +22,10 @@ public class RelativeShooting {
         double vY = follower.getVelocity().getYComponent();
 
         // --- Tolerance Check ---
-        if(vX < Constants.RelativeShootingConstants.velocityTolerance){
+        if(Math.abs(vX) < Constants.RelativeShootingConstants.velocityTolerance){
             vX = 0;
         }
-        if(vY < Constants.RelativeShootingConstants.velocityTolerance){
+        if(Math.abs(vY) < Constants.RelativeShootingConstants.velocityTolerance){
             vY = 0;
         }
 
@@ -105,6 +105,6 @@ public class RelativeShooting {
         }
 
         //0.0254: Convert to Meters
-        return 0.0254 * Math.hypot(dx, dy);
+        return Math.hypot(dx, dy);
     }
 }

@@ -76,7 +76,7 @@ public class Flywheel implements Subsystem {
 
 
     public Command shootFlywheel(){
-        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getFlywheelRPM()));
+        return new InstantCommand(() -> flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM()));
     }
 
     public Command shootFlywheel(double flywheelRPM){
@@ -90,7 +90,7 @@ public class Flywheel implements Subsystem {
     }
 
     public void spinHood(){
-        hoodCalculator.setSetpoint(getHoodAngle());
+        hoodCalculator.setSetpoint(testHoodAngle());
     }
 
     public Command spinHoodUp(){
@@ -109,23 +109,21 @@ public class Flywheel implements Subsystem {
         return new InstantCommand(() -> hoodCalculator.setSetpoint(0));
     }
 
-    public double getFlywheelRPM(){
-        //Need to find new Formula for RMP based on Distance
+    public double testFlywheelRPM(){
         return Constants.RelativeShootingConstants.flywheelRPM;
     }
 
-    public void changeRPMmethod(double change) {
+    public void changeRPMMethod(double change) {
         Constants.RelativeShootingConstants.flywheelRPM += change;
     }
 
     public Command changeRPM(double change){
-        return new InstantCommand(() -> changeRPMmethod(change));
+        return new InstantCommand(() -> changeRPMMethod(change));
 
     }
 
     public double getRelativeFlyWheelRPM(){
-//        return 400 * (2 + relativeShooting.getv_shot());
-        return 0;
+        return  16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969;
     }
 
     public double getHoodAngle(){
@@ -136,17 +134,22 @@ public class Flywheel implements Subsystem {
         }
     }
 
+    public double testHoodAngle(){
+        return Constants.RelativeShootingConstants.hoodAngle;
+    }
+
+    public Command changeTestHoodAngle(double change){
+        return new InstantCommand(() -> changeTestHoodAngleMethod(change));
+    }
+
+    public void changeTestHoodAngleMethod(double change){
+        Constants.RelativeShootingConstants.hoodAngle += change;
+    }
 
     public Command stopHood(){
         return new LambdaCommand()
                 .setStart(() -> hood.setPower(0.0))
                 .requires(this);
     }
-
-
-
-
-
-
 
 }
