@@ -74,7 +74,7 @@ public class PIDposition {
         output = Math.max(outputMin, Math.min(outputMax, output));
 
         // Anti-windup
-        if (Math.abs(output) < outputMax / 10) {
+        if (Math.abs(output) < outputMax /10) {
             integral += error;
         }
 

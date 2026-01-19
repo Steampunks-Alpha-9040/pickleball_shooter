@@ -65,13 +65,13 @@ public class Flywheel implements Subsystem {
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-        ActiveOpMode.telemetry().addData("power", power);
-        ActiveOpMode.telemetry().addData("RelativeFlywheel", relativeShooting.getEffectiveDistance());
-        ActiveOpMode.telemetry().addData("flywheelVeloTarget", flywheelCalculator.getSetpoint());
-        ActiveOpMode.telemetry().addData("flywheelVeloCurrent", (flywheelCurrentRPM));
-
-//        ActiveOpMode.telemetry().addData("hoodPosTarget", hoodCalculator.getSetpoint());
-//        ActiveOpMode.telemetry().addData("hoodPosCurrent", Drivebase.INSTANCE.getHoodQuadature());
+        ActiveOpMode.telemetry().addData("Power: ", power);
+        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
+        ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
+        ActiveOpMode.telemetry().addData("flywheelOffset: ", (Constants.RelativeShootingConstants.flywheelRPM));
+        ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());
     }
 
 
@@ -123,7 +123,11 @@ public class Flywheel implements Subsystem {
     }
 
     public double getRelativeFlyWheelRPM(){
-        return  16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969;
+        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
+        if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
+            RPM -= 80;
+        }
+        return RPM;
     }
 
     public double getHoodAngle(){

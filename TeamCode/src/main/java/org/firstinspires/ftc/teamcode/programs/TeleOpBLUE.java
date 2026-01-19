@@ -29,7 +29,7 @@ public class TeleOpBLUE extends BaseOpMode {
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(96, 96, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72-Constants.robotWidth/2,Constants.robotLength/2, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
@@ -55,16 +55,16 @@ public class TeleOpBLUE extends BaseOpMode {
 
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.changeRPM(50)
+                        flywheel.changeTestHoodAngle(0.25)
                 ).whenBecomesFalse(
-                        flywheel.changeRPM(50)
+                        flywheel.changeTestHoodAngle(0.25)
                 );
 
         Gamepads.gamepad1().b().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.changeRPM(-50)
+                        flywheel.changeTestHoodAngle(-0.25)
                 ).whenBecomesFalse(
-                        flywheel.changeRPM(-50)
+                        flywheel.changeTestHoodAngle(-0.25)
                 );
 
         Gamepads.gamepad1().y().toggleOnBecomesTrue()
@@ -107,6 +107,19 @@ public class TeleOpBLUE extends BaseOpMode {
                         feeder.setArmDown()
                 ).whenBecomesFalse(
                         feeder.setArmUp()
+                );
+        Gamepads.gamepad2().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeRPM(10)
+                ).whenBecomesFalse(
+                        flywheel.changeRPM(10)
+                );
+
+        Gamepads.gamepad2().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeRPM(-10)
+                ).whenBecomesFalse(
+                        flywheel.changeRPM(-10)
                 );
 
 

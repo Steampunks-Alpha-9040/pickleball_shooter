@@ -34,9 +34,12 @@ public class RelativeShooting {
         double heading = follower.getPose().getHeading();
 
         // --- Target geometry ---
-        double phi = calculateRobotGoalAngle(posX, posY);
-        double distance = calculateRobotGoalDistance(posX, posY);
+        double turretPosX = posX - (Constants.RelativeShootingConstants.turretOffset * Math.cos(heading));
+        double turretPosY = posY - (Constants.RelativeShootingConstants.turretOffset * Math.sin(heading));
 
+        double phi = calculateRobotGoalAngle(turretPosX, turretPosY);
+        double distance = calculateRobotGoalDistance(turretPosX, turretPosY);
+//3.097
         // Angle from robot forward to goal
         double dTheta = phi - heading;
 
@@ -104,7 +107,6 @@ public class RelativeShooting {
                 return 0.0;
         }
 
-        //0.0254: Convert to Meters
         return Math.hypot(dx, dy);
     }
 }
