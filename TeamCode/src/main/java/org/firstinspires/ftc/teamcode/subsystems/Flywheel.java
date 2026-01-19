@@ -57,15 +57,13 @@ public class Flywheel implements Subsystem {
         shootFlywheel();
         spinHood();
 
-        double power = flywheelCalculator.calculate(flywheelCurrentRPM);
-
-        flywheel.setPower(power);
+        flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-        ActiveOpMode.telemetry().addData("Power: ", power);
+        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
         ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
         ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
@@ -73,7 +71,6 @@ public class Flywheel implements Subsystem {
         ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());
     }
-
 
     public Command shootFlywheel(){
         return new InstantCommand(() -> flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM()));
@@ -91,18 +88,6 @@ public class Flywheel implements Subsystem {
 
     public void spinHood(){
         hoodCalculator.setSetpoint(testHoodAngle());
-    }
-
-    public Command spinHoodUp(){
-        return new LambdaCommand()
-                .setStart(() -> hood.setPower(1))
-                .requires(this);
-    }
-
-    public Command spinHoodDown(){
-        return new LambdaCommand()
-                .setStart(() -> hood.setPower(-1))
-                .requires(this);
     }
 
     public Command spinHoodZero(){
@@ -131,13 +116,8 @@ public class Flywheel implements Subsystem {
     }
 
     public double getHoodAngle(){
-//        if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
-//            return Constants.FlywheelConstants.flywheelVals[0][3];
-//        } else {
-//            return Constants.FlywheelConstants.flywheelVals[1][3];
-//        }
-        return Constants.FlywheelConstants.flywheelVals[0][3];
-
+        //Need to test if it works
+        return 0.0103480208477 * Math.pow(relativeShooting.getEffectiveDistance(),1.24083);
     }
 
     public double testHoodAngle(){
@@ -150,12 +130,6 @@ public class Flywheel implements Subsystem {
 
     public void changeTestHoodAngleMethod(double change){
         Constants.RelativeShootingConstants.hoodAngle += change;
-    }
-
-    public Command stopHood(){
-        return new LambdaCommand()
-                .setStart(() -> hood.setPower(0.0))
-                .requires(this);
     }
 
     public Command changePID(){

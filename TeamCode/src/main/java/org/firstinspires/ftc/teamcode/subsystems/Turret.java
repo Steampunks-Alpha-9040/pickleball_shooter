@@ -71,7 +71,6 @@ public class Turret implements Subsystem {
         this.side = side;
     }
 
-
     public double physicalLimit(){
         if (calculateTurretAngle() < -Math.PI/2){
             return -Math.PI/2;
@@ -118,18 +117,6 @@ public class Turret implements Subsystem {
         return relativeShooting.getTurretTarget();
     }
 
-    public Command spinTurretRight(){
-        return new InstantCommand(() -> {
-            turretM.setPower(0.1);
-            turretS.setPower(0.1);
-        }).requires(this);
-    }
-    public Command spinTurretLeft(){
-        return new InstantCommand(() -> {
-            turretM.setPower(-0.1);
-            turretS.setPower(-0.1);
-        }).requires(this);
-    }
     public Command stopTurret(){
         return new InstantCommand(() -> {
             turretM.setPower(0);
@@ -143,13 +130,6 @@ public class Turret implements Subsystem {
         });
     }
 
-    public Command trackTurret(){
-        return new InstantCommand(
-                () -> {
-                    controller.setSetpoint(turretTargetAngle);
-                }
-        );
-    }
 
     public void setTurretQuad(double var){
         turretQuad = var;
