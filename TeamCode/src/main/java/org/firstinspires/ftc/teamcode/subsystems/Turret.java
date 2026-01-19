@@ -155,6 +155,10 @@ public class Turret implements Subsystem {
         turretQuad = var;
     }
 
+    public Command setTurretQuadCommand(double var){
+        return new InstantCommand(() -> setTurretQuad(var));
+    }
+
     public Command changePID(){
         return new InstantCommand(() -> {
             controller.setPID(

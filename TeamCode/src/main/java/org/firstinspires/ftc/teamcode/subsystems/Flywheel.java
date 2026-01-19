@@ -34,11 +34,11 @@ public class Flywheel implements Subsystem {
     );
 
     private final PIDposition hoodCalculator = new PIDposition(
-            Constants.FlywheelConstants.hood_kP,
-            Constants.FlywheelConstants.hood_kI,
-            Constants.FlywheelConstants.hood_kD,
-            Constants.FlywheelConstants.hood_kF,
-            Constants.FlywheelConstants.hoodPositionToleranceRAD
+            Constants.hood_kP,
+            Constants.hood_kI,
+            Constants.hood_kD,
+            Constants.hood_kF,
+            Constants.hoodPositionToleranceRAD
     );
 
     private Flywheel(){}
@@ -131,11 +131,13 @@ public class Flywheel implements Subsystem {
     }
 
     public double getHoodAngle(){
-        if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
-            return Constants.FlywheelConstants.flywheelVals[0][3];
-        } else {
-            return Constants.FlywheelConstants.flywheelVals[1][3];
-        }
+//        if (Drivebase.INSTANCE.getFollower().getPose().getY() < 40){
+//            return Constants.FlywheelConstants.flywheelVals[0][3];
+//        } else {
+//            return Constants.FlywheelConstants.flywheelVals[1][3];
+//        }
+        return Constants.FlywheelConstants.flywheelVals[0][3];
+
     }
 
     public double testHoodAngle(){
@@ -154,6 +156,17 @@ public class Flywheel implements Subsystem {
         return new LambdaCommand()
                 .setStart(() -> hood.setPower(0.0))
                 .requires(this);
+    }
+
+    public Command changePID(){
+        return new InstantCommand(() -> {
+            hoodCalculator.setPID(
+                    Constants.hood_kP,
+                    Constants.hood_kI,
+                    Constants.hood_kD,
+                    Constants.hood_kF,
+                    Constants.hoodPositionToleranceRAD);
+        });
     }
 
 }

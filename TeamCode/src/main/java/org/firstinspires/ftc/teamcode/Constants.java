@@ -20,10 +20,17 @@ public class Constants {
     public static final double robotWidth = 17.386;
     public static final double robotLength = 15.621;
 
+    public static double hoodPositionToleranceRAD = 0.01;
+
+    public static double hood_kP = 1.0;
+    public static double hood_kI = 0.0;
+    public static double hood_kD = 0.01;
+    public static double hood_kF = 0.0;
+
 
     public static class OpModeConstants{
         public static Side side = Side.BLUE;
-        public static Vector2d BLUEscore = new Vector2d(11, 136);
+        public static Vector2d BLUEscore = new Vector2d(8, 136);
         public static Vector2d REDscore = new Vector2d(139, 139);
     }
     public static class DrivebaseConstants {
@@ -56,15 +63,15 @@ public class Constants {
         public static final double flywheel_kD = 0.0;
         public static final double flywheel_kF = 0;
 
-        public static final double hoodPositionToleranceRAD = 0.01;
-
-        public static final double hood_kP = 1.0;
-        public static final double hood_kI = 0.0;
-        public static final double hood_kD = 0.01;
-        public static final double hood_kF = 0.0;
+//        public static final double hoodPositionToleranceRAD = 0.01;
+//
+//        public static final double hood_kP = 1.0;
+//        public static final double hood_kI = 0.0;
+//        public static final double hood_kD = 0.01;
+//        public static final double hood_kF = 0.0;
 
         public static final double[][] flywheelVals = {
-                {72,17, 5000, 4.8}, //far zone
+                {72,17, 5000, 4.7}, //far zone
                 {0,0, 3000, 0.9} //close zone
 
         };

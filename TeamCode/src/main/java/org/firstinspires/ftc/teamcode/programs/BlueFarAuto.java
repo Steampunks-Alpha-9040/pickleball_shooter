@@ -63,6 +63,8 @@ public class BlueFarAuto extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(180)));
+        drivebase.INSTANCE.getBR().setCurrentPosition(0);
+        drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
         paths = new Paths(drivebase.getFollower());
 
@@ -71,6 +73,8 @@ public class BlueFarAuto extends BaseOpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+
+        drivebase.zeroTurretQuadature();
     }
 
     @Override
@@ -90,27 +94,29 @@ public class BlueFarAuto extends BaseOpMode {
     }
 
 
+
+
+
     public static class Paths {
         public PathChain FirstIntake;
-        public PathChain ShootFirst;
+        public PathChain FirstShoot;
         public PathChain SecondIntake;
         public PathChain SecondShoot;
-        public PathChain GoToWall;
 
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(63.700, 8.690),
+                                    new Pose(64.490, 8.993),
                                     new Pose(51.908, 39.279),
-                                    new Pose(14.000, 36.000)
+                                    new Pose(13.000, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
                     .build();
 
-            ShootFirst = follower.pathBuilder().addPath(
+            FirstShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(14.000, 36.000),
+                                    new Pose(13.000, 36.000),
 
                                     new Pose(48.000, 11.000)
                             )
@@ -121,9 +127,9 @@ public class BlueFarAuto extends BaseOpMode {
             SecondIntake = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(48.000, 11.000),
-                                    new Pose(54.247, 64.994),
-                                    new Pose(45.587, 54.656),
-                                    new Pose(14.000, 58.000)
+                                    new Pose(58.772, 43.551),
+                                    new Pose(51.882, 63.705),
+                                    new Pose(13.000, 55.500)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(100), Math.toRadians(180))
 
@@ -131,24 +137,18 @@ public class BlueFarAuto extends BaseOpMode {
 
             SecondShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(14.000, 58.000),
+                                    new Pose(13.000, 55.500),
 
                                     new Pose(48.000, 11.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(100))
 
                     .build();
-            GoToWall = follower.pathBuilder().addPath(
-                            new BezierLine(
-                                    new Pose(48.000, 11.000),
-
-                                    new Pose(63.700, 8.690)
-                            )
-                    ).setLinearHeadingInterpolation(Math.toRadians(100), Math.toRadians(90))
-
-                    .build();
         }
     }
+
+
+
 
 
 
@@ -172,7 +172,7 @@ public class BlueFarAuto extends BaseOpMode {
 
     public Command stopShoot() {
         return new ParallelGroup(
-                feeder.setArmUp(),
+//                feeder.setArmUp(),
                 feeder.turnWheelsOff()
         );
     }
@@ -216,15 +216,21 @@ public class BlueFarAuto extends BaseOpMode {
         );
     }
 
-    double shootFarDelay = 5.0;
-    double Beginning = 1.0;
-    double intakeDelay = 1.0;
+    public Command zeroTurret(){
+        return new SequentialGroup(
+                turret.setTurretQuadCommand(0)
+        );
+    }
+
+    double shootFarDelay = 3.5;
+    double Beginning = 1.5;
+    double intakeDelay = 0.5;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                flywheel.shootFlywheel(),
                 new SequentialGroup(
-//                        stopShoot(),
+                        flywheel.shootFlywheel(),
+                        stopShoot(),
 //                        sort(),
                         spinIndexerSlow(),
                         intakeStop(),
@@ -239,7 +245,9 @@ public class BlueFarAuto extends BaseOpMode {
                         spinIndexerSlow(),
                         intakeStop(),
 //                        sort(),
-                        new FollowPath(paths.ShootFirst),
+                        new FollowPath(paths.FirstShoot),
+                        flywheel.shootFlywheel(),
+                        new Delay(Beginning),
                         safeShoot(),
                         new Delay(shootFarDelay),
                         stopShoot(),
@@ -254,7 +262,7 @@ public class BlueFarAuto extends BaseOpMode {
                         safeShoot(),
                         new Delay(shootFarDelay),
                         stopShoot(),
-                        new FollowPath((paths.GoToWall)),
+//                        new FollowPath((paths.GoToWall)),
                         flywheel.stopFlywheel(),
                         turret.setHomeTrue()
 //                        intake(),
@@ -262,7 +270,7 @@ public class BlueFarAuto extends BaseOpMode {
 //                        new FollowPath(paths.IntakeClose),
 //                        new Delay(intakeDelay),
 //                        intakeStop(),
-////                        sort(),
+//                        sort(),
 //                        new FollowPath(paths.ShootThird),
 //                        safeShoot(),
 //                        new Delay(shootFarDelay),
@@ -271,7 +279,7 @@ public class BlueFarAuto extends BaseOpMode {
 //                        new FollowPath(paths.IntakeGate),
 //                        new Delay(intakeDelay),
 //                        intakeStop(),
-////                        sort(),
+//                        sort(),
 //                        new FollowPath(paths.ShootLast),
 //                        safeShoot(),
 //                        new Delay(shootFarDelay),
