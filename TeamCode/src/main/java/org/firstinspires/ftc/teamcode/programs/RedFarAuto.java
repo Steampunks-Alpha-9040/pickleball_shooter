@@ -221,9 +221,10 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
-    double shootFarDelay = 3.5;
+    double shootFarDelay = 3.7;
     double Beginning = 1.5;
     double intakeDelay = 0.5;
+    double testingDelay = 1;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
@@ -231,10 +232,11 @@ public class RedFarAuto extends BaseOpMode {
                         flywheel.shootFlywheel(),
                         stopShoot(),
 //                        sort(),
-                        spinIndexerSlow(),
                         intakeStop(),
                         new Delay(Beginning),
                         safeShoot(),
+                        new Delay(intakeDelay),
+                        spinIndexerSlow(),
                         new Delay(shootFarDelay),
                         stopShoot(),
                         intake(),
@@ -246,7 +248,7 @@ public class RedFarAuto extends BaseOpMode {
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
                         flywheel.shootFlywheel(),
-                        new Delay(Beginning),
+                        new Delay(testingDelay),
                         safeShoot(),
                         new Delay(shootFarDelay),
                         stopShoot(),
@@ -258,6 +260,7 @@ public class RedFarAuto extends BaseOpMode {
                         spinIndexerSlow(),
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
+                        new Delay(testingDelay),
                         safeShoot(),
                         new Delay(shootFarDelay),
                         stopShoot(),

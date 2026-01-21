@@ -52,23 +52,29 @@ public class Vision implements Subsystem {
         //flywheel to center 109.22579 mm
         //center to robot 78.65994 mm
 
-       //X and X Flipped, Convert to Inch, Fix (0,0), Add Turret Offset, Add Limelight Offset
+        double robotHeading = Drivebase.INSTANCE.getFollower().getHeading();
+        double turretHeading = Drivebase.INSTANCE.getTurretQuadature();
+
+        //X and X Flipped, Convert to Inch, Fix (0,0), Add Turret Offset, Add Limelight Offset
+        //Check the sign of turretHeading but it should be the sum assuming CC is positive and C is negative
         x = botpose.getPosition().y * 39.3701
                 + 72
-                + Constants.VisionConstants.turretToCenter * Math.cos(Drivebase.INSTANCE.getFollower().getPose().getHeading())
-                - Constants.VisionConstants.flywheelToTurret * Math.cos(Drivebase.INSTANCE.getFollower().getPose().getHeading() - Drivebase.INSTANCE.getTurretQuadature())
-                + Constants.VisionConstants.limeLighttoFlywheel * Math.sin(Drivebase.INSTANCE.getFollower().getPose().getHeading() - Drivebase.INSTANCE.getTurretQuadature())
+                + Constants.VisionConstants.turretToCenter * Math.cos(robotHeading)
+                - Constants.VisionConstants.flywheelToTurret * Math.cos(robotHeading + turretHeading)
+                + Constants.VisionConstants.limeLighttoFlywheel * Math.sin(robotHeading + turretHeading)
         ;
         y = -botpose.getPosition().x * 39.3701
                 + 72
-                + Constants.VisionConstants.turretToCenter * Math.sin(Drivebase.INSTANCE.getFollower().getPose().getHeading())
-                - Constants.VisionConstants.flywheelToTurret * Math.sin(Drivebase.INSTANCE.getFollower().getPose().getHeading() - Drivebase.INSTANCE.getTurretQuadature())
-                - Constants.VisionConstants.limeLighttoFlywheel * Math.cos(Drivebase.INSTANCE.getFollower().getPose().getHeading() - Drivebase.INSTANCE.getTurretQuadature())
+                + Constants.VisionConstants.turretToCenter * Math.sin(robotHeading)
+                - Constants.VisionConstants.flywheelToTurret * Math.sin(robotHeading + turretHeading)
+                - Constants.VisionConstants.limeLighttoFlywheel * Math.cos(robotHeading + turretHeading)
         ;
-        heading = (Math.toRadians(botpose.getOrientation().getYaw()) - Math.PI/2) + Drivebase.INSTANCE.getTurretQuadature();
+        heading = (Math.toRadians(botpose.getOrientation().getYaw()) - Math.PI/2) + turretHeading;
         heading = Math.atan2(Math.sin(heading), Math.cos(heading));
 
         poseValid = true;
+
+        ActiveOpMode.telemetry().addData("turretHeading: ", turretHeading);
 
         ActiveOpMode.telemetry().addData("VisionValid: ", hasValidPose());
         ActiveOpMode.telemetry().addData("VisionX: ", getX());
