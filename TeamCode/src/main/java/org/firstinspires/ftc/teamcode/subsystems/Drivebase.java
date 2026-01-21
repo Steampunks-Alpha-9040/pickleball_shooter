@@ -107,7 +107,7 @@ public class Drivebase implements Subsystem {
         return follower;
     }
 
-    public Command setPose(Pose pose){
+    public Command setStartingPose(Pose pose){
         return new InstantCommand(()-> follower.setStartingPose(pose));
     }
 
@@ -117,6 +117,7 @@ public class Drivebase implements Subsystem {
     public void zeroHoodQuadature(){
         BR.setCurrentPosition(0);
     }
+
 
 
 }

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 
 import com.bylazar.utils.LoopTimer;
+import com.pedropathing.geometry.CoordinateSystem;
 import com.pedropathing.geometry.Pose;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
@@ -10,6 +11,7 @@ import dev.nextftc.ftc.Gamepads;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 
@@ -30,7 +32,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(48,96, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72-Constants.robotWidth/2, Constants.robotLength/2, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
@@ -111,10 +113,10 @@ public class TeleOpBLUE extends BaseOpMode {
                         intake.stopIntake()
                 );
 
-        Gamepads.gamepad1().y().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        flywheel.changePID()
-                );
+//        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+//                .whenBecomesTrue(
+//                        Drivebase.correctPose()
+//                );
 
         Gamepads.gamepad1().a().toggleOnBecomesTrue()
                 .whenBecomesTrue(
