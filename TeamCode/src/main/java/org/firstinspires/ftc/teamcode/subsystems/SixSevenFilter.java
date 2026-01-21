@@ -73,11 +73,11 @@ public class SixSevenFilter implements Subsystem {
     }
 
     public void correctPose(Pose filteredPose){
-        Drivebase.INSTANCE.getFollower().setPose(new Pose(
-                Drivebase.INSTANCE.getFollower().getPose().getX() + filteredPose.getX(),
-                Drivebase.INSTANCE.getFollower().getPose().getY() + filteredPose.getY(),
-                Drivebase.INSTANCE.getFollower().getPose().getHeading() + filteredPose.getHeading()
-            ));
+        double fixedX = Drivebase.INSTANCE.getFollower().getPose().getX() + filteredPose.getX();
+        double fixedY = Drivebase.INSTANCE.getFollower().getPose().getY() + filteredPose.getY();
+        double fixedTheta = Drivebase.INSTANCE.getFollower().getPose().getHeading() + filteredPose.getHeading();
+        fixedTheta = Math.atan2(Math.sin(fixedTheta), Math.cos(fixedTheta));
+        Drivebase.INSTANCE.getFollower().setPose(new Pose( fixedX,fixedY,fixedTheta));
     }
 
     public void reset() {
