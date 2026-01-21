@@ -41,6 +41,8 @@ public class Indexer implements Subsystem {
     double power = 0;
     double target=0;
 
+    public double testing = 0.0;
+
 
     public enum IndexerState{ // this is based off of where the green ball is
         RIGHT, LEFT, CENTER
@@ -53,9 +55,27 @@ public class Indexer implements Subsystem {
         indexer = new MotorEx(Constants.IndexerConstants.indexer).zeroed();
     }
 
+    @Override
+    public void periodic(){
+        spinIndexer(testing);
+        ActiveOpMode.telemetry().addData("testingVal: ", testing);
+    }
+
+    public Command spinIndexer(double power){
+        return new InstantCommand(() -> indexer.setPower(power));
+    }
+
+    public Command changeTestingCommand(double delta){
+        return new InstantCommand(() -> changeTesting(delta));
+    }
+
+    public void changeTesting(double delta){
+        testing += delta;
+    }
+
 
     public Command spinIndexerSlow(){
-        return new InstantCommand(() -> indexer.setPower(0.4));
+        return new InstantCommand(() -> indexer.setPower(testing));
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() -> indexer.setPower(0.5));

@@ -1,8 +1,5 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
-import static org.firstinspires.ftc.teamcode.Constants.Side.BLUE;
-import static org.firstinspires.ftc.teamcode.Constants.Side.RED;
-
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
@@ -11,7 +8,6 @@ import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
-import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.CRServoEx;
@@ -29,6 +25,8 @@ public class Flywheel implements Subsystem {
     private RelativeShooting relativeShooting = new RelativeShooting();
 
     private Constants.Side side;
+
+    private boolean bool = false;
 
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
@@ -59,7 +57,7 @@ public class Flywheel implements Subsystem {
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
-        shootFlywheel();
+        shootFlywheelMethod(bool);
         spinHood();
 
         flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
@@ -81,6 +79,19 @@ public class Flywheel implements Subsystem {
         return new InstantCommand(() -> flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM()));
     }
 
+    public void shootFlywheelMethod(boolean idk){
+        if(idk){
+            flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM());
+        } else {
+            flywheelCalculator.setSetpoint(0);
+        }
+    }
+
+    public Command changeBool(){
+        return new InstantCommand(() -> bool = !bool);
+    }
+
+
     public void setSide(Constants.Side side){
         this.side = side;
     }
@@ -96,7 +107,7 @@ public class Flywheel implements Subsystem {
     }
 
     public void spinHood(){
-        hoodCalculator.setSetpoint(getHoodAngle());
+        hoodCalculator.setSetpoint(getRelativeHoodAngle());
     }
 
     public Command spinHoodZero(){
@@ -135,7 +146,7 @@ public class Flywheel implements Subsystem {
         }
     }
 
-    public double getHoodAngle(){
+    public double getRelativeHoodAngle(){
         //Need to test if it works
         return 0.0103480208477 * Math.pow(relativeShooting.getEffectiveDistance(),1.24083);
     }
