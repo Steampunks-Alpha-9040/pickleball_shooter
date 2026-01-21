@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 
+import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 import dev.nextftc.core.components.BindingsComponent;
@@ -25,7 +26,7 @@ public class testDriving extends NextFTCOpMode {
 
     @Override
     public void onInit(){
-        drivebase.getMecanumDriver(0).schedule();
+        drivebase.getMecanumDriver(Constants.Side.BLUE).schedule();
 
     }
 }

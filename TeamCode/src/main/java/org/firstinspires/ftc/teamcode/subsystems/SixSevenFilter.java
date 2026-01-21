@@ -5,6 +5,7 @@ import com.pedropathing.geometry.Pose;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 
 public class SixSevenFilter implements Subsystem {
 
@@ -14,11 +15,11 @@ public class SixSevenFilter implements Subsystem {
 
     }
     //Expo Filter Constant
-    private static final double ALPHA = 0.15;
+    private static final double ALPHA = 0.3;
 
     //Outliers
-    private static final double MAX_POSITION_ERROR = 12;
-    private static final double MAX_HEADING_ERROR = Math.toRadians(12);
+    private static final double MAX_POSITION_ERROR = 15;
+    private static final double MAX_HEADING_ERROR = Math.toRadians(15);
 
     private double emaX = 0.0;
     private double emaY = 0.0;
@@ -35,6 +36,10 @@ public class SixSevenFilter implements Subsystem {
 
     @Override
     public void periodic(){
+        ActiveOpMode.telemetry().addData("emaX: ", emaX);
+        ActiveOpMode.telemetry().addData("emaY: ", emaY);
+        ActiveOpMode.telemetry().addData("emaHeading: ", emaHeading);
+
         pedroPose = Drivebase.INSTANCE.getFollower().getPose();
         if(!Vision.INSTANCE.hasValidPose()){
             visionPose = Vision.INSTANCE.getPose();
@@ -56,11 +61,11 @@ public class SixSevenFilter implements Subsystem {
 
         // Outlier rejection
         if (Math.hypot(dx, dy) > MAX_POSITION_ERROR) {
-            return odoPose;
+            return new Pose(0,0,0);
         }
 
         if (Math.abs(dTheta) > MAX_HEADING_ERROR) {
-            return odoPose;
+            return new Pose(0,0,0);
         }
 
         // Exponential moving average on the error
