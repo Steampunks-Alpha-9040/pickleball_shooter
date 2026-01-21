@@ -76,9 +76,9 @@ public class TeleOpBLUE extends BaseOpMode {
 
         Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.shootFlywheel()
+                        flywheel.changeBool()
                 ).whenBecomesFalse(
-                        flywheel.stopFlywheel()
+                        flywheel.changeBool()
                 );
 
         Gamepads.gamepad2().a().toggleOnBecomesTrue()

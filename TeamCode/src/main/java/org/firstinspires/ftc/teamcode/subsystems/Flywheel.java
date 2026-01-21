@@ -57,7 +57,7 @@ public class Flywheel implements Subsystem {
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
-        shootFlywheel();
+        shootFlywheelMethod(bool);
         spinHood();
 
         flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
