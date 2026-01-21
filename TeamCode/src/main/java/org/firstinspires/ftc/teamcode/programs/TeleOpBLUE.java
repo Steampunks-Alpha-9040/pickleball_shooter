@@ -32,6 +32,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
+//        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
         drivebase.getFollower().setStartingPose(new Pose(72, 72, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
@@ -39,7 +40,6 @@ public class TeleOpBLUE extends BaseOpMode {
         flywheel.setSide(Constants.Side.BLUE);
         turret.setSide(Constants.Side.BLUE);
         Constants.OpModeConstants.setSide(Constants.Side.BLUE);
-        drivebase.setSide(Constants.Side.BLUE);
 
 
         drivebase.getMecanumDriver(Constants.Side.BLUE).schedule();
@@ -59,6 +59,10 @@ public class TeleOpBLUE extends BaseOpMode {
                         indexer.spinIndexerSlow()
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
+                );
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        drivebase.resetPose(0)
                 );
 
 

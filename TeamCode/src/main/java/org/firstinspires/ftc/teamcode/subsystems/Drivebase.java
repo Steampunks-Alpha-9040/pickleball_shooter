@@ -43,7 +43,6 @@ public class Drivebase implements Subsystem {
     private Pose2D botpose;
     private double gyroOffset;
 
-    private Constants.Side side;
 
     public MotorEx getBR(){ return BR; }
     public MotorEx getFL(){ return FL; }
@@ -63,19 +62,16 @@ public class Drivebase implements Subsystem {
         ActiveOpMode.telemetry().addData("y velocity: ", follower.getVelocity().getYComponent());
     }
 
-    public void setSide(Constants.Side selectedSide){
-        side = selectedSide;
-    }
 
     public PedroDriverControlled getMecanumDriver(Constants.Side selectedSide){
-        if (side == BLUE) {
+        if (selectedSide == BLUE) {
             return new PedroDriverControlled(
                     Gamepads.gamepad1().leftStickY(),
                     Gamepads.gamepad1().leftStickX(),
                     Gamepads.gamepad1().rightStickX().negate(),
                     false
             );
-        } else if(side == RED){
+        } else if(selectedSide == RED){
             return new PedroDriverControlled(
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX().negate(),

@@ -29,14 +29,14 @@ public class TeleOpRED extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         //Auto ends on 80.693, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(80.693, 7.811, Math.toRadians(90)));
+//        drivebase.getFollower().setStartingPose(new Pose(80.693, 7.811, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72, 72, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
         turret.setSide(Constants.Side.RED);
         flywheel.setSide(Constants.Side.RED);
         Constants.OpModeConstants.setSide(Constants.Side.RED);
-        drivebase.setSide(Constants.Side.RED);
 
 
         drivebase.getMecanumDriver(Constants.Side.RED).schedule();
@@ -51,7 +51,7 @@ public class TeleOpRED extends BaseOpMode {
 
         Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        indexer.spinIndexerFast()
+                        indexer.spinIndexerSlow()
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
