@@ -57,7 +57,7 @@ public class Flywheel implements Subsystem {
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
-        shootFlywheelMethod(bool);
+        shootFlywheel();
         spinHood();
 
         flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
@@ -148,7 +148,7 @@ public class Flywheel implements Subsystem {
 
     public double getRelativeHoodAngle(){
         //Need to test if it works
-        return 0.0103480208477 * Math.pow(relativeShooting.getEffectiveDistance(),1.24083);
+        return 0.0103480208477 * Math.pow(relativeShooting.getEffectiveDistance(),1.24083) + 0.1;
     }
 
     public double testHoodAngle(){

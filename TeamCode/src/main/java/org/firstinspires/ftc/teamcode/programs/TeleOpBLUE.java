@@ -77,12 +77,6 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         flywheel.changeBool()
                 );
-        Gamepads.gamepad2().a().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        indexer.spinIndexerSlow()
-                ).whenBecomesFalse(
-                        indexer.stopIndexer()
-                );
         Gamepads.gamepad2().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         feeder.setArmDown()
@@ -91,16 +85,16 @@ public class TeleOpBLUE extends BaseOpMode {
                 );
         Gamepads.gamepad2().rightBumper().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        indexer.changeTestingCommand(0.05)
+                        indexer.spinIndexerFast()
                 ).whenBecomesFalse(
-                        indexer.changeTestingCommand(0.05)
+                        indexer.stopIndexer()
                 );
 
         Gamepads.gamepad2().leftBumper().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        indexer.changeTestingCommand(-0.05)
+                        indexer.spinIndexerSlow()
                 ).whenBecomesFalse(
-                        indexer.changeTestingCommand(-0.05)
+                        indexer.stopIndexer()
                 );
 
 
