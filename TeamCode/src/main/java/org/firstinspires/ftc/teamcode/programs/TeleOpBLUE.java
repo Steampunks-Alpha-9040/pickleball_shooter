@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 
 import com.bylazar.utils.LoopTimer;
+import com.pedropathing.geometry.CoordinateSystem;
 import com.pedropathing.geometry.Pose;
 
 import dev.nextftc.core.commands.groups.ParallelGroup;
@@ -10,6 +11,7 @@ import dev.nextftc.ftc.Gamepads;
 
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 
@@ -30,7 +32,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(63.307,7.811, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72-Constants.robotWidth/2, Constants.robotLength/2, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
@@ -114,38 +116,13 @@ public class TeleOpBLUE extends BaseOpMode {
 //                        intake.stopIntake()
 //                );
 //
-//        Gamepads.gamepad1().y().toggleOnBecomesTrue()
-//                .whenBecomesTrue(
-//                        flywheel.changePID()
-//                );
-//
-//        Gamepads.gamepad1().a().toggleOnBecomesTrue()
-//                .whenBecomesTrue(
-//                        flywheel.changeTestHoodAngle(1)
-//                ).whenBecomesFalse(
-//                        flywheel.changeTestHoodAngle(1)
-//                );
-//
-//        Gamepads.gamepad1().b().toggleOnBecomesTrue()
-//                .whenBecomesTrue(
-//                        flywheel.changeTestHoodAngle(-1)
-//                ).whenBecomesFalse(
-//                        flywheel.changeTestHoodAngle(-1)
-//                );
-//
 //        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
-//                        flywheel.changeTestHoodAngle(0.1)
+//                        indexer.spinIndexerSlow()
 //                ).whenBecomesFalse(
-//                        flywheel.changeTestHoodAngle(0.1)
+//                        indexer.stopIndexer()
 //                );
 //
-//        Gamepads.gamepad1().x().toggleOnBecomesTrue()
-//                .whenBecomesTrue(
-//                        flywheel.changeTestHoodAngle(-0.1)
-//                ).whenBecomesFalse(
-//                        flywheel.changeTestHoodAngle(-0.1)
-//                );
 //
 //        //Gamepad 2
 //        Gamepads.gamepad2().b().toggleOnBecomesTrue()
@@ -176,17 +153,102 @@ public class TeleOpBLUE extends BaseOpMode {
 //                );
 //        Gamepads.gamepad2().rightBumper().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
-//                        flywheel.changeRPM(10)
+//                        flywheel.changeTestHoodAngle(0.2)
 //                ).whenBecomesFalse(
-//                        flywheel.changeRPM(10)
+//                        flywheel.changeTestHoodAngle(0.2)
 //                );
 //
 //        Gamepads.gamepad2().leftBumper().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
-//                        flywheel.changeRPM(-10)
+//                        flywheel.changeTestHoodAngle(-0.2)
 //                ).whenBecomesFalse(
-//                        flywheel.changeRPM(-10)
+//                        flywheel.changeTestHoodAngle(-0.2)
 //                );
+
+
+        //Testing Controls
+
+        //Gamepad 1
+        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        intake.spinIntake()
+                ).whenBecomesFalse(
+                        intake.stopIntake()
+                );
+
+//        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+//                .whenBecomesTrue(
+//                        Drivebase.correctPose()
+//                );
+
+        Gamepads.gamepad1().a().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeTestHoodAngle(1)
+                ).whenBecomesFalse(
+                        flywheel.changeTestHoodAngle(1)
+                );
+
+        Gamepads.gamepad1().b().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeTestHoodAngle(-1)
+                ).whenBecomesFalse(
+                        flywheel.changeTestHoodAngle(-1)
+                );
+
+        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeTestHoodAngle(0.1)
+                ).whenBecomesFalse(
+                        flywheel.changeTestHoodAngle(0.1)
+                );
+
+        Gamepads.gamepad1().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeTestHoodAngle(-0.1)
+                ).whenBecomesFalse(
+                        flywheel.changeTestHoodAngle(-0.1)
+                );
+
+        //Gamepad 2
+        Gamepads.gamepad2().b().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        feeder.turnWheelsOn()
+                ).whenBecomesFalse(
+                        feeder.turnWheelsOff()
+                );
+
+        Gamepads.gamepad2().x().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.shootFlywheel()
+                ).whenBecomesFalse(
+                        flywheel.stopFlywheel()
+                );
+
+        Gamepads.gamepad2().a().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        indexer.spinIndexerSlow()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
+                );
+        Gamepads.gamepad2().y().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        feeder.setArmDown()
+                ).whenBecomesFalse(
+                        feeder.setArmUp()
+                );
+        Gamepads.gamepad2().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeRPM(10)
+                ).whenBecomesFalse(
+                        flywheel.changeRPM(10)
+                );
+
+        Gamepads.gamepad2().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        flywheel.changeRPM(-10)
+                ).whenBecomesFalse(
+                        flywheel.changeRPM(-10)
+                );
 
 
         drivebase.zeroHoodQuadature();
