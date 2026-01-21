@@ -29,7 +29,7 @@ public class TeleOpRED extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         //Auto ends on 80.693, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(80.3, 8.69, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(80.693, 7.811, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
