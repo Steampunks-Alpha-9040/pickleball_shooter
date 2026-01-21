@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.Constants.Side.BLUE;
+import static org.firstinspires.ftc.teamcode.Constants.Side.RED;
+
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.util.PIDflywheel;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
@@ -25,6 +28,8 @@ public class Flywheel implements Subsystem {
 
     private RelativeShooting relativeShooting = new RelativeShooting();
 
+    private Constants.Side side;
+
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
             Constants.FlywheelConstants.flywheel_kI,
@@ -34,11 +39,11 @@ public class Flywheel implements Subsystem {
     );
 
     private final PIDposition hoodCalculator = new PIDposition(
-            Constants.hood_kP,
-            Constants.hood_kI,
-            Constants.hood_kD,
-            Constants.hood_kF,
-            Constants.hoodPositionToleranceRAD
+            Constants.FlywheelConstants.hood_kP,
+            Constants.FlywheelConstants.hood_kI,
+            Constants.FlywheelConstants.hood_kD,
+            Constants.FlywheelConstants.hood_kF,
+            Constants.FlywheelConstants.hoodPositionToleranceRAD
     );
 
     private Flywheel(){}
@@ -76,6 +81,10 @@ public class Flywheel implements Subsystem {
         return new InstantCommand(() -> flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM()));
     }
 
+    public void setSide(Constants.Side side){
+        this.side = side;
+    }
+
     public Command shootFlywheel(double flywheelRPM){
         return new InstantCommand(() -> {
             flywheelCalculator.setSetpoint(flywheelRPM);
@@ -87,7 +96,7 @@ public class Flywheel implements Subsystem {
     }
 
     public void spinHood(){
-        hoodCalculator.setSetpoint(testHoodAngle());
+        hoodCalculator.setSetpoint(getHoodAngle());
     }
 
     public Command spinHoodZero(){
@@ -109,10 +118,21 @@ public class Flywheel implements Subsystem {
 
     public double getRelativeFlyWheelRPM(){
         double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
-        if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
-            RPM -= 80;
+        if(side == Constants.Side.BLUE){
+            if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
+                return RPM - 80;
+            } else {
+                return RPM;
+            }
+        } else if(side == Constants.Side.RED) {
+            if(Drivebase.INSTANCE.getFollower().getPose().getX() < 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
+                return RPM - 80;
+            } else {
+                return RPM;
+            }
+        } else {
+            return RPM;
         }
-        return RPM;
     }
 
     public double getHoodAngle(){
@@ -135,11 +155,11 @@ public class Flywheel implements Subsystem {
     public Command changePID(){
         return new InstantCommand(() -> {
             hoodCalculator.setPID(
-                    Constants.hood_kP,
-                    Constants.hood_kI,
-                    Constants.hood_kD,
-                    Constants.hood_kF,
-                    Constants.hoodPositionToleranceRAD);
+                    Constants.FlywheelConstants.hood_kP,
+                    Constants.FlywheelConstants.hood_kI,
+                    Constants.FlywheelConstants.hood_kD,
+                    Constants.FlywheelConstants.hood_kF,
+                    Constants.FlywheelConstants.hoodPositionToleranceRAD);
         });
     }
 

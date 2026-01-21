@@ -60,9 +60,12 @@ public class RedFarAuto extends BaseOpMode {
 
 
         turret.setSide(Constants.Side.BLUE);
+        flywheel.setSide(Constants.Side.RED);
+        Constants.OpModeConstants.setSide(Constants.Side.RED);
+
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(80.3, 8.69, Math.toRadians(0)));
+        drivebase.getFollower().setStartingPose(new Pose(79.510, 8.993, Math.toRadians(0)));
 
         paths = new Paths(drivebase.getFollower());
 
@@ -91,6 +94,7 @@ public class RedFarAuto extends BaseOpMode {
 
 
 
+
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
@@ -101,9 +105,9 @@ public class RedFarAuto extends BaseOpMode {
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
                             new BezierCurve(
-                                    new Pose(80.300, 8.690),
+                                    new Pose(79.510, 8.993),
                                     new Pose(92.092, 39.279),
-                                    new Pose(126.000, 36.000)
+                                    new Pose(131.000, 36.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(0), Math.toRadians(0))
 
@@ -111,7 +115,7 @@ public class RedFarAuto extends BaseOpMode {
 
             FirstShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(126.000, 36.000),
+                                    new Pose(131.000, 36.000),
 
                                     new Pose(96.000, 11.000)
                             )
@@ -122,9 +126,9 @@ public class RedFarAuto extends BaseOpMode {
             SecondIntake = follower.pathBuilder().addPath(
                             new BezierCurve(
                                     new Pose(96.000, 11.000),
-                                    new Pose(89.753, 64.994),
-                                    new Pose(98.413, 54.656),
-                                    new Pose(126.000, 60.000)
+                                    new Pose(85.228, 43.551),
+                                    new Pose(92.118, 63.705),
+                                    new Pose(131.000, 55.500)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(80), Math.toRadians(0))
 
@@ -132,7 +136,7 @@ public class RedFarAuto extends BaseOpMode {
 
             SecondShoot = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(126.000, 60.000),
+                                    new Pose(131.000, 55.500),
 
                                     new Pose(96.000, 11.000)
                             )
@@ -144,13 +148,15 @@ public class RedFarAuto extends BaseOpMode {
                             new BezierLine(
                                     new Pose(96.000, 11.000),
 
-                                    new Pose(80.300, 8.690)
+                                    new Pose(80.693, 7.811)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(80), Math.toRadians(90))
 
                     .build();
         }
     }
+
+
 
     public Command shoot() {
         return new ParallelGroup(
@@ -215,15 +221,15 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
-    double shootFarDelay = 5.0;
-    double Beginning = 1.0;
-    double intakeDelay = 1.0;
+    double shootFarDelay = 3.5;
+    double Beginning = 1.5;
+    double intakeDelay = 0.5;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
-                flywheel.shootFlywheel(),
                 new SequentialGroup(
-//                        stopShoot(),
+                        flywheel.shootFlywheel(),
+                        stopShoot(),
 //                        sort(),
                         spinIndexerSlow(),
                         intakeStop(),
@@ -239,6 +245,8 @@ public class RedFarAuto extends BaseOpMode {
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
+                        flywheel.shootFlywheel(),
+                        new Delay(Beginning),
                         safeShoot(),
                         new Delay(shootFarDelay),
                         stopShoot(),

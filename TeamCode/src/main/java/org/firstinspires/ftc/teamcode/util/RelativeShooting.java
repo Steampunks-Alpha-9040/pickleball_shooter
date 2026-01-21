@@ -8,7 +8,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 public class RelativeShooting {
 
     private double effectiveDistance; // required ball exit velocity
-    private double turretTarget;  // turret angle relative to robot
+    private double turretTarget;// turret angle relative to robot
 
     public RelativeShooting() {}
 
@@ -75,16 +75,26 @@ public class RelativeShooting {
     // ---------------- HELPERS ----------------
 
     private double calculateRobotGoalAngle(double posX, double posY) {
+        double offsetX = 0;
+        double offsetY = 0;
         switch (side) {
             case RED:
+                if(posX < 72 && posY > 72){
+                    offsetX = 6;
+                    offsetY = 6;
+                }
                 return Math.atan2(
-                        Constants.OpModeConstants.REDscore.getY() - posY,
-                        Constants.OpModeConstants.REDscore.getX() - posX
+                        Constants.OpModeConstants.REDscore.getY() + offsetY - posY,
+                        Constants.OpModeConstants.REDscore.getX() + offsetX - posX
                 );
             case BLUE:
+                if(posX > 72 && posY > 72){
+                    offsetX = -8;
+                    offsetY = 8;
+                }
                 return Math.atan2(
-                        Constants.OpModeConstants.BLUEscore.getY() - posY,
-                        Constants.OpModeConstants.BLUEscore.getX() - posX
+                        Constants.OpModeConstants.BLUEscore.getY() + offsetY - posY,
+                        Constants.OpModeConstants.BLUEscore.getX() + offsetX - posX
                 );
             default:
                 return 0.0;

@@ -25,6 +25,7 @@ public abstract class BaseOpMode extends NextFTCOpMode {
     protected PanelsTelemetry panels = PanelsTelemetry.INSTANCE;
     protected PanelsField field = PanelsField.INSTANCE;
     protected Flywheel flywheel = Flywheel.INSTANCE;
+
     protected Drivebase drivebase = Drivebase.INSTANCE;
     protected Indexer indexer = Indexer.INSTANCE;
     protected Feeder feeder = Feeder.INSTANCE;

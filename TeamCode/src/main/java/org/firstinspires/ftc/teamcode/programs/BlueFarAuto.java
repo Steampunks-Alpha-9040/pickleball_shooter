@@ -60,9 +60,11 @@ public class BlueFarAuto extends BaseOpMode {
 
 
         turret.setSide(Constants.Side.BLUE);
+        flywheel.setSide(Constants.Side.BLUE);
+        Constants.OpModeConstants.setSide(Constants.Side.BLUE);
 
         drivebase.setFollower(PedroComponent.follower());
-        drivebase.getFollower().setStartingPose(new Pose(63.7, 8.69, Math.toRadians(180)));
+        drivebase.getFollower().setStartingPose(new Pose(64.490, 8.993, Math.toRadians(180)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
@@ -97,11 +99,13 @@ public class BlueFarAuto extends BaseOpMode {
 
 
 
+
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
         public PathChain SecondIntake;
         public PathChain SecondShoot;
+        public PathChain GoToWall;
 
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
@@ -142,6 +146,16 @@ public class BlueFarAuto extends BaseOpMode {
                                     new Pose(48.000, 11.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(100))
+
+                    .build();
+
+            GoToWall = follower.pathBuilder().addPath(
+                            new BezierLine(
+                                    new Pose(48.000, 11.000),
+
+                                    new Pose(63.307, 7.811)
+                            )
+                    ).setLinearHeadingInterpolation(Math.toRadians(100), Math.toRadians(90))
 
                     .build();
         }
@@ -262,7 +276,7 @@ public class BlueFarAuto extends BaseOpMode {
                         safeShoot(),
                         new Delay(shootFarDelay),
                         stopShoot(),
-//                        new FollowPath((paths.GoToWall)),
+                        new FollowPath((paths.GoToWall)),
                         flywheel.stopFlywheel(),
                         turret.setHomeTrue()
 //                        intake(),
