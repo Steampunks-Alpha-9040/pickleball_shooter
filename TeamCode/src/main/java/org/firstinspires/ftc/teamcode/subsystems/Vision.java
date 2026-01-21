@@ -52,6 +52,13 @@ public class Vision implements Subsystem {
         heading = Math.toRadians(botpose.getOrientation().getYaw());
 
         poseValid = true;
+
+        ActiveOpMode.telemetry().addData("VisionValid: ", hasValidPose());
+        ActiveOpMode.telemetry().addData("VisionX: ", getX());
+        ActiveOpMode.telemetry().addData("VisionY: ", getY());
+        ActiveOpMode.telemetry().addData("VisionHeading: ", getHeading());
+
+
     }
 
     public boolean hasValidPose() {

@@ -11,6 +11,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Flywheel;
 import org.firstinspires.ftc.teamcode.subsystems.Indexer;
 import org.firstinspires.ftc.teamcode.subsystems.Intake;
 import org.firstinspires.ftc.teamcode.subsystems.Turret;
+import org.firstinspires.ftc.teamcode.subsystems.Vision;
 import org.firstinspires.ftc.teamcode.util.pedropathing.Constants;
 
 import dev.nextftc.core.components.BindingsComponent;
@@ -31,6 +32,7 @@ public abstract class BaseOpMode extends NextFTCOpMode {
     protected Feeder feeder = Feeder.INSTANCE;
     protected Intake intake = Intake.INSTANCE;
     protected Turret turret = Turret.INSTANCE;
+    protected Vision vision = Vision.INSTANCE;
 
     public BaseOpMode(){
         addComponents(
@@ -40,7 +42,8 @@ public abstract class BaseOpMode extends NextFTCOpMode {
                         feeder,
                         flywheel,
                         intake,
-                        turret
+                        turret,
+                        vision
                 ),
                 new PedroComponent(Constants::createFollower),
                 BulkReadComponent.INSTANCE,
