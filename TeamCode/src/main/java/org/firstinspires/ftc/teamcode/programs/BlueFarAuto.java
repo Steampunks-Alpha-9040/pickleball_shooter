@@ -26,7 +26,7 @@ import dev.nextftc.core.commands.delays.Delay;
 import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.core.commands.groups.SequentialGroup;
 
-@Autonomous(name = "Blue", group = "Autonomous")
+@Autonomous(name = "Far Blue", group = "Autonomous")
 @Configurable // Panels
 public class BlueFarAuto extends BaseOpMode {
 
