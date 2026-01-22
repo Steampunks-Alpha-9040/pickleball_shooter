@@ -119,7 +119,7 @@ public class BlueCloseAuto extends BaseOpMode {
                             new BezierLine(
                                     new Pose(60.000, 84.000),
 
-                                    new Pose(13.000, 84.000)
+                                    new Pose(14.000, 84.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(180), Math.toRadians(180))
 
@@ -127,7 +127,7 @@ public class BlueCloseAuto extends BaseOpMode {
 
             ShootSecond = follower.pathBuilder().addPath(
                             new BezierLine(
-                                    new Pose(13.000, 84.000),
+                                    new Pose(14.000, 84.000),
 
                                     new Pose(60.000, 84.000)
                             )
