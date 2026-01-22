@@ -184,21 +184,21 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 //    double Beginning = 1.0;
 //    double intakeDelay = 1.0;
 //
-//    public Command shoot() {
+//    public Command transfer() {
 //        return new ParallelGroup(
 //                feeder.setArmDown(),
 //                feeder.turnWheelsOn()
 //        );
 //    }
 //
-////    public Command safeShoot() {
+////    public Command safeTransfer() {
 ////        if (indexer.checkValid()) {
-////            return shoot();
+////            return transfer();
 ////        } else {
 ////            sort();
 ////            new Delay(0.5);
 ////        }
-////        return shoot();
+////        return transfer();
 ////    }
 //
 //    public Command stopShoot() {
@@ -234,7 +234,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 //                new SequentialGroup(
 //                        sort(),
 //                        new Delay(Beginning),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
@@ -243,7 +243,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 //                        intakeStop(),
 //                        sort(),
 //                        new FollowPath(paths.ShootFirst),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
@@ -252,7 +252,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 //                        intakeStop(),
 //                        sort(),
 //                        new FollowPath(paths.ShootSecond),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
@@ -261,7 +261,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 //                        intakeStop(),
 //                        sort(),
 //                        new FollowPath(paths.ShootThird),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
@@ -270,7 +270,7 @@ public class BetterMazdaMiataAuto extends BaseOpMode {
 //                        intakeStop(),
 //                        sort(),
 //                        new FollowPath(paths.ShootLast),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        new FollowPath(paths.LeaveShootingZone)

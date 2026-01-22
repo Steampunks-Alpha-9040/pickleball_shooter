@@ -71,9 +71,9 @@ public class TeleOpRED extends BaseOpMode {
 
         Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesFalse(
-                        flywheel.stopFlywheel()
+                        flywheel.changeBool()
                 ).whenBecomesTrue(
-                        flywheel.shootFlywheel()
+                        flywheel.changeBool()
                 );
 
         Gamepads.gamepad2().a().toggleOnBecomesTrue()
@@ -82,11 +82,26 @@ public class TeleOpRED extends BaseOpMode {
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
+
         Gamepads.gamepad2().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         feeder.setArmDown()
                 ).whenBecomesFalse(
                         feeder.setArmUp()
+                );
+
+        Gamepads.gamepad2().rightBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        indexer.spinIndexerFast()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
+                );
+
+        Gamepads.gamepad2().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        indexer.spinIndexerSlow()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
                 );
 
         drivebase.zeroHoodQuadature();

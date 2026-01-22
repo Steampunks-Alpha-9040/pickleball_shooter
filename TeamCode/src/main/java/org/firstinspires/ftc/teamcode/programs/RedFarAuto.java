@@ -59,13 +59,15 @@ public class RedFarAuto extends BaseOpMode {
         panelsTelemetry = PanelsTelemetry.INSTANCE.getTelemetry();
 
 
-        turret.setSide(Constants.Side.BLUE);
+        turret.setSide(Constants.Side.RED);
         flywheel.setSide(Constants.Side.RED);
         Constants.OpModeConstants.setSide(Constants.Side.RED);
 
 
         drivebase.setFollower(PedroComponent.follower());
         drivebase.getFollower().setStartingPose(new Pose(79.510, 8.993, Math.toRadians(0)));
+        drivebase.INSTANCE.getBR().setCurrentPosition(0);
+        drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
         paths = new Paths(drivebase.getFollower());
 
@@ -74,6 +76,8 @@ public class RedFarAuto extends BaseOpMode {
 
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
+
+        drivebase.zeroTurretQuadature();
     }
 
     @Override
@@ -91,10 +95,6 @@ public class RedFarAuto extends BaseOpMode {
     public void onUpdate(){
         telemetry.update();
     }
-
-
-
-
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
@@ -157,27 +157,27 @@ public class RedFarAuto extends BaseOpMode {
     }
 
 
-
-    public Command shoot() {
+    public Command transfer() {
         return new ParallelGroup(
                 feeder.setArmDown(),
                 feeder.turnWheelsOn()
         );
     }
 
-    public Command safeShoot() {
+    public Command safeTransfer() {
 //        if (indexer.checkValid()) {
-//            return shoot();
+//            return transfer();
 //        } else {
 //            sort();
 //            new Delay(0.5);
 //        }
-        return shoot();
+        return transfer();
     }
 
-    public Command stopShoot() {
+    public Command stopTransfer() {
         return new ParallelGroup(
-                feeder.setArmUp(),
+                //Removed until intake is improved
+//                feeder.setArmUp(),
                 feeder.turnWheelsOff()
         );
     }
@@ -191,13 +191,12 @@ public class RedFarAuto extends BaseOpMode {
     public Command intake() {
         return new SequentialGroup(
                 intake.spinIntake()
-
         );
     }
 
     public Command intakeStop() {
         return new SequentialGroup(
-                intake.slowIntake()
+                intake.stopIntake()
         );
     }
 
@@ -213,11 +212,23 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
+    public Command stopIndexer(){
+        return new SequentialGroup(
+                indexer.stopIndexer()
+        );
+    }
+
     public Command zeroEverything(){
         return new ParallelGroup(
                 turret.moveTurretZero(),
                 flywheel.spinHoodZero(),
                 flywheel.stopFlywheel()
+        );
+    }
+
+    public Command zeroTurret(){
+        return new SequentialGroup(
+                turret.setTurretQuadCommand(0)
         );
     }
 
@@ -229,16 +240,16 @@ public class RedFarAuto extends BaseOpMode {
     public Command autonomousRoutine() {
         return new ParallelGroup(
                 new SequentialGroup(
-                        flywheel.shootFlywheel(),
-                        stopShoot(),
+                        flywheel.changeBool(),
+                        stopTransfer(),
 //                        sort(),
                         intakeStop(),
                         new Delay(Beginning),
-                        safeShoot(),
+                        transfer(),
                         new Delay(intakeDelay),
                         spinIndexerSlow(),
                         new Delay(shootFarDelay),
-                        stopShoot(),
+                        stopTransfer(),
                         intake(),
                         spinIndexerFast(),
                         new FollowPath(paths.FirstIntake),
@@ -247,11 +258,10 @@ public class RedFarAuto extends BaseOpMode {
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
-                        flywheel.shootFlywheel(),
                         new Delay(testingDelay),
-                        safeShoot(),
+                        transfer(),
                         new Delay(shootFarDelay),
-                        stopShoot(),
+                        stopTransfer(),
                         intake(),
                         spinIndexerFast(),
                         new FollowPath(paths.SecondIntake),
@@ -261,9 +271,9 @@ public class RedFarAuto extends BaseOpMode {
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
                         new Delay(testingDelay),
-                        safeShoot(),
+                        transfer(),
                         new Delay(shootFarDelay),
-                        stopShoot(),
+                        stopTransfer(),
                         new FollowPath((paths.GoToWall)),
                         flywheel.stopFlywheel(),
                         turret.setHomeTrue()
@@ -274,7 +284,7 @@ public class RedFarAuto extends BaseOpMode {
 //                        intakeStop(),
 ////                        sort(),
 //                        new FollowPath(paths.ShootThird),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        intake(),
@@ -283,7 +293,7 @@ public class RedFarAuto extends BaseOpMode {
 //                        intakeStop(),
 ////                        sort(),
 //                        new FollowPath(paths.ShootLast),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        new FollowPath(paths.LeaveShootingZone)
