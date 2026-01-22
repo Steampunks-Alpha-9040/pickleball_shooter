@@ -148,7 +148,9 @@ public class Flywheel implements Subsystem {
 
     public double getRelativeHoodAngle(){
         //Need to test if it works
-        return 0.0103480208477 * Math.pow(relativeShooting.getEffectiveDistance(),1.24083) + 0.1;
+        return (-0.00028838 * relativeShooting.getEffectiveDistance() * relativeShooting.getEffectiveDistance())
+                + (0.0969944 * relativeShooting.getEffectiveDistance())
+                - 3.25772;
     }
 
     public double testHoodAngle(){
