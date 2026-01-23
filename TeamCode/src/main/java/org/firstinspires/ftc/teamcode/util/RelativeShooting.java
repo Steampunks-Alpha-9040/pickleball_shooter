@@ -7,8 +7,10 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 public class RelativeShooting {
 
-    private double effectiveDistance; // required ball exit velocity
-    private double turretTarget;// turret angle relative to robot
+    private double flywheelRPM;
+    private double turretTarget;
+
+    private double hoodTarget;
 
     public RelativeShooting() {}
 
@@ -37,25 +39,48 @@ public class RelativeShooting {
         double turretPosX = posX - (Constants.RelativeShootingConstants.turretOffset * Math.cos(heading));
         double turretPosY = posY - (Constants.RelativeShootingConstants.turretOffset * Math.sin(heading));
 
-        double phi = calculateRobotGoalAngle(turretPosX, turretPosY);
+        double theta = calculateRobotGoalAngle(turretPosX, turretPosY);
         double distance = calculateRobotGoalDistance(turretPosX, turretPosY);
 //3.097
-        double flywheelRPM = getRelativeFlyWheelRPM(distance);
-        double vDesire = flywheelRPM / 400 - 2;
+        double flywheelRPMDesire = getRelativeFlyWheelRPM(distance);
+        double vDesire = flywheelRPMDesire / 400 - 2;
+        double phi = Math.toRadians(-4.14286 * getRelativeHoodAngle(distance) + 68.85714);
 
-        effectiveDistance = distance;
+        double vShotX = vDesire * Math.cos(theta) * Math.cos(phi) - vX;
+        double vShotY = vDesire * Math.sin(theta) * Math.cos(phi) - vY;
+        double vShotZ = vDesire * Math.sin(phi);
+
+        double vShotMag = Math.sqrt(vShotX * vShotX + vShotY * vShotY + vShotZ * vShotZ);
+
+        // required ball exit velocity
+        flywheelRPM = 400 * vShotMag + 800;
+
+        turretTarget = Math.atan2(vShotX, vShotY) + Math.PI - heading;
+        turretTarget = Math.atan2(Math.sin(turretTarget), Math.cos(turretTarget));
+
+        hoodTarget = Math.atan2(Math.sqrt(vShotX * vShotX + vShotY * vShotY), vShotZ);
+        hoodTarget = -0.232745 * hoodTarget + 16.11557;
+        if(hoodTarget < 0){
+            hoodTarget = 0;
+        } else if (hoodTarget > 5){
+            hoodTarget = 4.6;
+        }
         
 
     }
 
     // ---------------- GETTERS ----------------
 
-    public double getEffectiveDistance() {
-        return effectiveDistance;
+    public double getFlywheelRPM() {
+        return flywheelRPM;
     }
 
     public double getTurretTarget() {
         return turretTarget;
+    }
+
+    public double getHoodTarget() {
+        return hoodTarget;
     }
 
     // ---------------- HELPERS ----------------
@@ -123,5 +148,12 @@ public class RelativeShooting {
         } else {
             return RPM;
         }
+    }
+
+    public double getRelativeHoodAngle(double distance){
+        //Need to test if it works
+        return (-0.00028838 * distance * distance)
+                + (0.0969944 * distance)
+                - 3.25772;
     }
 }

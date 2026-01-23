@@ -153,7 +153,7 @@ public class Constants {
     public static class RelativeShootingConstants{
 
         public static final double airTime = 1.0;
-        public static final double velocityTolerance = 2;
+        public static final double velocityTolerance = 3;
         public static boolean allowShootOnMove = true;
         public static final double maxTurretAdjustment = 45.0;
 

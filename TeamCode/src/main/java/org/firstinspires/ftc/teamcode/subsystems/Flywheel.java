@@ -67,7 +67,6 @@ public class Flywheel implements Subsystem {
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
 //        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
-        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
         ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
         ActiveOpMode.telemetry().addData("flywheelOffset: ", (Constants.RelativeShootingConstants.flywheelRPM));
@@ -128,7 +127,7 @@ public class Flywheel implements Subsystem {
     }
 
     public double getRelativeFlyWheelRPM(){
-        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
+        double RPM = relativeShooting.getFlywheelRPM();
         if(side == Constants.Side.BLUE){
             if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
                 return RPM - 80;
@@ -148,9 +147,7 @@ public class Flywheel implements Subsystem {
 
     public double getRelativeHoodAngle(){
         //Need to test if it works
-        return (-0.00028838 * relativeShooting.getEffectiveDistance() * relativeShooting.getEffectiveDistance())
-                + (0.0969944 * relativeShooting.getEffectiveDistance())
-                - 3.25772;
+        return relativeShooting.getHoodTarget();
     }
 
     public double testHoodAngle(){
