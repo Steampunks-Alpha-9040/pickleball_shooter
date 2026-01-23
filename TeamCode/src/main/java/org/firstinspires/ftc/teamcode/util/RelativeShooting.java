@@ -40,26 +40,12 @@ public class RelativeShooting {
         double phi = calculateRobotGoalAngle(turretPosX, turretPosY);
         double distance = calculateRobotGoalDistance(turretPosX, turretPosY);
 //3.097
-        // Angle from robot forward to goal
-        double dTheta = phi - heading;
+        double flywheelRPM = getRelativeFlyWheelRPM(distance);
+        double vDesire = flywheelRPM / 400 - 2;
 
-        // --- Decompose robot velocity ---
-        double vRadial = vY * Math.cos(dTheta) - vX * Math.sin(dTheta);
+        effectiveDistance = distance;
+        
 
-        double vTangent = vY * Math.sin(dTheta) + vX * Math.cos(dTheta);
-
-        double vShot = distance / Constants.RelativeShootingConstants.airTime - vRadial;
-
-//        if(vShot < 0){
-//            Constants.RelativeShootingConstants.allowShootOnMove = false;
-//        }
-
-        // --- Flywheel + Turret + Hood Values
-        // --- Effective Distance needs to be used to calculate FlywheelRPM and HoodAngle ---
-        effectiveDistance = Constants.RelativeShootingConstants.airTime * Math.sqrt(vTangent * vTangent + vShot * vShot);
-
-        turretTarget = phi + Math.atan2(vTangent, vShot) - heading;
-        turretTarget = Math.atan2(Math.sin(turretTarget),Math.cos(turretTarget));
     }
 
     // ---------------- GETTERS ----------------
@@ -118,5 +104,24 @@ public class RelativeShooting {
         }
 
         return Math.hypot(dx, dy);
+    }
+
+    public double getRelativeFlyWheelRPM(double distance){
+        double RPM = 16.77015 * distance + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
+        if(side == Constants.Side.BLUE){
+            if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
+                return RPM - 80;
+            } else {
+                return RPM;
+            }
+        } else if(side == Constants.Side.RED) {
+            if(Drivebase.INSTANCE.getFollower().getPose().getX() < 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
+                return RPM - 80;
+            } else {
+                return RPM;
+            }
+        } else {
+            return RPM;
+        }
     }
 }
