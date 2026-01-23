@@ -15,11 +15,11 @@ public class SixSevenFilter implements Subsystem {
 
     }
     //Expo Filter Constant
-    private static final double ALPHA = 0.3;
+    private static final double ALPHA = 0.025;
 
     //Outliers
     private static final double MAX_POSITION_ERROR = 15;
-    private static final double MAX_HEADING_ERROR = Math.toRadians(15);
+    private static final double MAX_HEADING_ERROR = Math.toRadians(20);
 
     private double emaX = 0.0;
     private double emaY = 0.0;
@@ -41,7 +41,7 @@ public class SixSevenFilter implements Subsystem {
         ActiveOpMode.telemetry().addData("emaHeading: ", emaHeading);
 
         pedroPose = Drivebase.INSTANCE.getFollower().getPose();
-        if(!Vision.INSTANCE.hasValidPose()){
+        if(Vision.INSTANCE.hasValidPose()){
             visionPose = Vision.INSTANCE.getPose();
             filteredPose = expoFilterPose(pedroPose, visionPose);
             if(Drivebase.INSTANCE.getFollower().getVelocity().getMagnitude() < 3){

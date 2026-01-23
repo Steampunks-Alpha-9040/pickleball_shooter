@@ -60,14 +60,14 @@ public class Vision implements Subsystem {
         x = botpose.getPosition().y * 39.3701
                 + 72
                 + Constants.VisionConstants.turretToCenter * Math.cos(robotHeading)
-                - Constants.VisionConstants.flywheelToTurret * Math.cos(robotHeading + turretHeading)
-                + Constants.VisionConstants.limeLighttoFlywheel * Math.sin(robotHeading + turretHeading)
+                - Constants.VisionConstants.flywheelToTurret * Math.cos(robotHeading - turretHeading)
+                + Constants.VisionConstants.limeLighttoFlywheel * Math.sin(robotHeading - turretHeading)
         ;
         y = -botpose.getPosition().x * 39.3701
                 + 72
                 + Constants.VisionConstants.turretToCenter * Math.sin(robotHeading)
-                - Constants.VisionConstants.flywheelToTurret * Math.sin(robotHeading + turretHeading)
-                - Constants.VisionConstants.limeLighttoFlywheel * Math.cos(robotHeading + turretHeading)
+                - Constants.VisionConstants.flywheelToTurret * Math.sin(robotHeading - turretHeading)
+                - Constants.VisionConstants.limeLighttoFlywheel * Math.cos(robotHeading - turretHeading)
         ;
         heading = (Math.toRadians(botpose.getOrientation().getYaw()) - Math.PI/2) + turretHeading;
         heading = Math.atan2(Math.sin(heading), Math.cos(heading));
@@ -81,7 +81,7 @@ public class Vision implements Subsystem {
         ActiveOpMode.telemetry().addData("VisionXRaw: ", botpose.getPosition().x);
         ActiveOpMode.telemetry().addData("VisionY: ", getY());
         ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
-        ActiveOpMode.telemetry().addData("VisionHeading: ", getHeading());
+        ActiveOpMode.telemetry().addData("VisionHeading: ", Math.toDegrees(getHeading()));
         ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
 
     }

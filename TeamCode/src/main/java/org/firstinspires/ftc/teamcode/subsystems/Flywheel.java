@@ -26,7 +26,7 @@ public class Flywheel implements Subsystem {
 
     private Constants.Side side;
 
-    private boolean bool = false;
+    private static boolean bool = false;
 
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
@@ -90,6 +90,8 @@ public class Flywheel implements Subsystem {
     public Command changeBool(){
         return new InstantCommand(() -> bool = !bool);
     }
+
+    public static boolean getBool(){ return bool; }
 
 
     public void setSide(Constants.Side side){
