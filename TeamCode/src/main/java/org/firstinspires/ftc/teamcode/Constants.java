@@ -163,4 +163,13 @@ public class Constants {
         public static final double turretOffset = 3.097;
     }
 
+    public static class AutoToTeleOpValues{
+        public static Pose pose;
+        public static double turretAngle;
+        public static double hoodAngle;
+        public static double indexerPosition;
+
+
+    }
+
 }

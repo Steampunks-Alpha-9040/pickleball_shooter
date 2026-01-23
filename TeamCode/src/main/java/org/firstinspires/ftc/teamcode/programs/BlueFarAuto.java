@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
@@ -20,6 +21,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -236,6 +238,32 @@ public class BlueFarAuto extends BaseOpMode {
         );
     }
 
+    public void setAutoToTeleOpPose(Pose pose){
+        Constants.AutoToTeleOpValues.pose = pose;
+    }
+
+    public void setAutoToTeleOpTurret(double turretAngle){
+        Constants.AutoToTeleOpValues.turretAngle = turretAngle;
+    }
+
+    public void setAutoToTeleOpHood(double hoodAngle){
+        Constants.AutoToTeleOpValues.hoodAngle = hoodAngle;
+    }
+
+    public void setAutoToTeleOpIndexer(double indexerPose){
+        Constants.AutoToTeleOpValues.indexerPosition = indexerPose;
+    }
+
+    public Command storeValues() {
+        return new InstantCommand(() -> {
+                setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
+                setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
+                setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
+//                setAutoToTeleOpIndexer();
+        }
+        );
+    }
+
     double shootFarDelay = 3.7;
     double Beginning = 1.5;
     double intakeDelay = 0.5;
@@ -282,7 +310,7 @@ public class BlueFarAuto extends BaseOpMode {
                         stopShoot(),
                         new FollowPath((paths.GoToWall)),
                         flywheel.stopFlywheel(),
-                        turret.setHomeTrue()
+                        storeValues()
 //                        intake(),
 //                        spinIndexerFast()
 //                        new FollowPath(paths.IntakeClose),

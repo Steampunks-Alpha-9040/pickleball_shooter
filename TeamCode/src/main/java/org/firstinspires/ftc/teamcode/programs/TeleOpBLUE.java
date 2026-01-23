@@ -30,7 +30,8 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(63.307,7.811, Math.toRadians(90)));
+//        drivebase.getFollower().setStartingPose(new Pose(63.307,7.811, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72,72, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
