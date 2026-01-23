@@ -24,26 +24,16 @@ import dev.nextftc.hardware.impl.MotorEx;
 public class Indexer implements Subsystem {
 
     public static final Indexer INSTANCE = new Indexer();
-
     private MotorEx indexer;
 //    ColorSensor color1;
 //    ColorSensor color2;
 //    ColorSensor color3;
     private final double TicksPerRot =  (Util.GoBILDA.RPM_1620.getCPR()) * (340.0/80.0);
-
     public int pattern = 0;
-
     boolean stopPID = false;
-    public void setPattern(int id) {
-        pattern = id;
-    }
-
     double power = 0;
     double target=0;
-
     public double testing = 0.0;
-
-
     public enum IndexerState{ // this is based off of where the green ball is
         RIGHT, LEFT, CENTER
     }
@@ -61,6 +51,10 @@ public class Indexer implements Subsystem {
         ActiveOpMode.telemetry().addData("testingVal: ", testing);
     }
 
+    public void setPattern(int id) {
+        pattern = id;
+    }
+
     public Command spinIndexer(double power){
         return new InstantCommand(() -> indexer.setPower(power));
     }
@@ -72,7 +66,6 @@ public class Indexer implements Subsystem {
     public void changeTesting(double delta){
         testing += delta;
     }
-
 
     public Command spinIndexerSlow(){
         return new InstantCommand(() -> indexer.setPower(0.4));
