@@ -1,5 +1,8 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
+import static org.firstinspires.ftc.teamcode.Constants.Side.BLUE;
+import static org.firstinspires.ftc.teamcode.Constants.Side.RED;
+
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
@@ -40,6 +43,8 @@ public class Drivebase implements Subsystem {
     private Pose2D botpose;
     private double gyroOffset;
 
+    private Constants.Side side;
+
     public MotorEx getBR(){ return BR; }
     public MotorEx getFL(){ return FL; }
 
@@ -58,18 +63,29 @@ public class Drivebase implements Subsystem {
         ActiveOpMode.telemetry().addData("y velocity: ", follower.getVelocity().getYComponent());
     }
 
-    public PedroDriverControlled getMecanumDriver(int side){
-        if (side == 0) {
+    public void setSide(Constants.Side selectedSide){
+        side = selectedSide;
+    }
+
+    public PedroDriverControlled getMecanumDriver(Constants.Side selectedSide){
+        if (side == BLUE) {
             return new PedroDriverControlled(
                     Gamepads.gamepad1().leftStickY(),
                     Gamepads.gamepad1().leftStickX(),
                     Gamepads.gamepad1().rightStickX().negate(),
                     false
             );
-        } else {
+        } else if(side == RED){
             return new PedroDriverControlled(
                     Gamepads.gamepad1().leftStickY().negate(),
                     Gamepads.gamepad1().leftStickX().negate(),
+                    Gamepads.gamepad1().rightStickX().negate(),
+                    false
+            );
+        } else {
+            return new PedroDriverControlled(
+                    Gamepads.gamepad1().leftStickY(),
+                    Gamepads.gamepad1().leftStickX(),
                     Gamepads.gamepad1().rightStickX().negate(),
                     false
             );
@@ -107,7 +123,7 @@ public class Drivebase implements Subsystem {
         return follower;
     }
 
-    public Command setPose(Pose pose){
+    public Command setStartingPose(Pose pose){
         return new InstantCommand(()-> follower.setStartingPose(pose));
     }
 
@@ -117,6 +133,7 @@ public class Drivebase implements Subsystem {
     public void zeroHoodQuadature(){
         BR.setCurrentPosition(0);
     }
+
 
 
 }

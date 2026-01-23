@@ -148,6 +148,16 @@ public class Constants {
         public static final Vector2d cameraToTurretCenter = new Vector2d(-(37.448)/1000, (109.226)/1000);
 
 
+        // flywheel - limelight 37.4475 mm
+        //flywheel to center 109.22579 mm
+        //center to robot 78.65994 mm
+
+        //In Inches
+        public static final double limeLighttoFlywheel = 1.474311024;
+        public static final double flywheelToTurret = 4.30022795276;
+        public static final double turretToCenter = 3.0968480315;
+
+
     }
 
     public static class RelativeShootingConstants{
