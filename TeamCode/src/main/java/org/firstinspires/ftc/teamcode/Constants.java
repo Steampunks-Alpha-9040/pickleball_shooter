@@ -117,7 +117,7 @@ public class Constants {
 
         public static final double indexer_DutyCycle = 0.4;
 
-        public static final double indexerTolerance = 3.0;
+        public static final double indexerTolerance = 50.0;
 
     }
 

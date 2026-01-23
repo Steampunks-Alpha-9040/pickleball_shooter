@@ -38,6 +38,15 @@ public class Indexer implements Subsystem {
         RIGHT, LEFT, CENTER
     }
 
+    private final PIDposition indexerCalculator = new PIDposition(
+            Constants.IndexerConstants.indexer_kP,
+            Constants.IndexerConstants.indexer_kI,
+            Constants.IndexerConstants.indexer_kD,
+            Constants.IndexerConstants.indexer_kF,
+            Constants.IndexerConstants.indexerTolerance)
+            ;
+
+
 
 
     @Override
@@ -47,7 +56,8 @@ public class Indexer implements Subsystem {
 
     @Override
     public void periodic(){
-        spinIndexer(testing);
+
+        indexer.setPower(indexerCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
         ActiveOpMode.telemetry().addData("testingVal: ", testing);
     }
 
