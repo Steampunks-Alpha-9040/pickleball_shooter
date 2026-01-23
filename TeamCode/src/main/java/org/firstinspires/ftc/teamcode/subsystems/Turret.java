@@ -62,9 +62,9 @@ public class Turret implements Subsystem {
             turretS.setPower(pow);
         }
 //        ActiveOpMode.telemetry().addData("homed: ", homed);
-        ActiveOpMode.telemetry().addData("RelativeTurret", relativeShooting.getTurretTarget());
-        ActiveOpMode.telemetry().addData("targetAngle", -turretTargetAngle);
-        ActiveOpMode.telemetry().addData("turretEncoder", -turretQuad);
+//        ActiveOpMode.telemetry().addData("RelativeTurret", relativeShooting.getTurretTarget());
+//        ActiveOpMode.telemetry().addData("targetAngle", -turretTargetAngle);
+//        ActiveOpMode.telemetry().addData("turretEncoder", -turretQuad);
     }
 
     public void setSide(Constants.Side side){

@@ -43,8 +43,8 @@ public class Indexer implements Subsystem {
             Constants.IndexerConstants.indexer_kI,
             Constants.IndexerConstants.indexer_kD,
             Constants.IndexerConstants.indexer_kF,
-            Constants.IndexerConstants.indexerTolerance)
-            ;
+            Constants.IndexerConstants.indexerTolerance
+    );
 
 
 
@@ -52,13 +52,22 @@ public class Indexer implements Subsystem {
     @Override
     public void initialize(){
         indexer = new MotorEx(Constants.IndexerConstants.indexer).zeroed();
+        indexer.setCurrentPosition(0);
     }
 
     @Override
     public void periodic(){
-
-        indexer.setPower(indexerCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
+        indexerCalculator.setSetpoint(testing);
+        double power = indexerCalculator.calculate(indexer.getCurrentPosition());
+        if(power > 0.7){
+            power = 0.7;
+        } else if (power < -0.7){
+            power = -0.7;
+        }
+        indexer.setPower(power);
         ActiveOpMode.telemetry().addData("testingVal: ", testing);
+        ActiveOpMode.telemetry().addData("currentPose: ", indexer.getCurrentPosition());
+
     }
 
     public void setPattern(int id) {
@@ -85,6 +94,17 @@ public class Indexer implements Subsystem {
     }
     public Command stopIndexer(){
         return new InstantCommand(() -> indexer.setPower(0.0));
+    }
+
+    public Command changePID(){
+        return new InstantCommand(() -> {
+            indexerCalculator.setPID(
+                    Constants.IndexerConstants.indexer_kP,
+                    Constants.IndexerConstants.indexer_kI,
+                    Constants.IndexerConstants.indexer_kD,
+                    Constants.IndexerConstants.indexer_kF,
+                    Constants.IndexerConstants.indexerTolerance);
+        });
     }
 
 

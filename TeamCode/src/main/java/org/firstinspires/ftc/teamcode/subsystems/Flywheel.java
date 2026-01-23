@@ -66,13 +66,13 @@ public class Flywheel implements Subsystem {
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
-        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
-        ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
-        ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
-        ActiveOpMode.telemetry().addData("flywheelOffset: ", (Constants.RelativeShootingConstants.flywheelRPM));
-        ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
-        ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());
+//        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
+//        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
+//        ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
+//        ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
+//        ActiveOpMode.telemetry().addData("flywheelOffset: ", (Constants.RelativeShootingConstants.flywheelRPM));
+//        ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
+//        ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());
     }
 
     public Command shootFlywheel(){
