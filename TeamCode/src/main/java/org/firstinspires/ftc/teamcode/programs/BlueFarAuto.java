@@ -273,7 +273,7 @@ public class BlueFarAuto extends BaseOpMode {
     public Command autonomousRoutine() {
         return new ParallelGroup(
                 new SequentialGroup(
-                        flywheel.shootFlywheel(),
+                        flywheel.changeBool(),
                         stopShoot(),
 //                        sort(),
                         intakeStop(),
@@ -309,7 +309,7 @@ public class BlueFarAuto extends BaseOpMode {
                         new Delay(shootFarDelay),
                         stopShoot(),
                         new FollowPath((paths.GoToWall)),
-                        flywheel.stopFlywheel(),
+                        flywheel.changeBool(),
                         storeValues()
 //                        intake(),
 //                        spinIndexerFast()

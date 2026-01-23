@@ -57,7 +57,7 @@ public class Flywheel implements Subsystem {
         double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
-        shootFlywheel();
+        shootFlywheelMethod(bool);
         spinHood();
 
         flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
@@ -66,7 +66,7 @@ public class Flywheel implements Subsystem {
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
-        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
+//        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
         ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
         ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
