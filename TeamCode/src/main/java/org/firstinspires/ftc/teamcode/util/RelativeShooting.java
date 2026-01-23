@@ -7,6 +7,7 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 public class RelativeShooting {
 
+    private double distance;
     private double effectiveDistance; // required ball exit velocity
     private double turretTarget;// turret angle relative to robot
 
@@ -38,17 +39,15 @@ public class RelativeShooting {
         double turretPosY = posY - (Constants.RelativeShootingConstants.turretOffset * Math.sin(heading));
 
         double phi = calculateRobotGoalAngle(turretPosX, turretPosY);
-        double distance = calculateRobotGoalDistance(turretPosX, turretPosY);
-//3.097
-        // Angle from robot forward to goal
-        double dTheta = phi - heading;
+        double d = calculateRobotGoalDistance(turretPosX, turretPosY);
 
         // --- Decompose robot velocity ---
-        double vRadial = vY * Math.cos(dTheta) - vX * Math.sin(dTheta);
+        double dTheta = phi - heading;
 
-        double vTangent = vY * Math.sin(dTheta) + vX * Math.cos(dTheta);
+        double vRadial  = vX * Math.cos(dTheta) + vY * Math.sin(dTheta);
+        double vTangent = -vX * Math.sin(dTheta) + vY * Math.cos(dTheta);
 
-        double vShot = distance / Constants.RelativeShootingConstants.airTime - vRadial;
+        double vShot = d / Constants.RelativeShootingConstants.airTime - vRadial;
 
 //        if(vShot < 0){
 //            Constants.RelativeShootingConstants.allowShootOnMove = false;
@@ -58,12 +57,21 @@ public class RelativeShooting {
         // --- Effective Distance needs to be used to calculate FlywheelRPM and HoodAngle ---
         effectiveDistance = Constants.RelativeShootingConstants.airTime * Math.sqrt(vTangent * vTangent + vShot * vShot);
 
-        turretTarget = phi + Math.atan2(vTangent, vShot) - heading;
+        if(vRadial >= 0){
+            distance = d;
+        } else {
+            distance = effectiveDistance;
+        }
+
+        turretTarget = phi + Math.atan2(-vTangent, vShot) - heading;
         turretTarget = Math.atan2(Math.sin(turretTarget),Math.cos(turretTarget));
     }
 
     // ---------------- GETTERS ----------------
 
+    public double getDistance(){
+        return distance;
+    }
     public double getEffectiveDistance() {
         return effectiveDistance;
     }

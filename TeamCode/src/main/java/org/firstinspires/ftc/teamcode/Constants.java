@@ -158,7 +158,7 @@ public class Constants {
         public static final double maxTurretAdjustment = 45.0;
 
         public static double flywheelRPM = 0.0;
-        public static double hoodAngle = 3;
+        public static double hoodAngle = 2;
         
         public static final double turretOffset = 3.097;
     }

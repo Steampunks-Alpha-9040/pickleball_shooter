@@ -52,12 +52,12 @@ public class TeleOpBLUE extends BaseOpMode {
                         intake.stopIntake()
                 );
 
-//        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
-//                .whenBecomesTrue(
-//                        indexer.spinIndexerFast()
-//                ).whenBecomesFalse(
-//                        indexer.stopIndexer()
-//                );
+        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
+                .whenBecomesTrue(
+                        indexer.spinIndexerFast()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
+                );
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         drivebase.resetPose(1)
@@ -100,7 +100,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
 
         //Testing Controls
-
+//
 //        //Gamepad 1
 //        Gamepads.gamepad1().rightBumper().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
@@ -109,10 +109,10 @@ public class TeleOpBLUE extends BaseOpMode {
 //                        intake.stopIntake()
 //                );
 //
-//        Gamepads.gamepad1().y().toggleOnBecomesTrue()
-//                .whenBecomesTrue(
-//                        flywheel.changePID()
-//                );
+////        Gamepads.gamepad1().y().toggleOnBecomesTrue()
+////                .whenBecomesTrue(
+////                        flywheel.changePID()
+////                );
 //
 //        Gamepads.gamepad1().a().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
@@ -128,7 +128,7 @@ public class TeleOpBLUE extends BaseOpMode {
 //                        flywheel.changeTestHoodAngle(-1)
 //                );
 //
-//        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
+//        Gamepads.gamepad1().y().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
 //                        flywheel.changeTestHoodAngle(0.1)
 //                ).whenBecomesFalse(
@@ -152,9 +152,9 @@ public class TeleOpBLUE extends BaseOpMode {
 //
 //        Gamepads.gamepad2().x().toggleOnBecomesTrue()
 //                .whenBecomesTrue(
-//                        flywheel.shootFlywheel()
+//                        flywheel.changeBool()
 //                ).whenBecomesFalse(
-//                        flywheel.stopFlywheel()
+//                        flywheel.changeBool()
 //                );
 //
 //        Gamepads.gamepad2().a().toggleOnBecomesTrue()
