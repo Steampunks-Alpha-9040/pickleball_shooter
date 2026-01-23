@@ -25,10 +25,10 @@ public class Indexer implements Subsystem {
 
     public static final Indexer INSTANCE = new Indexer();
     private MotorEx indexer;
-//    ColorSensor color1;
-//    ColorSensor color2;
-//    ColorSensor color3;
-    private final double TicksPerRot =  (Util.GoBILDA.RPM_1620.getCPR()) * (340.0/80.0);
+    ColorSensor color1;
+    ColorSensor color2;
+    ColorSensor color3;
+    private final double TicksPerRot =  (Util.GoBILDA.RPM_312.getCPR()) * (340.0/80.0);
     public int pattern = 0;
     boolean stopPID = false;
     double power = 0;
@@ -74,10 +74,6 @@ public class Indexer implements Subsystem {
         pattern = id;
     }
 
-    public Command spinIndexer(double power){
-        return new InstantCommand(() -> indexer.setPower(power));
-    }
-
     public Command changeTestingCommand(double delta){
         return new InstantCommand(() -> changeTesting(delta));
     }
@@ -106,6 +102,125 @@ public class Indexer implements Subsystem {
                     Constants.IndexerConstants.indexerTolerance);
         });
     }
+
+    int ticksCenter = (int) (TicksPerRot/3 + pattern*TicksPerRot);
+    int ticksRight = (int) (2*TicksPerRot/3 + pattern*TicksPerRot);
+    int ticksLeft = (int) (pattern*TicksPerRot);
+
+
+    int currticks = 0;
+    IndexerState greenState = null;
+    public Command autoSet() {
+        return new SequentialGroup(
+                movetocheckColor(),
+                sort()).setInterruptible(true);
+    }
+
+    public boolean checkValid() {
+        if (greenState == IndexerState.LEFT) {
+            return checkPos(ticksLeft,50);
+        }
+        if (greenState == IndexerState.RIGHT) {
+            return checkPos(ticksRight, 50);
+        }
+        if (greenState == IndexerState.CENTER) {
+            return checkPos(ticksCenter, 50);
+        }
+        return true;
+    }
+
+
+    public Command setPos(IndexerState state) {
+
+        if (state == IndexerState.CENTER) {
+            target = ticksCenter;
+        } else if (state == IndexerState.RIGHT) {
+            target = ticksRight;
+        } else if (state == IndexerState.LEFT) {
+            target = ticksLeft;
+        }
+        currticks = (int) indexer.getRawTicks();
+
+        if (Math.abs(target-(Math.floorMod(currticks, (int)TicksPerRot))) < (double) TicksPerRot/2) {
+            target = (int) ((currticks/TicksPerRot) * TicksPerRot + (target));
+        } else {
+            target = (int) ((currticks/TicksPerRot) * TicksPerRot - (target));
+        }
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(target));
+    }
+
+    public Command movetocheckColor() {
+        target = 0; //settocheckColor
+        currticks = (int) indexer.getRawTicks();
+
+        if (Math.abs(target-(Math.floorMod(currticks, (int) TicksPerRot/3))) < (double) (TicksPerRot/3)/2) {
+            target = (int) ((currticks/(TicksPerRot/3)) * (TicksPerRot/3) + (target));
+        } else {
+            target = (int) ((currticks/(TicksPerRot/3)) * (TicksPerRot/3) - (target));
+        }
+        return new InstantCommand(() -> indexerCalculator.setSetpoint((double) target)).requires(this);
+    }
+    public Command sort() {
+        if (greenState != null) {
+            greenState = checkColor();
+        }
+        return setPos(greenState);
+    }
+    public IndexerState checkColor() {
+
+        if (checkPos((int) (TicksPerRot/6), 50)) {
+            if (color1.green() > 100) {
+                return IndexerState.CENTER;
+            }
+            if (color2.green() > 100) {
+                return IndexerState.RIGHT;
+            }
+            if (color3.green() > 100) {
+                return IndexerState.LEFT;
+            }
+        } else if (checkPos((int) (TicksPerRot/2), 50)) {
+            if (color1.green() > 100) {
+                return IndexerState.RIGHT;
+            }
+            if (color2.green() > 100) {
+                return IndexerState.LEFT;
+            }
+            if (color3.green() > 100) {
+                return IndexerState.CENTER;
+            }
+        } else if (checkPos((int) (5*TicksPerRot/6), 50)) {
+            if (color1.green() > 100) {
+                return IndexerState.LEFT;
+            }
+            if (color2.green() > 100) {
+                return IndexerState.CENTER;
+            }
+            if (color3.green() > 100) {
+                return IndexerState.RIGHT;
+            }
+        } else {
+            return null;
+        }
+        return null;
+    }
+
+    public boolean checkPos(int ticks, int tolerance) {
+        currticks = (int) indexer.getRawTicks();
+        if (Math.abs(ticks-currticks)%TicksPerRot < tolerance) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    public Command oneRot() {
+        return new InstantCommand(() -> indexerCalculator.setSetpoint(indexer.getCurrentPosition()+TicksPerRot));
+    }
+
+    public void spinIndexer(double power){
+        INSTANCE.indexer.setPower(power);
+    }
+
 
 
 
