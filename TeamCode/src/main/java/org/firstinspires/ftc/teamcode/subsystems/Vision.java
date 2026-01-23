@@ -21,6 +21,12 @@ public class Vision implements Subsystem {
 
     private boolean poseValid = false;
 
+    public enum Pattern{
+        PPG,
+        PGP,
+        GPP
+    }
+
     @Override
     public void initialize() {
         INSTANCE = this;
@@ -77,6 +83,19 @@ public class Vision implements Subsystem {
         ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
         ActiveOpMode.telemetry().addData("VisionHeading: ", getHeading());
         ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
+        ActiveOpMode.telemetry().addData("Patter: ", getPattern());
+
+
+    }
+
+    public Pattern getPattern(){
+        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==22){
+            return Pattern.PGP;
+        }
+        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==23){
+            return Pattern.PPG;
+        }
+        return Pattern.GPP;
 
     }
 
