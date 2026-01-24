@@ -83,7 +83,7 @@ public class Vision implements Subsystem {
         ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
         ActiveOpMode.telemetry().addData("VisionHeading: ", getHeading());
         ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
-        ActiveOpMode.telemetry().addData("Patter: ", getPattern());
+        ActiveOpMode.telemetry().addData("Pattern: ", getPattern());
 
 
     }
