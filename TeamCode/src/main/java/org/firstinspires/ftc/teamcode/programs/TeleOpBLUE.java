@@ -9,6 +9,7 @@ import dev.nextftc.core.commands.groups.ParallelGroup;
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
 
+import org.firstinspires.ftc.robotcore.external.Const;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.teamcode.Constants;
 import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
@@ -33,9 +34,9 @@ public class TeleOpBLUE extends BaseOpMode {
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
 //        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
-        drivebase.getFollower().setStartingPose(new Pose(48+Constants.robotWidth/2, 96-Constants.robotLength/2, Math.toRadians(90)));
-        drivebase.INSTANCE.getBR().setCurrentPosition(0);
-        drivebase.INSTANCE.getFL().setCurrentPosition(0);
+        drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
+        drivebase.INSTANCE.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
+        drivebase.INSTANCE.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
 
         flywheel.setSide(Constants.Side.BLUE);
         turret.setSide(Constants.Side.BLUE);
@@ -64,11 +65,11 @@ public class TeleOpBLUE extends BaseOpMode {
                 .whenBecomesTrue(
                         drivebase.resetPose(0)
                 );
-        Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().x())
+        Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().dpadUp())
                 .whenBecomesTrue(
                         flywheel.changeRunRelative()
                 );
-        Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().b())
+        Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().dpadDown())
                 .whenBecomesTrue(
                         flywheel.changeRunRelative()
                 );
@@ -101,7 +102,6 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
-
         Gamepads.gamepad2().leftBumper().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         indexer.spinIndexerSlow()

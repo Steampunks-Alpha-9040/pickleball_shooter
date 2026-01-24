@@ -47,6 +47,8 @@ public class Indexer implements Subsystem {
     public int greenLocation;
     public int pattern = 0;
 
+    private double power = 0.0;
+
     boolean stopPID = false;
     public void setPattern(int id) {
         pattern = id;
@@ -79,7 +81,10 @@ public class Indexer implements Subsystem {
 //        indexer1.setPower(1);
 //        indexer2.setPower(1);
 
-//        ActiveOpMode.telemetry().addData("Power: ", power);
+        indexer1.setPower(power);
+        indexer2.setPower(power);
+
+        ActiveOpMode.telemetry().addData("Power: ", power);
 
 
 //        ActiveOpMode.telemetry().addData("R", color1.red());
@@ -154,20 +159,17 @@ public class Indexer implements Subsystem {
 
     public Command spinIndexerSlow(){
         return new InstantCommand(() -> {
-            indexer1.setPower(0.9);
-            indexer2.setPower(0.9);
+            power = 0.4;
         });
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() -> {
-            indexer1.setPower(0.9);
-            indexer2.setPower(0.9);
+            power = 0.9;
         });
     }
     public Command stopIndexer(){
         return new InstantCommand(() -> {
-            indexer1.setPower(0.0);
-            indexer2.setPower(0.0);
+            power = 0.0;
         });
     }
 

@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
@@ -20,6 +21,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -44,6 +46,8 @@ public class RedFarAuto extends BaseOpMode {
 
         );
     }
+
+    private double testing = 0.1;
 
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
@@ -206,6 +210,32 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
+    public void setAutoToTeleOpPose(Pose pose){
+        Constants.AutoToTeleOpValues.pose = pose;
+    }
+
+    public void setAutoToTeleOpTurret(double turretAngle){
+        Constants.AutoToTeleOpValues.turretAngle = turretAngle;
+    }
+
+    public void setAutoToTeleOpHood(double hoodAngle){
+        Constants.AutoToTeleOpValues.hoodAngle = hoodAngle;
+    }
+
+    public void setAutoToTeleOpIndexer(double indexerPose){
+        Constants.AutoToTeleOpValues.indexerPosition = indexerPose;
+    }
+
+    public Command storeValues() {
+        return new InstantCommand(() -> {
+            setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
+            setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
+            setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
+//                setAutoToTeleOpIndexer();
+        }
+        );
+    }
+
     public Command spinIndexerFast() {
         return new SequentialGroup(
                 indexer.spinIndexerFast()
@@ -247,14 +277,18 @@ public class RedFarAuto extends BaseOpMode {
                         new Delay(Beginning),
                         transfer(),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
+                        spinIndexerFast(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
                         intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
@@ -263,11 +297,15 @@ public class RedFarAuto extends BaseOpMode {
                         new Delay(shootFarDelay),
                         stopTransfer(),
                         intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
                         intakeStop(),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
                         new Delay(testingDelay),
@@ -275,8 +313,8 @@ public class RedFarAuto extends BaseOpMode {
                         new Delay(shootFarDelay),
                         stopTransfer(),
                         new FollowPath((paths.GoToWall)),
-                        flywheel.stopFlywheel(),
-                        turret.setHomeTrue()
+                        flywheel.changeBool(),
+                        storeValues()
 //                        intake(),
 //                        spinIndexerFast()
 //                        new FollowPath(paths.IntakeClose),

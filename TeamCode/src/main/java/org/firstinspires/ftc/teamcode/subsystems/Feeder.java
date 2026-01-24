@@ -57,7 +57,7 @@ public class Feeder implements Subsystem {
     public Command setArmUp(){
         return new LambdaCommand()
                 .requires(this)
-                .setStart(() -> feederArm.setPosition(0));
+                .setStart(() -> feederArm.setPosition(0.1));
     }
 
     public Command turnWheelsOn(){

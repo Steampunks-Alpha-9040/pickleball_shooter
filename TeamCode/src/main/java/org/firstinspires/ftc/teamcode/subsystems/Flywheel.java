@@ -58,7 +58,7 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void periodic(){
-        double flywheelCurrentRPM = -flywheel1.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
+        double flywheelCurrentRPM = flywheel1.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
         shootFlywheelMethod(bool);
@@ -86,7 +86,7 @@ public class Flywheel implements Subsystem {
 
     public void shootFlywheelMethod(boolean idk){
         if(idk){
-            flywheelCalculator.setSetpoint(getRelativeFlyWheelRPM());
+            flywheelCalculator.setSetpoint(-getRelativeFlyWheelRPM());
         } else {
             flywheelCalculator.setSetpoint(0);
         }
@@ -133,7 +133,7 @@ public class Flywheel implements Subsystem {
     }
 
     public double getRelativeFlyWheelRPM(){
-        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2450.80969 + Constants.RelativeShootingConstants.flywheelRPM;
+        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2385.80969 + Constants.RelativeShootingConstants.flywheelRPM;
         if(side == Constants.Side.BLUE){
             if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
                 return RPM - 80;
