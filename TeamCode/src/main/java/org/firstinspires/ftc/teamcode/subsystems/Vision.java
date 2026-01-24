@@ -43,6 +43,11 @@ public class Vision implements Subsystem {
     public void periodic() {
         LLResult result = limelight.getLatestResult();
 
+
+        if (!runVision){
+            poseValid = false;
+            return;
+        }
         if (result == null || !result.isValid()) {
             poseValid = false;
             return;
@@ -80,7 +85,7 @@ public class Vision implements Subsystem {
         heading = (Math.toRadians(botpose.getOrientation().getYaw()) - Math.PI/2) + turretHeading;
         heading = Math.atan2(Math.sin(heading), Math.cos(heading));
 
-        poseValid = runVision;
+
 
 
 //        ActiveOpMode.telemetry().addData("turretHeading: ", turretHeading);

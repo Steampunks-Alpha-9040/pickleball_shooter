@@ -32,7 +32,8 @@ public class TeleOpRED extends BaseOpMode {
 //        drivebase.getFollower().setStartingPose(new Pose(80.693, 7.811, Math.toRadians(90)));
         drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
         drivebase.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
-        drivebase.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
+        drivebase.getFL().setCurrentPosition(1);
+        vision.changeRunVisionMethod();
 
         turret.setSide(Constants.Side.RED);
         flywheel.setSide(Constants.Side.RED);
@@ -57,7 +58,7 @@ public class TeleOpRED extends BaseOpMode {
                 );
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        drivebase.resetPose(0)
+                        drivebase.resetPose(1)
                 );
         Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().dpadUp())
                 .whenBecomesTrue(

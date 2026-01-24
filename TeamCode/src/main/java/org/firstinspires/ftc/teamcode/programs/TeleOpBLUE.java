@@ -33,10 +33,12 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
-//        drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
-//        drivebase.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
-//        drivebase.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
+//        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
+        drivebase.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
+        drivebase.getFL().setCurrentPosition(0);
+        vision.changeRunVisionMethod();
+
 
         flywheel.setSide(Constants.Side.BLUE);
         turret.setSide(Constants.Side.BLUE);

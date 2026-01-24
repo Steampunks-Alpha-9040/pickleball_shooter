@@ -96,7 +96,6 @@ public class RedFarAuto extends BaseOpMode {
 
     @Override
     public void onUpdate(){
-        storeValues();
         telemetry.update();
     }
 
@@ -263,6 +262,14 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
+    public Command setHomeTrue() {
+        return new InstantCommand(
+                () -> {
+                    turret.sethome(true);
+                }
+        );
+    }
+
     double shootFarDelay = 3.7;
     double Beginning = 1.5;
     double intakeDelay = 0.5;
@@ -277,41 +284,45 @@ public class RedFarAuto extends BaseOpMode {
                         intake(),
 //                        sort(),
                         new Delay(Beginning),
-                        spinIndexerFast(),
+                        spinIndexerSlow(),
                         new Delay(intakeDelay),
                         transfer(),
                         new Delay(shootFarDelay),
+                        storeValues(),
                         stopTransfer(),
                         stopIndexer(),
                         new Delay(testing),
-                        spinIndexerSlow(),
+                        spinIndexerFast(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
                         stopIndexer(),
                         new Delay(testing),
-                        spinIndexerFast(),
+                        spinIndexerSlow(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
                         new Delay(testingDelay),
                         transfer(),
                         new Delay(shootFarDelay),
+                        storeValues(),
                         stopTransfer(),
                         stopIndexer(),
                         new Delay(testing),
-                        spinIndexerSlow(),
+                        spinIndexerFast(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
                         stopIndexer(),
                         new Delay(testing),
-                        spinIndexerFast(),
+                        spinIndexerSlow(),
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
                         new Delay(testingDelay),
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
+                        storeValues(),
                         new FollowPath((paths.GoOut)),
                         flywheel.changeBool(),
+                        setHomeTrue(),
                         storeValues()
 //                        intake(),
 //                        spinIndexerFast()

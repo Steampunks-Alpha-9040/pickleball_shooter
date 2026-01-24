@@ -84,7 +84,7 @@ public class Indexer implements Subsystem {
 //        indexer1.setPower(1);
 //        indexer2.setPower(1);
 
-        indexer.setPower(power);
+        indexer.setPower(-power);
 
 //        indexer1.setPower(power);
 //        indexer2.setPower(power);
@@ -169,7 +169,7 @@ public class Indexer implements Subsystem {
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() -> {
-            power = 0.5;
+            power = 0.7;
         });
     }
     public Command stopIndexer(){
