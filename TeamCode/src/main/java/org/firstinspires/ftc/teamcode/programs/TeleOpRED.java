@@ -65,7 +65,7 @@ public class TeleOpRED extends BaseOpMode {
                 );
         Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().dpadDown())
                 .whenBecomesTrue(
-                        flywheel.changeRunRelative()
+                        vision.changeRunVision()
                 );
 
 
