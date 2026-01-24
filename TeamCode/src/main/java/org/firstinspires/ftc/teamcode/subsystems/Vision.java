@@ -50,7 +50,7 @@ public class Vision implements Subsystem {
             return;
         }
 
-        visionLatency = result.getControlHubTimeStamp()-result.getCaptureLatency();
+        visionLatency = result.getCaptureLatency();
 
         // flywheel - limelight 37.4475 mm
         //flywheel to center 109.22579 mm

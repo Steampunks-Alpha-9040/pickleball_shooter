@@ -1,6 +1,7 @@
 package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.util.Timer;
 
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
@@ -12,8 +13,10 @@ public class SixSevenFilter implements Subsystem {
     public SixSevenFilter(){
 
     }
+
+    private Timer jankTimer;
     //Expo Filter Constant
-    private static final double ALPHA = 0.025;
+    private static final double ALPHA = 0.014;
 
     //Outliers
     private static final double MAX_POSITION_ERROR = 15;
@@ -29,7 +32,7 @@ public class SixSevenFilter implements Subsystem {
 
     @Override
     public void initialize(){
-
+        jankTimer = new Timer();
     }
 
     @Override
@@ -37,6 +40,11 @@ public class SixSevenFilter implements Subsystem {
         ActiveOpMode.telemetry().addData("emaX: ", emaX);
         ActiveOpMode.telemetry().addData("emaY: ", emaY);
         ActiveOpMode.telemetry().addData("emaHeading: ", emaHeading);
+
+        if (jankTimer.getElapsedTimeSeconds() >= 1.5){
+            jankTimer.resetTimer();
+            reset();
+        }
 
         pedroPose = Drivebase.INSTANCE.getPastPose(Vision.INSTANCE.getVisionLatency());
         if(Vision.INSTANCE.hasValidPose()){

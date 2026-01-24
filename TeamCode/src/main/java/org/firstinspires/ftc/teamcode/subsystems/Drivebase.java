@@ -55,6 +55,7 @@ public class Drivebase implements Subsystem {
 
     public void initialize(){
         timer = new Timer();
+        poseBuffer = new TimeValueBuffer();
         FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
         FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
