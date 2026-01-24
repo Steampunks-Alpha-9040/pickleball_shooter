@@ -70,8 +70,8 @@ public class RedFarAuto extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         drivebase.getFollower().setStartingPose(new Pose(79.510, 8.993, Math.toRadians(0)));
-        drivebase.INSTANCE.getBR().setCurrentPosition(0);
-        drivebase.INSTANCE.getFL().setCurrentPosition(0);
+        drivebase.getBR().setCurrentPosition(0);
+        drivebase.getFL().setCurrentPosition(0);
 
         paths = new Paths(drivebase.getFollower());
 
@@ -81,6 +81,7 @@ public class RedFarAuto extends BaseOpMode {
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
 
+        drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
     }
 

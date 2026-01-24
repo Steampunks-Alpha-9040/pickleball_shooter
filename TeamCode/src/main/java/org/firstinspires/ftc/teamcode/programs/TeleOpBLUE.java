@@ -35,8 +35,8 @@ public class TeleOpBLUE extends BaseOpMode {
         // Auto ends on 63.307, 7.811, 90
 //        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
         drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
-        drivebase.INSTANCE.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
-        drivebase.INSTANCE.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
+        drivebase.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
+        drivebase.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
 
         flywheel.setSide(Constants.Side.BLUE);
         turret.setSide(Constants.Side.BLUE);
@@ -193,10 +193,6 @@ public class TeleOpBLUE extends BaseOpMode {
 //                ).whenBecomesFalse(
 //                        flywheel.changeRPM(-10)
 //                );
-
-
-        drivebase.zeroHoodQuadature();
-        drivebase.zeroTurretQuadature();
 
     }
 

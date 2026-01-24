@@ -78,6 +78,7 @@ public class BlueFarAuto extends BaseOpMode {
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
 
+        drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
     }
 
