@@ -105,9 +105,9 @@ public class Drivebase implements Subsystem {
     public Command resetPose(int side){
         //0 is Blue
         if(side == 0){
-            return new InstantCommand(() -> getFollower().setPose(new Pose(Constants.robotLength/2,Constants.robotWidth/2,0)));
+            return new InstantCommand(() -> getFollower().setPose(new Pose(Constants.robotLength/2,Constants.robotWidth/2,Math.PI)));
         } else {
-            return new InstantCommand(() -> getFollower().setPose(new Pose(Constants.robotLength/2, Constants.robotWidth/2, Math.PI)));
+            return new InstantCommand(() -> getFollower().setPose(new Pose(144 - Constants.robotLength/2, Constants.robotWidth/2, 0)));
         }
     }
 
