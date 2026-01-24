@@ -71,22 +71,20 @@ public class Indexer implements Subsystem {
 
         ActiveOpMode.telemetry().addData("index Encoder", getPos());
 
-        double power = contPID.calculate(getPos());
-        if (!stopPID) {
-            indexer1.setPower(power);
-            indexer2.setPower(power);
-        }
+//        double power = contPID.calculate(getPos());
+//        if (!stopPID) {
+//            indexer1.setPower(power);
+//            indexer2.setPower(power);
+//        }
 //        indexer1.setPower(1);
 //        indexer2.setPower(1);
 
-        ActiveOpMode.telemetry().addData("Power: ", power);
+//        ActiveOpMode.telemetry().addData("Power: ", power);
 
 
 //        ActiveOpMode.telemetry().addData("R", color1.red());
 //        ActiveOpMode.telemetry().addData("B", color1.blue());
 //        ActiveOpMode.telemetry().addData("G", color1.green());
-
-
 
     }
 
@@ -96,44 +94,47 @@ public class Indexer implements Subsystem {
         return (((rawVoltage / 3.3)*2*Math.PI) - Math.PI) - offset;
     }
 
-    public Command spinIndexerThird(){
+    public Command spinIndexerThird() {
         return new InstantCommand(() -> contPID.setSetPoint((2*Math.PI)/3));
     }
 
-    public Command spinIndexerSecond(){
-        return new InstantCommand(() -> contPID.setSetPoint((4*Math.PI)/3));
+    public Command spinIndexerSecond() {
+        return new InstantCommand(() -> contPID.setSetPoint(-(2*Math.PI)/3));
+    }
+    public Command spinIndexerMiddle(){
+        return new InstantCommand(() -> contPID.setSetPoint(0));
     }
 
-    public Command spinGreenCorrect(){
-        switch (Vision.INSTANCE.getMatchPattern()){
-            case PGP:
-                if (getGreenPos() == GreenPos.FIRST){
-                    return spinIndexerSecond();
-                } else if (getGreenPos() == GreenPos.MIDDLE){
-                    return stopIndexer();
-                } else {
-                    return spinIndexerThird();
-                }
-            case PPG:
-                if (getGreenPos() == GreenPos.FIRST){
-                    return spinIndexerThird();
-                } else if (getGreenPos() == GreenPos.MIDDLE){
-                    return spinIndexerSecond();
-                } else {
-                    return stopIndexer();
-                }
-            case GPP:
-                if (getGreenPos() == GreenPos.FIRST){
-                    return stopIndexer();
-                } else if (getGreenPos() == GreenPos.MIDDLE){
-                    return spinIndexerThird();
-                } else {
-                    return spinIndexerSecond();
-                }
-            default:
-                return stopIndexer();
-        }
-    }
+//    public Command spinGreenCorrect(){
+//        switch (Vision.INSTANCE.getMatchPattern()){
+//            case PGP:
+//                if (getGreenPos() == GreenPos.FIRST){
+//                    return spinIndexerSecond();
+//                } else if (getGreenPos() == GreenPos.MIDDLE){
+//                    return stopIndexer();
+//                } else {
+//                    return spinIndexerThird();
+//                }
+//            case PPG:
+//                if (getGreenPos() == GreenPos.FIRST){
+//                    return spinIndexerThird();
+//                } else if (getGreenPos() == GreenPos.MIDDLE){
+//                    return spinIndexerSecond();
+//                } else {
+//                    return stopIndexer();
+//                }
+//            case GPP:
+//                if (getGreenPos() == GreenPos.FIRST){
+//                    return stopIndexer();
+//                } else if (getGreenPos() == GreenPos.MIDDLE){
+//                    return spinIndexerThird();
+//                } else {
+//                    return spinIndexerSecond();
+//                }
+//            default:
+//                return stopIndexer();
+//        }
+//    }
 
     public GreenPos getGreenPos(){
         if (color1.green() > 800){
@@ -159,8 +160,8 @@ public class Indexer implements Subsystem {
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() -> {
-            indexer1.setPower(0.5);
-            indexer2.setPower(0.5);
+            indexer1.setPower(1);
+            indexer2.setPower(1);
         });
     }
     public Command stopIndexer(){

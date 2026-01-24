@@ -32,7 +32,7 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-        drivebase.getFollower().setStartingPose(new Pose(48 + Constants.robotWidth/2, 96 - Constants.robotLength/2, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(72 - Constants.robotWidth/2, Constants.robotLength/2, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
@@ -60,15 +60,21 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
-        Gamepads.gamepad1().b().whenBecomesTrue(
-                indexer.spinIndexerThird()
-        );
-        Gamepads.gamepad1().y().whenBecomesTrue(
-                indexer.spinIndexerSecond()
-        );
-        Gamepads.gamepad1().x().whenBecomesTrue(
-                        indexer.changePID()
+        Gamepads.gamepad1().b().toggleOnBecomesTrue().
+                whenBecomesTrue(
+                    indexer.spinIndexerFast()
+                ).whenBecomesFalse(
+                        indexer.stopIndexer()
                 );
+//        Gamepads.gamepad1().y().whenBecomesTrue(
+//                indexer.spinIndexerSecond()
+//        );
+//        Gamepads.gamepad1().x().whenBecomesTrue(
+//                indexer.changePID()
+//        );
+//        Gamepads.gamepad1().a().whenBecomesTrue(
+//                indexer.spinGreenCorrect()
+//        );
 
 
         //Gamepad 2
@@ -81,9 +87,9 @@ public class TeleOpBLUE extends BaseOpMode {
 
         Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        flywheel.shootFlywheel()
+                        flywheel.changeBool()
                 ).whenBecomesFalse(
-                        flywheel.stopFlywheel()
+                        flywheel.changeBool()
                 );
 
         Gamepads.gamepad2().a().toggleOnBecomesTrue()

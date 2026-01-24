@@ -9,6 +9,7 @@ import org.firstinspires.ftc.teamcode.util.Util;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
+import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -60,7 +61,7 @@ public class Flywheel implements Subsystem {
         double flywheelCurrentRPM = -flywheel1.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
-        shootFlywheel();
+        shootFlywheelMethod(bool);
         spinHood();
 
         flywheel1.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
@@ -72,8 +73,8 @@ public class Flywheel implements Subsystem {
 
 //        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
 //        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
-//        ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
-//        ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
+        ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
+        ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
 //        ActiveOpMode.telemetry().addData("flywheelOffset: ", (Constants.RelativeShootingConstants.flywheelRPM));
 //        ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
 //        ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());

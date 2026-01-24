@@ -86,29 +86,29 @@ public class Vision implements Subsystem {
         ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
         ActiveOpMode.telemetry().addData("VisionHeading: ", Math.toDegrees(getHeading()));
         ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
-        ActiveOpMode.telemetry().addData("Pattern: ", getPattern());
-
-        if (pattern == Pattern.NONE) {
-            pattern = getPattern();
-        }
+//        ActiveOpMode.telemetry().addData("Pattern: ", getPattern());
+//
+//        if (pattern == Pattern.NONE) {
+//            pattern = getPattern();
+//        }
     }
 
-    public Pattern getMatchPattern(){
-        return pattern;
-    }
-    private Pattern getPattern(){
-        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==22){
-            return Pattern.PGP;
-        }
-        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==23){
-            return Pattern.PPG;
-        }
-        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==21){
-            return Pattern.GPP;
-        } else {
-            return Pattern.NONE;
-        }
-    }
+//    public Pattern getMatchPattern(){
+//        return pattern;
+//    }
+//    private Pattern getPattern(){
+//        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==22){
+//            return Pattern.PGP;
+//        }
+//        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==23){
+//            return Pattern.PPG;
+//        }
+//        if (limelight.getLatestResult().getFiducialResults().get(0).getFiducialId()==21){
+//            return Pattern.GPP;
+//        } else {
+//            return Pattern.NONE;
+//        }
+//    }
 
     public boolean hasValidPose() {
         return poseValid;
