@@ -251,9 +251,9 @@ public class BlueFarAuto extends BaseOpMode {
 
     public Command storeValues() {
         return new InstantCommand(() -> {
-                setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
-                setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
-                setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
+            setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
+            setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
+            setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
 //                setAutoToTeleOpIndexer();
         }
         );
@@ -262,7 +262,9 @@ public class BlueFarAuto extends BaseOpMode {
     double shootFarDelay = 3.7;
     double Beginning = 1.5;
     double intakeDelay = 0.5;
+
     double testingDelay = 1;
+    double testing = 0.1;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
@@ -274,14 +276,18 @@ public class BlueFarAuto extends BaseOpMode {
                         new Delay(Beginning),
                         transfer(),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
+                        spinIndexerFast(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
                         intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
@@ -290,11 +296,15 @@ public class BlueFarAuto extends BaseOpMode {
                         new Delay(shootFarDelay),
                         stopTransfer(),
                         intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
                         intakeStop(),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
                         new Delay(testingDelay),

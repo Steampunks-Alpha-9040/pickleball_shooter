@@ -18,7 +18,8 @@ public class Flywheel implements Subsystem {
 
     public static final Flywheel INSTANCE = new Flywheel();
 
-    private MotorEx flywheel;
+    private MotorEx flywheel1;
+    private MotorEx flywheel2;
 
     private CRServoEx hood;
 
@@ -26,7 +27,9 @@ public class Flywheel implements Subsystem {
 
     private Constants.Side side;
 
-    private static boolean bool = false;
+    private boolean bool = false;
+
+
 
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
@@ -48,32 +51,33 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void initialize(){
-        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).zeroed().reversed();
+        flywheel1 = new MotorEx(Constants.FlywheelConstants.flywheel1Name).zeroed().reversed();
+        flywheel2 = new MotorEx(Constants.FlywheelConstants.flywheel2Name).zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
     }
 
     @Override
     public void periodic(){
-        double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
+        double flywheelCurrentRPM = -flywheel1.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
         shootFlywheelMethod(bool);
         spinHood();
 
-        flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
+        flywheel1.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
+        flywheel2.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));
 //        ActiveOpMode.telemetry().addData("hoodPIDval", hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
 //        ActiveOpMode.telemetry().addData("Power: ", flywheelCalculator.calculate(flywheelCurrentRPM));
-        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
-        ActiveOpMode.telemetry().addData("Distance: ", relativeShooting.getDistance());
+//        ActiveOpMode.telemetry().addData("Effective Distance: ", relativeShooting.getEffectiveDistance());
         ActiveOpMode.telemetry().addData("flywheelVeloTarget: ", flywheelCalculator.getSetpoint());
         ActiveOpMode.telemetry().addData("flywheelVeloCurrent: ", (flywheelCurrentRPM));
 //        ActiveOpMode.telemetry().addData("flywheelOffset: ", (Constants.RelativeShootingConstants.flywheelRPM));
-        ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
-        ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());
+//        ActiveOpMode.telemetry().addData("hoodPosTarget: ", hoodCalculator.getSetpoint());
+//        ActiveOpMode.telemetry().addData("hoodPosCurrent: ", Drivebase.INSTANCE.getHoodQuadature());
     }
 
     public Command shootFlywheel(){
@@ -91,8 +95,6 @@ public class Flywheel implements Subsystem {
     public Command changeBool(){
         return new InstantCommand(() -> bool = !bool);
     }
-
-    public static boolean getBool(){ return bool; }
 
 
     public void setSide(Constants.Side side){
@@ -131,7 +133,7 @@ public class Flywheel implements Subsystem {
     }
 
     public double getRelativeFlyWheelRPM(){
-        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
+        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2450.80969 + Constants.RelativeShootingConstants.flywheelRPM;
         if(side == Constants.Side.BLUE){
             if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
                 return RPM - 80;

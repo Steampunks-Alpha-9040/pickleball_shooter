@@ -82,6 +82,7 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         feeder.turnWheelsOff()
                 );
+
         Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         flywheel.changeBool()
