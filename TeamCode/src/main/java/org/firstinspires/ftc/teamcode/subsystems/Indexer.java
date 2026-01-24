@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.graphics.Color;
 
+import com.arcrobotics.ftclib.hardware.motors.Motor;
 import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
@@ -33,6 +34,7 @@ public class Indexer implements Subsystem {
     }
     private CRServoEx indexer1;
     private CRServoEx indexer2;
+    private MotorEx indexer;
     private AnalogInput indexerEncoder;
     private final ContinuousInputsPID contPID = new ContinuousInputsPID(
             Constants.indexer_kP,
@@ -63,8 +65,9 @@ public class Indexer implements Subsystem {
 
     @Override
     public void initialize(){
-        indexer1 = new CRServoEx(Constants.IndexerConstants.indexer1);
-        indexer2 = new CRServoEx(Constants.IndexerConstants.indexer2);
+        indexer = new MotorEx(Constants.IndexerConstants.indexer1);
+//        indexer1 = new CRServoEx(Constants.IndexerConstants.indexer1);
+//        indexer2 = new CRServoEx(Constants.IndexerConstants.indexer2);
         indexerEncoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, Constants.IndexerConstants.indexerEncoder);
     }
 
@@ -81,8 +84,10 @@ public class Indexer implements Subsystem {
 //        indexer1.setPower(1);
 //        indexer2.setPower(1);
 
-        indexer1.setPower(power);
-        indexer2.setPower(power);
+        indexer.setPower(power);
+
+//        indexer1.setPower(power);
+//        indexer2.setPower(power);
 
         ActiveOpMode.telemetry().addData("Power: ", power);
 
@@ -141,18 +146,18 @@ public class Indexer implements Subsystem {
 //        }
 //    }
 
-    public GreenPos getGreenPos(){
-        if (color1.green() > 800){
-            return GreenPos.FIRST;
-        } else if (color2.green() > 800){
-            return GreenPos.MIDDLE;
-        } else if (color3.green() > 800){
-            return GreenPos.LAST;
-        } else {
-            return GreenPos.NONE;
-        }
-
-    }
+//    public GreenPos getGreenPos(){
+//        if (color1.green() > 800){
+//            return GreenPos.FIRST;
+//        } else if (color2.green() > 800){
+//            return GreenPos.MIDDLE;
+//        } else if (color3.green() > 800){
+//            return GreenPos.LAST;
+//        } else {
+//            return GreenPos.NONE;
+//        }
+//
+//    }
 
 
 
@@ -164,7 +169,7 @@ public class Indexer implements Subsystem {
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() -> {
-            power = 0.9;
+            power = 0.5;
         });
     }
     public Command stopIndexer(){

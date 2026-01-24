@@ -25,6 +25,8 @@ public class Vision implements Subsystem {
 
     private double visionLatency;
 
+    private boolean runVision = false;
+
     @Override
     public void initialize() {
         INSTANCE = this;
@@ -78,11 +80,7 @@ public class Vision implements Subsystem {
         heading = (Math.toRadians(botpose.getOrientation().getYaw()) - Math.PI/2) + turretHeading;
         heading = Math.atan2(Math.sin(heading), Math.cos(heading));
 
-        if(!runVision){
-            poseValid = false;
-        } else {
-            poseValid = true;
-        }
+        poseValid = runVision;
 
 
 //        ActiveOpMode.telemetry().addData("turretHeading: ", turretHeading);

@@ -52,7 +52,7 @@ public class Flywheel implements Subsystem {
     @Override
     public void initialize(){
         flywheel1 = new MotorEx(Constants.FlywheelConstants.flywheel1Name).zeroed().reversed();
-        flywheel2 = new MotorEx(Constants.FlywheelConstants.flywheel2Name).zeroed();
+//        flywheel2 = new MotorEx(Constants.FlywheelConstants.flywheel2Name).zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
     }
 
