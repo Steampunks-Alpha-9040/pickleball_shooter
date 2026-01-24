@@ -47,8 +47,6 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
-    private double testing = 0.1;
-
     private TelemetryManager panelsTelemetry; // Panels Telemetry instance
     public Follower follower; // Pedro Pathing follower instance
     private int pathState; // Current autonomous path state (state machine)
@@ -100,12 +98,13 @@ public class RedFarAuto extends BaseOpMode {
     public void onUpdate(){
         telemetry.update();
     }
+
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
         public PathChain SecondIntake;
         public PathChain SecondShoot;
-        public PathChain GoToWall;
+        public PathChain GoOut;
 
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
@@ -149,11 +148,11 @@ public class RedFarAuto extends BaseOpMode {
 
                     .build();
 
-            GoToWall = follower.pathBuilder().addPath(
+            GoOut = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(96.000, 11.000),
 
-                                    new Pose(80.693, 7.811)
+                                    new Pose(96.000, 25.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(80), Math.toRadians(90))
 
@@ -162,10 +161,10 @@ public class RedFarAuto extends BaseOpMode {
     }
 
 
+
     public Command transfer() {
         return new ParallelGroup(
-                feeder.setArmDown(),
-                feeder.turnWheelsOn()
+                feeder.setArmDown()
         );
     }
 
@@ -182,8 +181,8 @@ public class RedFarAuto extends BaseOpMode {
     public Command stopTransfer() {
         return new ParallelGroup(
                 //Removed until intake is improved
-//                feeder.setArmUp(),
-                feeder.turnWheelsOff()
+                feeder.setArmUp(),
+                feeder.turnWheelsOn()
         );
     }
 
@@ -267,21 +266,21 @@ public class RedFarAuto extends BaseOpMode {
     double Beginning = 1.5;
     double intakeDelay = 0.5;
     double testingDelay = 1;
+    private double testing = 0.1;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
                 new SequentialGroup(
                         flywheel.changeBool(),
                         stopTransfer(),
+                        intake(),
 //                        sort(),
-                        intakeStop(),
                         new Delay(Beginning),
-                        transfer(),
-                        new Delay(intakeDelay),
                         spinIndexerFast(),
+                        new Delay(intakeDelay),
+                        transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        intake(),
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerSlow(),
@@ -290,20 +289,17 @@ public class RedFarAuto extends BaseOpMode {
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerFast(),
-                        intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
                         new Delay(testingDelay),
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        intake(),
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerSlow(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
-                        intakeStop(),
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerFast(),
@@ -313,7 +309,7 @@ public class RedFarAuto extends BaseOpMode {
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        new FollowPath((paths.GoToWall)),
+                        new FollowPath((paths.GoOut)),
                         flywheel.changeBool(),
                         storeValues()
 //                        intake(),

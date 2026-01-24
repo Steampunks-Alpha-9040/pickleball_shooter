@@ -97,12 +97,13 @@ public class BlueFarAuto extends BaseOpMode {
     public void onUpdate(){
         telemetry.update();
     }
+
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
         public PathChain SecondIntake;
         public PathChain SecondShoot;
-        public PathChain GoToWall;
+        public PathChain GoOut;
 
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
@@ -146,17 +147,18 @@ public class BlueFarAuto extends BaseOpMode {
 
                     .build();
 
-            GoToWall = follower.pathBuilder().addPath(
+            GoOut = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(48.000, 11.000),
 
-                                    new Pose(63.307, 7.811)
+                                    new Pose(48.000, 25.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(100), Math.toRadians(90))
 
                     .build();
         }
     }
+
 
 
     public Command transfer() {
@@ -272,15 +274,14 @@ public class BlueFarAuto extends BaseOpMode {
                 new SequentialGroup(
                         flywheel.changeBool(),
                         stopTransfer(),
+                        intake(),
 //                        sort(),
-                        intakeStop(),
                         new Delay(Beginning),
-                        transfer(),
-                        new Delay(intakeDelay),
                         spinIndexerFast(),
+                        new Delay(intakeDelay),
+                        transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        intake(),
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerSlow(),
@@ -289,20 +290,17 @@ public class BlueFarAuto extends BaseOpMode {
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerFast(),
-                        intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
                         new Delay(testingDelay),
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        intake(),
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerSlow(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
-                        intakeStop(),
                         stopIndexer(),
                         new Delay(testing),
                         spinIndexerFast(),
@@ -312,7 +310,7 @@ public class BlueFarAuto extends BaseOpMode {
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        new FollowPath((paths.GoToWall)),
+                        new FollowPath((paths.GoOut)),
                         flywheel.changeBool(),
                         storeValues()
 //                        intake(),
