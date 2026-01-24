@@ -9,7 +9,6 @@ import org.firstinspires.ftc.teamcode.util.Util;
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
-import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
@@ -18,7 +17,8 @@ public class Flywheel implements Subsystem {
 
     public static final Flywheel INSTANCE = new Flywheel();
 
-    private MotorEx flywheel;
+    private MotorEx flywheel1;
+    private MotorEx flywheel2;
 
     private CRServoEx hood;
 
@@ -27,6 +27,8 @@ public class Flywheel implements Subsystem {
     private Constants.Side side;
 
     private boolean bool = false;
+
+
 
     private final PIDflywheel flywheelCalculator = new PIDflywheel(
             Constants.FlywheelConstants.flywheel_kP,
@@ -48,19 +50,21 @@ public class Flywheel implements Subsystem {
 
     @Override
     public void initialize(){
-        flywheel = new MotorEx(Constants.FlywheelConstants.flywheelName).zeroed().reversed();
+        flywheel1 = new MotorEx(Constants.FlywheelConstants.flywheel1Name).zeroed().reversed();
+        flywheel2 = new MotorEx(Constants.FlywheelConstants.flywheel2Name).zeroed();
         hood = new CRServoEx(Constants.FlywheelConstants.hoodName);
     }
 
     @Override
     public void periodic(){
-        double flywheelCurrentRPM = -flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
+        double flywheelCurrentRPM = -flywheel1.getVelocity()/Util.GoBILDA.BARE.getCPR() * 60;
         relativeShooting.update();
 
         shootFlywheel();
         spinHood();
 
-        flywheel.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
+        flywheel1.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
+        flywheel2.setPower(flywheelCalculator.calculate(flywheelCurrentRPM));
         hood.setPower(hoodCalculator.calculate(Drivebase.INSTANCE.getHoodQuadature()));
 
 //        ActiveOpMode.telemetry().addData("flywheelPIDval", flywheelCalculator.calculate((flywheel.getVelocity()/Util.GoBILDA.BARE.getCPR()) * 60));

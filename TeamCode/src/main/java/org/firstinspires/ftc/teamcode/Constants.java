@@ -4,9 +4,6 @@ import com.arcrobotics.ftclib.geometry.Vector2d;
 import com.bylazar.configurables.annotations.Configurable;
 import com.pedropathing.geometry.Pose;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 @Configurable
@@ -53,7 +50,8 @@ public class Constants {
     }
 
     public static class FlywheelConstants{
-        public static final String flywheelName = "flywheel";
+        public static final String flywheel1Name = "flywheel1";
+        public static final String flywheel2Name = "flywheel2";
         public static final String hoodName = "hood";
 
         public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
