@@ -60,6 +60,15 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         indexer.stopIndexer()
                 );
+        Gamepads.gamepad1().b().whenBecomesTrue(
+                indexer.spinIndexerThird()
+        );
+        Gamepads.gamepad1().y().whenBecomesTrue(
+                indexer.spinIndexerSecond()
+        );
+        Gamepads.gamepad1().x().whenBecomesTrue(
+                        indexer.changePID()
+                );
 
 
         //Gamepad 2

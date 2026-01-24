@@ -20,6 +20,11 @@ public class Constants {
     public static final double robotWidth = 17.386;
     public static final double robotLength = 15.621;
 
+    public static double indexer_kP = 0.007; //The like main pushing force, the constant :)
+    public static double indexer_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
+    public static double indexer_kD = 0.0003; //slows down/speeds up the closer/farther away u are
+    public static double indexer_kF = 0.05; //friction, tune so when the turret barely moves
+
 
     public static class OpModeConstants{
         public static Side side;
@@ -111,11 +116,6 @@ public class Constants {
         public static final String rampRightSensor = "rampRightSensor";
         public static final String rampLeftSensor = "rampLeftSensor";
         public static final double motorToIndexer = 0.0;
-
-        public static final double indexer_kP = 0.007; //The like main pushing force, the constant :)
-        public static final double indexer_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double indexer_kD = 0.0003; //slows down/speeds up the closer/farther away u are
-        public static final double indexer_kF = 0.05; //friction, tune so when the turret barely moves
 
         public static final double indexer_DutyCycle = 0.4;
 

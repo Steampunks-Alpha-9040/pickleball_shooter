@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.ContinuousInputsPID;
 import org.firstinspires.ftc.teamcode.util.PIDposition;
 import org.firstinspires.ftc.teamcode.util.Util;
 
@@ -29,12 +30,19 @@ public class Indexer implements Subsystem {
 
     private CRServoEx indexer1;
     private CRServoEx indexer2;
-    private AnalogInput servoEncoder;
+    private AnalogInput indexerEncoder;
+    private ContinuousInputsPID contPID = new ContinuousInputsPID(
+            Constants.indexer_kP,
+            Constants.indexer_kI,
+            Constants.indexer_kD,
+            Constants.indexer_kF
+    );
 //    ColorSensor color1;
 //    ColorSensor color2;
 //    ColorSensor color3;
-    private final double TicksPerRot =  (Util.GoBILDA.RPM_1620.getCPR()) * (340.0/80.0);
 
+    private final double offset = 0.7;
+    public int greenLocation;
     public int pattern = 0;
 
     boolean stopPID = false;
@@ -42,14 +50,9 @@ public class Indexer implements Subsystem {
         pattern = id;
     }
 
-    double power = 0;
-    double target=0;
-
-    public double testing = 0.0;
-
 
     public enum IndexerState{ // this is based off of where the green ball is
-        RIGHT, LEFT, CENTER
+        RIGHT, LEFT, CENTER, NONE,
     }
 
 
@@ -58,30 +61,46 @@ public class Indexer implements Subsystem {
     public void initialize(){
         indexer1 = new CRServoEx(Constants.IndexerConstants.indexer1);
         indexer2 = new CRServoEx(Constants.IndexerConstants.indexer2);
-        servoEncoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, Constants.IndexerConstants.indexerEncoder);
-
+        indexerEncoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, Constants.IndexerConstants.indexerEncoder);
     }
 
     @Override
-    public void periodic(){
-        spinIndexer(testing);
-        ActiveOpMode.telemetry().addData("testingVal: ", testing);
-    }
+    public void periodic() {
 
-    public Command spinIndexer(double power){
-        return new InstantCommand(() -> {
+        ActiveOpMode.telemetry().addData("index Encoder", getPos());
+
+        double power = contPID.calculate(getPos());
+        if (!stopPID) {
             indexer1.setPower(power);
             indexer2.setPower(power);
-        });
+        }
+//        indexer1.setPower(1);
+//        indexer2.setPower(1);
+
+        ActiveOpMode.telemetry().addData("Power: ", power);
+
+
+//        ActiveOpMode.telemetry().addData("R", color1.red());
+//        ActiveOpMode.telemetry().addData("B", color1.blue());
+//        ActiveOpMode.telemetry().addData("G", color1.green());
+
+
+
     }
 
-    public Command changeTestingCommand(double delta){
-        return new InstantCommand(() -> changeTesting(delta));
+    public double getPos() {
+        double rawVoltage = indexerEncoder.getVoltage();
+        return (((rawVoltage / 3.3)*2*Math.PI) - Math.PI) - offset;
     }
 
-    public void changeTesting(double delta){
-        testing += delta;
+    public Command spinIndexerThird(){
+        return new InstantCommand(() -> contPID.setSetPoint((2*Math.PI)/3));
     }
+
+    public Command spinIndexerSecond(){
+        return new InstantCommand(() -> contPID.setSetPoint((Math.PI)/3));
+    }
+
 
 
     public Command spinIndexerSlow(){
@@ -100,6 +119,17 @@ public class Indexer implements Subsystem {
         return new InstantCommand(() -> {
             indexer1.setPower(0.0);
             indexer2.setPower(0.0);
+        });
+    }
+
+    public Command changePID(){
+        return new InstantCommand(() -> {
+            contPID.setPID(
+                    Constants.indexer_kP,
+                    Constants.indexer_kI,
+                    Constants.indexer_kD,
+                    Constants.indexer_kF
+                    );
         });
     }
 
