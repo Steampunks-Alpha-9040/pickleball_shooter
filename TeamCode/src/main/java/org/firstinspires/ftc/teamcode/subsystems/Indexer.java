@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import android.graphics.Color;
 
+import com.qualcomm.robotcore.hardware.AnalogInput;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 
 import org.firstinspires.ftc.teamcode.Constants;
@@ -19,13 +20,16 @@ import dev.nextftc.core.commands.utility.LambdaCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 import dev.nextftc.hardware.controllable.RunToPosition;
+import dev.nextftc.hardware.impl.CRServoEx;
 import dev.nextftc.hardware.impl.MotorEx;
 
 public class Indexer implements Subsystem {
 
     public static final Indexer INSTANCE = new Indexer();
 
-    private MotorEx indexer;
+    private CRServoEx indexer1;
+    private CRServoEx indexer2;
+    private AnalogInput servoEncoder;
 //    ColorSensor color1;
 //    ColorSensor color2;
 //    ColorSensor color3;
@@ -52,7 +56,10 @@ public class Indexer implements Subsystem {
 
     @Override
     public void initialize(){
-        indexer = new MotorEx(Constants.IndexerConstants.indexer).zeroed();
+        indexer1 = new CRServoEx(Constants.IndexerConstants.indexer1);
+        indexer2 = new CRServoEx(Constants.IndexerConstants.indexer2);
+        servoEncoder = ActiveOpMode.hardwareMap().get(AnalogInput.class, Constants.IndexerConstants.indexerEncoder);
+
     }
 
     @Override
@@ -62,7 +69,10 @@ public class Indexer implements Subsystem {
     }
 
     public Command spinIndexer(double power){
-        return new InstantCommand(() -> indexer.setPower(power));
+        return new InstantCommand(() -> {
+            indexer1.setPower(power);
+            indexer2.setPower(power);
+        });
     }
 
     public Command changeTestingCommand(double delta){
@@ -75,13 +85,22 @@ public class Indexer implements Subsystem {
 
 
     public Command spinIndexerSlow(){
-        return new InstantCommand(() -> indexer.setPower(0.4));
+        return new InstantCommand(() -> {
+            indexer1.setPower(0.4);
+            indexer2.setPower(0.4);
+        });
     }
     public Command spinIndexerFast(){
-        return new InstantCommand(() -> indexer.setPower(0.5));
+        return new InstantCommand(() -> {
+            indexer1.setPower(0.5);
+            indexer2.setPower(0.5);
+        });
     }
     public Command stopIndexer(){
-        return new InstantCommand(() -> indexer.setPower(0.0));
+        return new InstantCommand(() -> {
+            indexer1.setPower(0.0);
+            indexer2.setPower(0.0);
+        });
     }
 
 

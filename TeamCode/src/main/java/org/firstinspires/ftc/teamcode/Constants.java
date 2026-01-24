@@ -104,7 +104,9 @@ public class Constants {
     }
 
     public static class IndexerConstants{
-        public static final String indexer = "indexer";
+        public static final String indexer1 = "indexer1";
+        public static final String indexer2 = "indexer2";
+        public static final String indexerEncoder = "indexerEnc";
         public static final String feederSensor = "feederSensor";
         public static final String rampRightSensor = "rampRightSensor";
         public static final String rampLeftSensor = "rampLeftSensor";
