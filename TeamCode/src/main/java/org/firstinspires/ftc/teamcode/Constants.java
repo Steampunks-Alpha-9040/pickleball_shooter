@@ -155,12 +155,14 @@ public class Constants {
         public static final double airTime = 1.0;
         public static final double velocityTolerance = 2;
         public static boolean allowShootOnMove = true;
-        public static final double maxTurretAdjustment = 45.0;
+        public static final double maxTurretAdjustment = Math.PI / 4;
 
         public static double flywheelRPM = 0.0;
         public static double hoodAngle = 2;
         
         public static final double turretOffset = 3.097;
+
+        public static final double relativeFlywheelEffectiveness = 0.7;
     }
 
     public static class AutoToTeleOpValues{

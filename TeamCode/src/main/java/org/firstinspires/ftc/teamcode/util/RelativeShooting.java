@@ -39,15 +39,17 @@ public class RelativeShooting {
         double turretPosY = posY - (Constants.RelativeShootingConstants.turretOffset * Math.sin(heading));
 
         double phi = calculateRobotGoalAngle(turretPosX, turretPosY);
-        double d = calculateRobotGoalDistance(turretPosX, turretPosY);
+        distance = calculateRobotGoalDistance(turretPosX, turretPosY);
 
         // --- Decompose robot velocity ---
-        double dTheta = phi - heading;
 
-        double vRadial  = vX * Math.cos(dTheta) + vY * Math.sin(dTheta);
-        double vTangent = -vX * Math.sin(dTheta) + vY * Math.cos(dTheta);
+        double vRadial  = vX * Math.cos(phi) + vY * Math.sin(phi);
+        double vTangent = -vX * Math.sin(phi) + vY * Math.cos(phi);
 
-        double vShot = d / Constants.RelativeShootingConstants.airTime - vRadial;
+        double vShot = distance / Constants.RelativeShootingConstants.airTime - vRadial;
+
+
+        double turretLead = Math.atan2(-vTangent, vShot);
 
 //        if(vShot < 0){
 //            Constants.RelativeShootingConstants.allowShootOnMove = false;
@@ -56,15 +58,20 @@ public class RelativeShooting {
         // --- Flywheel + Turret + Hood Values
         // --- Effective Distance needs to be used to calculate FlywheelRPM and HoodAngle ---
         effectiveDistance = Constants.RelativeShootingConstants.airTime * Math.sqrt(vTangent * vTangent + vShot * vShot);
+        effectiveDistance = Constants.RelativeShootingConstants.relativeFlywheelEffectiveness * (effectiveDistance - distance) + distance;
 
-        if(vRadial >= 0){
-            distance = d;
-        } else {
-            distance = effectiveDistance;
-        }
+        turretLead = Math.max(
+                -Constants.RelativeShootingConstants.maxTurretAdjustment,
+                Math.min(Constants.RelativeShootingConstants.maxTurretAdjustment, turretLead)
+        );
 
-        turretTarget = phi + Math.atan2(-vTangent, vShot) - heading;
+        turretTarget = phi + turretLead - heading;
         turretTarget = Math.atan2(Math.sin(turretTarget),Math.cos(turretTarget));
+
+        if (vShot <= 0) {
+            turretTarget = phi - heading;
+            effectiveDistance = distance;
+        }
     }
 
     // ---------------- GETTERS ----------------

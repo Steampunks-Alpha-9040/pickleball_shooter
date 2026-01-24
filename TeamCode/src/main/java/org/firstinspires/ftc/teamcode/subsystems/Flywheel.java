@@ -128,7 +128,7 @@ public class Flywheel implements Subsystem {
     }
 
     public double getRelativeFlyWheelRPM(){
-        double RPM = 16.77015 * relativeShooting.getDistance() + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
+        double RPM = 16.77015 * relativeShooting.getEffectiveDistance() + 2374.80969 + Constants.RelativeShootingConstants.flywheelRPM;
         if(side == Constants.Side.BLUE){
             if(Drivebase.INSTANCE.getFollower().getPose().getX() > 72 + Constants.robotWidth/2 && Drivebase.INSTANCE.getFollower().getPose().getY() < 24){
                 return RPM - 80;
@@ -148,9 +148,13 @@ public class Flywheel implements Subsystem {
 
     public double getRelativeHoodAngle(){
         //Need to test if it works
-        return (-0.00028838 * relativeShooting.getEffectiveDistance() * relativeShooting.getEffectiveDistance())
+        double hoodAngle = (-0.00028838 * relativeShooting.getEffectiveDistance() * relativeShooting.getEffectiveDistance())
                 + (0.0969944 * relativeShooting.getEffectiveDistance())
                 - 3.25772;
+        if(hoodAngle < 0.5){
+            hoodAngle = 0.5;
+        }
+        return hoodAngle;
     }
 
     public double testHoodAngle(){
