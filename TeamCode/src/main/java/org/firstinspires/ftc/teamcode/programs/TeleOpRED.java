@@ -42,12 +42,12 @@ public class TeleOpRED extends BaseOpMode {
                         intake.stopIntake()
                 );
 
-        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        indexer.spinIndexerFast()
-                ).whenBecomesFalse(
-                        indexer.stopIndexer()
-                );
+//        Gamepads.gamepad1().leftBumper().toggleOnBecomesTrue()
+//                .whenBecomesTrue(
+//                        indexer.spinIndexerFast()
+//                ).whenBecomesFalse(
+//                        indexer.stopIndexer()
+//                );
 
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
@@ -69,12 +69,12 @@ public class TeleOpRED extends BaseOpMode {
                         flywheel.shootFlywheel()
                 );
 
-        Gamepads.gamepad2().a().toggleOnBecomesTrue()
-                .whenBecomesTrue(
-                        indexer.spinIndexerSlow()
-                ).whenBecomesFalse(
-                        indexer.stopIndexer()
-                );
+//        Gamepads.gamepad2().a().toggleOnBecomesTrue()
+//                .whenBecomesTrue(
+//                        indexer.spinIndexerSlow()
+//                ).whenBecomesFalse(
+//                        indexer.stopIndexer()
+//                );
         Gamepads.gamepad2().y().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         feeder.setArmDown()

@@ -78,7 +78,7 @@ public class RedFarAuto extends BaseOpMode {
         drivebase.getFollower().update(); // Update Pedro Pathing
         //pathState = autonomousPathUpdate(); // Update autonomous state machine
 
-        autonomousRoutine().schedule();
+//        autonomousRoutine().schedule();
         // Log values to Panels and Driver Station
         panelsTelemetry.debug("Path State", pathState);
         panelsTelemetry.update(telemetry);
@@ -195,17 +195,17 @@ public class RedFarAuto extends BaseOpMode {
         );
     }
 
-    public Command spinIndexerSlow() {
-        return new SequentialGroup(
-                indexer.spinIndexerSlow()
-        );
-    }
-
-    public Command spinIndexerFast() {
-        return new SequentialGroup(
-                indexer.spinIndexerFast()
-        );
-    }
+//    public Command spinIndexerSlow() {
+//        return new SequentialGroup(
+//                indexer.spinIndexerSlow()
+//        );
+//    }
+//
+//    public Command spinIndexerFast() {
+//        return new SequentialGroup(
+//                indexer.spinIndexerFast()
+//        );
+//    }
 
     public Command zeroEverything(){
         return new ParallelGroup(
@@ -219,43 +219,43 @@ public class RedFarAuto extends BaseOpMode {
     double Beginning = 1.0;
     double intakeDelay = 1.0;
 
-    public Command autonomousRoutine() {
-        return new ParallelGroup(
-                flywheel.shootFlywheel(),
-                new SequentialGroup(
+//    public Command autonomousRoutine() {
+//        return new ParallelGroup(
+//                flywheel.shootFlywheel(),
+//                new SequentialGroup(
+////                        stopShoot(),
+////                        sort(),
+//                        spinIndexerSlow(),
+//                        intakeStop(),
+//                        new Delay(Beginning),
+//                        safeShoot(),
+//                        new Delay(shootFarDelay),
 //                        stopShoot(),
-//                        sort(),
-                        spinIndexerSlow(),
-                        intakeStop(),
-                        new Delay(Beginning),
-                        safeShoot(),
-                        new Delay(shootFarDelay),
-                        stopShoot(),
-                        intake(),
-                        spinIndexerFast(),
-                        new FollowPath(paths.FirstIntake),
-                        new Delay(intakeDelay),
-                        spinIndexerSlow(),
-                        intakeStop(),
-//                        sort(),
-                        new FollowPath(paths.FirstShoot),
-                        safeShoot(),
-                        new Delay(shootFarDelay),
-                        stopShoot(),
-                        intake(),
-                        spinIndexerFast(),
-                        new FollowPath(paths.SecondIntake),
-                        new Delay(intakeDelay),
-                        intakeStop(),
-                        spinIndexerSlow(),
-//                        sort(),
-                        new FollowPath(paths.SecondShoot),
-                        safeShoot(),
-                        new Delay(shootFarDelay),
-                        stopShoot(),
-                        new FollowPath((paths.GoToWall)),
-                        flywheel.stopFlywheel(),
-                        turret.setHomeTrue()
+//                        intake(),
+//                        spinIndexerFast(),
+//                        new FollowPath(paths.FirstIntake),
+//                        new Delay(intakeDelay),
+//                        spinIndexerSlow(),
+//                        intakeStop(),
+////                        sort(),
+//                        new FollowPath(paths.FirstShoot),
+//                        safeShoot(),
+//                        new Delay(shootFarDelay),
+//                        stopShoot(),
+//                        intake(),
+//                        spinIndexerFast(),
+//                        new FollowPath(paths.SecondIntake),
+//                        new Delay(intakeDelay),
+//                        intakeStop(),
+//                        spinIndexerSlow(),
+////                        sort(),
+//                        new FollowPath(paths.SecondShoot),
+//                        safeShoot(),
+//                        new Delay(shootFarDelay),
+//                        stopShoot(),
+//                        new FollowPath((paths.GoToWall)),
+//                        flywheel.stopFlywheel(),
+//                        turret.setHomeTrue()
 //                        intake(),
 //                        spinIndexerFast()
 //                        new FollowPath(paths.IntakeClose),
@@ -277,8 +277,8 @@ public class RedFarAuto extends BaseOpMode {
 //                        stopShoot(),
 //                        new FollowPath(paths.LeaveShootingZone)
 //                        zeroEverything()
-                )
-        );
-    }
+//                )
+//        );
+//    }
 
 }
