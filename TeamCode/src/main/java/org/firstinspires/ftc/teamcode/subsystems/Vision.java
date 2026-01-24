@@ -21,6 +21,8 @@ public class Vision implements Subsystem {
 
     private boolean poseValid = false;
 
+    private double visionLatency;
+
     @Override
     public void initialize() {
         INSTANCE = this;
@@ -47,6 +49,8 @@ public class Vision implements Subsystem {
             poseValid = false;
             return;
         }
+
+        visionLatency = result.getControlHubTimeStamp()-result.getCaptureLatency();
 
         // flywheel - limelight 37.4475 mm
         //flywheel to center 109.22579 mm
@@ -83,7 +87,10 @@ public class Vision implements Subsystem {
         ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
         ActiveOpMode.telemetry().addData("VisionHeading: ", Math.toDegrees(getHeading()));
         ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
+    }
 
+    public double getVisionLatency(){
+        return visionLatency;
     }
 
     public boolean hasValidPose() {

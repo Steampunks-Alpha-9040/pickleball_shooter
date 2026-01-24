@@ -2,8 +2,6 @@ package org.firstinspires.ftc.teamcode.subsystems;
 
 import com.pedropathing.geometry.Pose;
 
-import dev.nextftc.core.commands.Command;
-import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 
@@ -40,7 +38,7 @@ public class SixSevenFilter implements Subsystem {
         ActiveOpMode.telemetry().addData("emaY: ", emaY);
         ActiveOpMode.telemetry().addData("emaHeading: ", emaHeading);
 
-        pedroPose = Drivebase.INSTANCE.getFollower().getPose();
+        pedroPose = Drivebase.INSTANCE.getPastPose(Vision.INSTANCE.getVisionLatency());
         if(Vision.INSTANCE.hasValidPose()){
             visionPose = Vision.INSTANCE.getPose();
             filteredPose = expoFilterPose(pedroPose, visionPose);

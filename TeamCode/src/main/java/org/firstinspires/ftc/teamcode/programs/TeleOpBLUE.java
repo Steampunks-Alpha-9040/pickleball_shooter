@@ -27,7 +27,6 @@ public class TeleOpBLUE extends BaseOpMode {
     @Override
     public void onInit() {
 
-
         field.getField().setStyle("none", "white", 1.5);
 
         drivebase.setFollower(PedroComponent.follower());
@@ -193,7 +192,6 @@ public class TeleOpBLUE extends BaseOpMode {
 
     @Override
     public void onUpdate() {
-        timer.start();
 
         // Draw dot at current animated position
 //        field.getField().moveCursor(Vision.INSTANCE.getRaw2D().getY(DistanceUnit.INCH), Vision.INSTANCE.getRaw2D().getX(DistanceUnit.INCH));
@@ -206,6 +204,10 @@ public class TeleOpBLUE extends BaseOpMode {
         field.getField().update();
         panels.getTelemetry().update();
         telemetry.update();
+    }
+
+    public void getTime(){
+        timer.getMs();
     }
 
 

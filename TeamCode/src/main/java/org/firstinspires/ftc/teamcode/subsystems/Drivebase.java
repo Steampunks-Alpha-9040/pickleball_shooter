@@ -5,12 +5,14 @@ import static org.firstinspires.ftc.teamcode.Constants.Side.RED;
 
 import com.pedropathing.follower.Follower;
 import com.pedropathing.geometry.Pose;
+import com.pedropathing.util.Timer;
 import com.qualcomm.hardware.gobilda.GoBildaPinpointDriver;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose2D;
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.util.TimeValueBuffer;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 import dev.nextftc.core.commands.Command;
@@ -35,6 +37,10 @@ public class Drivebase implements Subsystem {
     private Drivebase(){}
     public Follower follower;
 
+    private TimeValueBuffer poseBuffer;
+
+    private Timer timer;
+
     private MotorEx FL;
     private MotorEx FR;
     private MotorEx BL;
@@ -48,6 +54,7 @@ public class Drivebase implements Subsystem {
     public MotorEx getFL(){ return FL; }
 
     public void initialize(){
+        timer = new Timer();
         FL = new MotorEx(Constants.DrivebaseConstants.FL).brakeMode().reversed();
         FR = new MotorEx(Constants.DrivebaseConstants.FR).brakeMode();
         BL = new MotorEx(Constants.DrivebaseConstants.BL).brakeMode().reversed();
@@ -57,6 +64,8 @@ public class Drivebase implements Subsystem {
 
     public void periodic(){
         follower.update();
+        poseBuffer.add(getTimer(), follower.getPose());
+
         ActiveOpMode.telemetry().addData("Pose: ", follower.getPose());
         ActiveOpMode.telemetry().addData("x velocity: ", follower.getVelocity().getXComponent());
         ActiveOpMode.telemetry().addData("y velocity: ", follower.getVelocity().getYComponent());
@@ -87,6 +96,14 @@ public class Drivebase implements Subsystem {
             );
         }
 
+    }
+
+    public Pose getPastPose(double time){
+        return poseBuffer.getValueSecondsAgo(getTimer(), time);
+    }
+
+    public double getTimer(){
+        return timer.getElapsedTime();
     }
 
     //We do this since the quadature is attached to the FL motor, and quadatures are only implemented for motors. We use servos for the turret :)
