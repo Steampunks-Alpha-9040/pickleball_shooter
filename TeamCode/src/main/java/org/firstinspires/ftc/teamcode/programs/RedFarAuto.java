@@ -96,7 +96,7 @@ public class RedFarAuto extends BaseOpMode {
 
     @Override
     public void onUpdate(){
-
+        storeValues();
         telemetry.update();
     }
 

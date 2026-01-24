@@ -28,8 +28,8 @@ public class RedJustTeleop extends BaseOpMode {
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
         drivebase.getFollower().setStartingPose(new Pose(79.510, 8.993, Math.toRadians(90)));
-        drivebase.getBR().setCurrentPosition(0);
-        drivebase.getFL().setCurrentPosition(0);
+//        drivebase.getBR().setCurrentPosition(0);
+//        drivebase.getFL().setCurrentPosition(0);
 
         flywheel.setSide(Constants.Side.RED);
         turret.setSide(Constants.Side.RED);
@@ -56,7 +56,7 @@ public class RedJustTeleop extends BaseOpMode {
                 );
         Gamepads.gamepad1().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
-                        drivebase.resetPose(0)
+                        drivebase.resetPose(1)
                 );
         Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().dpadUp())
                 .whenBecomesTrue(
