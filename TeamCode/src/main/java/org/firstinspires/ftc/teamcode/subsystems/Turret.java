@@ -78,9 +78,9 @@ public class Turret implements Subsystem {
     }
 
     public double relativePhysicalLimit(){
-        if (calculateRelativeTurretAngle() < -Math.PI/2){
+        if (calculateRelativeTurretAngle() < -Math.PI/2 + 0.05){
             return -Math.PI/2;
-        } else return Math.min(calculateRelativeTurretAngle(), Math.PI / 2);
+        } else return Math.min(calculateRelativeTurretAngle(), Math.PI / 2 - 0.05);
     }
 
     public Command setHomeTrue() {
