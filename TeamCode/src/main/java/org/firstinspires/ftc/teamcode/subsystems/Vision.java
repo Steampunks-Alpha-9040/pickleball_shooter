@@ -25,6 +25,8 @@ public class Vision implements Subsystem {
 
     private double visionLatency;
 
+    private boolean runVision = false;
+
     @Override
     public void initialize() {
         INSTANCE = this;

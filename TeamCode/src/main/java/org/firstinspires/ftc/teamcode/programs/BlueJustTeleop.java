@@ -34,8 +34,8 @@ public class BlueJustTeleop extends BaseOpMode {
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
         drivebase.getFollower().setStartingPose(new Pose(64.490, 8.993, Math.toRadians(90)));
-        drivebase.getBR().setCurrentPosition(0);
-        drivebase.getFL().setCurrentPosition(0);
+//        drivebase.getBR().setCurrentPosition(0);
+//        drivebase.getFL().setCurrentPosition(0);
 
         flywheel.setSide(Constants.Side.BLUE);
         turret.setSide(Constants.Side.BLUE);

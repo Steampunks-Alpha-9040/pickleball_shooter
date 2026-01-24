@@ -95,6 +95,7 @@ public class BlueFarAuto extends BaseOpMode {
 
     @Override
     public void onUpdate(){
+        storeValues();
         telemetry.update();
     }
 
@@ -262,12 +263,12 @@ public class BlueFarAuto extends BaseOpMode {
         );
     }
 
-    double shootFarDelay = 3.7;
+    double shootFarDelay = 3.3;
     double Beginning = 1.5;
     double intakeDelay = 0.5;
 
     double testingDelay = 1;
-    double testing = 0.1;
+    double testing = 0.5;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
