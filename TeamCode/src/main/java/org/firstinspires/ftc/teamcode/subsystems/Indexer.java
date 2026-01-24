@@ -28,20 +28,22 @@ public class Indexer implements Subsystem {
 
     public static final Indexer INSTANCE = new Indexer();
 
+    private enum GreenPos{
+        LAST, MIDDLE, FIRST, NONE
+    }
     private CRServoEx indexer1;
     private CRServoEx indexer2;
     private AnalogInput indexerEncoder;
-    private ContinuousInputsPID contPID = new ContinuousInputsPID(
+    private final ContinuousInputsPID contPID = new ContinuousInputsPID(
             Constants.indexer_kP,
             Constants.indexer_kI,
             Constants.indexer_kD,
             Constants.indexer_kF
     );
-//    ColorSensor color1;
-//    ColorSensor color2;
-//    ColorSensor color3;
+    ColorSensor color1;
+    ColorSensor color2;
+    ColorSensor color3;
 
-    private final double offset = 0.7;
     public int greenLocation;
     public int pattern = 0;
 
@@ -90,6 +92,7 @@ public class Indexer implements Subsystem {
 
     public double getPos() {
         double rawVoltage = indexerEncoder.getVoltage();
+        double offset = 0.7;
         return (((rawVoltage / 3.3)*2*Math.PI) - Math.PI) - offset;
     }
 
@@ -98,8 +101,53 @@ public class Indexer implements Subsystem {
     }
 
     public Command spinIndexerSecond(){
-        return new InstantCommand(() -> contPID.setSetPoint((Math.PI)/3));
+        return new InstantCommand(() -> contPID.setSetPoint((4*Math.PI)/3));
     }
+
+    public Command spinGreenCorrect(){
+        switch (Vision.INSTANCE.getMatchPattern()){
+            case PGP:
+                if (getGreenPos() == GreenPos.FIRST){
+                    return spinIndexerSecond();
+                } else if (getGreenPos() == GreenPos.MIDDLE){
+                    return stopIndexer();
+                } else {
+                    return spinIndexerThird();
+                }
+            case PPG:
+                if (getGreenPos() == GreenPos.FIRST){
+                    return spinIndexerThird();
+                } else if (getGreenPos() == GreenPos.MIDDLE){
+                    return spinIndexerSecond();
+                } else {
+                    return stopIndexer();
+                }
+            case GPP:
+                if (getGreenPos() == GreenPos.FIRST){
+                    return stopIndexer();
+                } else if (getGreenPos() == GreenPos.MIDDLE){
+                    return spinIndexerThird();
+                } else {
+                    return spinIndexerSecond();
+                }
+            default:
+                return stopIndexer();
+        }
+    }
+
+    public GreenPos getGreenPos(){
+        if (color1.green() > 800){
+            return GreenPos.FIRST;
+        } else if (color2.green() > 800){
+            return GreenPos.MIDDLE;
+        } else if (color3.green() > 800){
+            return GreenPos.LAST;
+        } else {
+            return GreenPos.NONE;
+        }
+
+    }
+
 
 
 
