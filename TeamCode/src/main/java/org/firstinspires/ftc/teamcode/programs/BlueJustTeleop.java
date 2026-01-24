@@ -16,11 +16,11 @@ import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 import org.firstinspires.ftc.teamcode.util.Util;
 
 
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOpBlue", group = "TeleOp")
-public class TeleOpBLUE extends BaseOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "justOpBlue", group = "TeleOp")
+public class BlueJustTeleop extends BaseOpMode {
     private LoopTimer timer = new LoopTimer();
 
-    public TeleOpBLUE() {
+    public BlueJustTeleop() {
         super();
     }
 
@@ -33,10 +33,9 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-//        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
-        drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
-        drivebase.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
-        drivebase.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
+        drivebase.getFollower().setStartingPose(new Pose(64.490, 8.993, Math.toRadians(90)));
+        drivebase.getBR().setCurrentPosition(0);
+        drivebase.getFL().setCurrentPosition(0);
 
         flywheel.setSide(Constants.Side.BLUE);
         turret.setSide(Constants.Side.BLUE);

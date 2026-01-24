@@ -2,25 +2,19 @@ package org.firstinspires.ftc.teamcode.programs;
 
 
 import com.bylazar.utils.LoopTimer;
-import com.pedropathing.geometry.CoordinateSystem;
 import com.pedropathing.geometry.Pose;
 
-import dev.nextftc.core.commands.groups.ParallelGroup;
+import org.firstinspires.ftc.teamcode.Constants;
+
 import dev.nextftc.extensions.pedro.PedroComponent;
 import dev.nextftc.ftc.Gamepads;
 
-import org.firstinspires.ftc.robotcore.external.Const;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.teamcode.Constants;
-import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
-import org.firstinspires.ftc.teamcode.util.Util;
 
-
-@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "PickleOpBlue", group = "TeleOp")
-public class TeleOpBLUE extends BaseOpMode {
+@com.qualcomm.robotcore.eventloop.opmode.TeleOp(name = "justOpRed", group = "TeleOp")
+public class RedJustTeleop extends BaseOpMode {
     private LoopTimer timer = new LoopTimer();
 
-    public TeleOpBLUE() {
+    public RedJustTeleop() {
         super();
     }
 
@@ -33,17 +27,16 @@ public class TeleOpBLUE extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
-//        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
-        drivebase.getFollower().setStartingPose(Constants.AutoToTeleOpValues.pose);
-        drivebase.getBR().setCurrentPosition(Constants.AutoToTeleOpValues.hoodAngle);
-        drivebase.getFL().setCurrentPosition(Constants.AutoToTeleOpValues.turretAngle);
+        drivebase.getFollower().setStartingPose(new Pose(79.510, 8.993, Math.toRadians(90)));
+        drivebase.getBR().setCurrentPosition(0);
+        drivebase.getFL().setCurrentPosition(0);
 
-        flywheel.setSide(Constants.Side.BLUE);
-        turret.setSide(Constants.Side.BLUE);
-        Constants.OpModeConstants.setSide(Constants.Side.BLUE);
+        flywheel.setSide(Constants.Side.RED);
+        turret.setSide(Constants.Side.RED);
+        Constants.OpModeConstants.setSide(Constants.Side.RED);
 
 
-        drivebase.getMecanumDriver(Constants.Side.BLUE).schedule();
+        drivebase.getMecanumDriver(Constants.Side.RED).schedule();
 
 //      For GamePlay
 

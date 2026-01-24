@@ -19,7 +19,7 @@ public class SixSevenFilter implements Subsystem {
     private static final double ALPHA = 0.014;
 
     //Outliers
-    private static final double MAX_POSITION_ERROR = 15;
+    private static final double MAX_POSITION_ERROR = 10;
     private static final double MAX_HEADING_ERROR = Math.toRadians(20);
 
     private double emaX = 0.0;

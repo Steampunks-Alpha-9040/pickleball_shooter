@@ -17,6 +17,11 @@ public class Constants {
     public static final double robotWidth = 17.386;
     public static final double robotLength = 15.621;
 
+    public static double indexer_kP = 0.1; //The like main pushing force, the constant :)
+    public static double indexer_kI = 0.0;//The more you aren't making it to the setpoint, the more you increase this
+    public static double indexer_kD = 0.0; //slows down/speeds up the closer/farther away u are
+    public static double indexer_kF = 0.1; //friction, tune so when the turret barely moves
+
 
     public static class OpModeConstants{
         public static Side side;
@@ -45,7 +50,8 @@ public class Constants {
     }
 
     public static class FlywheelConstants{
-        public static final String flywheelName = "flywheel";
+        public static final String flywheel1Name = "flywheel1";
+        public static final String flywheel2Name = "flywheel2";
         public static final String hoodName = "hood";
 
         public static final Util.GoBILDA flywheelMotor = Util.GoBILDA.BARE;
@@ -101,16 +107,13 @@ public class Constants {
     }
 
     public static class IndexerConstants{
-        public static final String indexer = "indexer";
+        public static final String indexer1 = "indexer1";
+        public static final String indexer2 = "indexer2";
+        public static final String indexerEncoder = "indexerEnc";
         public static final String feederSensor = "feederSensor";
         public static final String rampRightSensor = "rampRightSensor";
         public static final String rampLeftSensor = "rampLeftSensor";
         public static final double motorToIndexer = 0.0;
-
-        public static final double indexer_kP = 0.007; //The like main pushing force, the constant :)
-        public static final double indexer_kI = 0.0; //The more you aren't making it to the setpoint, the more you increase this
-        public static final double indexer_kD = 0.0003; //slows down/speeds up the closer/farther away u are
-        public static final double indexer_kF = 0.05; //friction, tune so when the turret barely moves
 
         public static final double indexer_DutyCycle = 0.4;
 

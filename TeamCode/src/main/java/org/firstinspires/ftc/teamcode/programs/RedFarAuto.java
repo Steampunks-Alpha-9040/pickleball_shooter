@@ -2,6 +2,7 @@ package org.firstinspires.ftc.teamcode.programs;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.components.BindingsComponent;
 import dev.nextftc.core.components.SubsystemComponent;
 import dev.nextftc.extensions.pedro.FollowPath;
@@ -20,6 +21,7 @@ import com.bylazar.telemetry.TelemetryManager;
 import com.pedropathing.geometry.BezierCurve;
 
 import org.firstinspires.ftc.teamcode.Constants;
+import org.firstinspires.ftc.teamcode.subsystems.Drivebase;
 
 import dev.nextftc.core.commands.Command;
 import dev.nextftc.core.commands.delays.Delay;
@@ -66,8 +68,8 @@ public class RedFarAuto extends BaseOpMode {
 
         drivebase.setFollower(PedroComponent.follower());
         drivebase.getFollower().setStartingPose(new Pose(79.510, 8.993, Math.toRadians(0)));
-        drivebase.INSTANCE.getBR().setCurrentPosition(0);
-        drivebase.INSTANCE.getFL().setCurrentPosition(0);
+        drivebase.getBR().setCurrentPosition(0);
+        drivebase.getFL().setCurrentPosition(0);
 
         paths = new Paths(drivebase.getFollower());
 
@@ -77,6 +79,7 @@ public class RedFarAuto extends BaseOpMode {
         panelsTelemetry.debug("Status", "Initialized");
         panelsTelemetry.update(telemetry);
 
+        drivebase.zeroHoodQuadature();
         drivebase.zeroTurretQuadature();
     }
 
@@ -95,12 +98,13 @@ public class RedFarAuto extends BaseOpMode {
     public void onUpdate(){
         telemetry.update();
     }
+
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
         public PathChain SecondIntake;
         public PathChain SecondShoot;
-        public PathChain GoToWall;
+        public PathChain GoOut;
 
         public Paths(Follower follower) {
             FirstIntake = follower.pathBuilder().addPath(
@@ -144,11 +148,11 @@ public class RedFarAuto extends BaseOpMode {
 
                     .build();
 
-            GoToWall = follower.pathBuilder().addPath(
+            GoOut = follower.pathBuilder().addPath(
                             new BezierLine(
                                     new Pose(96.000, 11.000),
 
-                                    new Pose(80.693, 7.811)
+                                    new Pose(96.000, 25.000)
                             )
                     ).setLinearHeadingInterpolation(Math.toRadians(80), Math.toRadians(90))
 
@@ -157,10 +161,10 @@ public class RedFarAuto extends BaseOpMode {
     }
 
 
+
     public Command transfer() {
         return new ParallelGroup(
-                feeder.setArmDown(),
-                feeder.turnWheelsOn()
+                feeder.setArmDown()
         );
     }
 
@@ -177,8 +181,8 @@ public class RedFarAuto extends BaseOpMode {
     public Command stopTransfer() {
         return new ParallelGroup(
                 //Removed until intake is improved
-//                feeder.setArmUp(),
-                feeder.turnWheelsOff()
+                feeder.setArmUp(),
+                feeder.turnWheelsOn()
         );
     }
 
@@ -203,6 +207,32 @@ public class RedFarAuto extends BaseOpMode {
     public Command spinIndexerSlow() {
         return new SequentialGroup(
                 indexer.spinIndexerSlow()
+        );
+    }
+
+    public void setAutoToTeleOpPose(Pose pose){
+        Constants.AutoToTeleOpValues.pose = pose;
+    }
+
+    public void setAutoToTeleOpTurret(double turretAngle){
+        Constants.AutoToTeleOpValues.turretAngle = turretAngle;
+    }
+
+    public void setAutoToTeleOpHood(double hoodAngle){
+        Constants.AutoToTeleOpValues.hoodAngle = hoodAngle;
+    }
+
+    public void setAutoToTeleOpIndexer(double indexerPose){
+        Constants.AutoToTeleOpValues.indexerPosition = indexerPose;
+    }
+
+    public Command storeValues() {
+        return new InstantCommand(() -> {
+            setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
+            setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
+            setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
+//                setAutoToTeleOpIndexer();
+        }
         );
     }
 
@@ -236,47 +266,52 @@ public class RedFarAuto extends BaseOpMode {
     double Beginning = 1.5;
     double intakeDelay = 0.5;
     double testingDelay = 1;
+    private double testing = 0.1;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
                 new SequentialGroup(
                         flywheel.changeBool(),
                         stopTransfer(),
+                        intake(),
 //                        sort(),
-                        intakeStop(),
                         new Delay(Beginning),
-                        transfer(),
+                        spinIndexerFast(),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
+                        transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
-                        intakeStop(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
                         new Delay(testingDelay),
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
-                        intakeStop(),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
                         new Delay(testingDelay),
                         transfer(),
                         new Delay(shootFarDelay),
                         stopTransfer(),
-                        new FollowPath((paths.GoToWall)),
-                        flywheel.stopFlywheel(),
-                        turret.setHomeTrue()
+                        new FollowPath((paths.GoOut)),
+                        flywheel.changeBool(),
+                        storeValues()
 //                        intake(),
 //                        spinIndexerFast()
 //                        new FollowPath(paths.IntakeClose),
