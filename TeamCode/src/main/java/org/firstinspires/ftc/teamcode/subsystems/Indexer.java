@@ -154,14 +154,14 @@ public class Indexer implements Subsystem {
 
     public Command spinIndexerSlow(){
         return new InstantCommand(() -> {
-            indexer1.setPower(0.4);
-            indexer2.setPower(0.4);
+            indexer1.setPower(0.9);
+            indexer2.setPower(0.9);
         });
     }
     public Command spinIndexerFast(){
         return new InstantCommand(() -> {
-            indexer1.setPower(1);
-            indexer2.setPower(1);
+            indexer1.setPower(0.9);
+            indexer2.setPower(0.9);
         });
     }
     public Command stopIndexer(){

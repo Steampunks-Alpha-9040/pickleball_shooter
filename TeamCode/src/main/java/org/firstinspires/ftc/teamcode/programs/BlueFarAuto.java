@@ -96,12 +96,6 @@ public class BlueFarAuto extends BaseOpMode {
     public void onUpdate(){
         telemetry.update();
     }
-
-
-
-
-
-
     public static class Paths {
         public PathChain FirstIntake;
         public PathChain FirstShoot;
@@ -164,30 +158,26 @@ public class BlueFarAuto extends BaseOpMode {
     }
 
 
-
-
-
-
-
-    public Command shoot() {
+    public Command transfer() {
         return new ParallelGroup(
                 feeder.setArmDown(),
                 feeder.turnWheelsOn()
         );
     }
 
-    public Command safeShoot() {
+    public Command safeTransfer() {
 //        if (indexer.checkValid()) {
-//            return shoot();
+//            return transfer();
 //        } else {
 //            sort();
 //            new Delay(0.5);
 //        }
-        return shoot();
+        return transfer();
     }
 
-    public Command stopShoot() {
+    public Command stopTransfer() {
         return new ParallelGroup(
+                //Removed until intake is improved
 //                feeder.setArmUp(),
                 feeder.turnWheelsOff()
         );
@@ -202,7 +192,6 @@ public class BlueFarAuto extends BaseOpMode {
     public Command intake() {
         return new SequentialGroup(
                 intake.spinIntake()
-
         );
     }
 
@@ -221,6 +210,12 @@ public class BlueFarAuto extends BaseOpMode {
     public Command spinIndexerFast() {
         return new SequentialGroup(
                 indexer.spinIndexerFast()
+        );
+    }
+
+    public Command stopIndexer(){
+        return new SequentialGroup(
+                indexer.stopIndexer()
         );
     }
 
@@ -256,9 +251,9 @@ public class BlueFarAuto extends BaseOpMode {
 
     public Command storeValues() {
         return new InstantCommand(() -> {
-                setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
-                setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
-                setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
+            setAutoToTeleOpPose(Drivebase.INSTANCE.getFollower().getPose());
+            setAutoToTeleOpTurret(Drivebase.INSTANCE.getTurretQuadature());
+            setAutoToTeleOpHood(Drivebase.INSTANCE.getHoodQuadature());
 //                setAutoToTeleOpIndexer();
         }
         );
@@ -267,49 +262,56 @@ public class BlueFarAuto extends BaseOpMode {
     double shootFarDelay = 3.7;
     double Beginning = 1.5;
     double intakeDelay = 0.5;
-
     double testingDelay = 1;
+    double testing = 0.1;
 
     public Command autonomousRoutine() {
         return new ParallelGroup(
                 new SequentialGroup(
-                        flywheel.shootFlywheel(),
-                        stopShoot(),
+                        flywheel.changeBool(),
+                        stopTransfer(),
 //                        sort(),
                         intakeStop(),
                         new Delay(Beginning),
-                        safeShoot(),
+                        transfer(),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
-                        new Delay(shootFarDelay),
-                        stopShoot(),
-                        intake(),
                         spinIndexerFast(),
+                        new Delay(shootFarDelay),
+                        stopTransfer(),
+                        intake(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.FirstIntake),
                         new Delay(intakeDelay),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
                         intakeStop(),
 //                        sort(),
                         new FollowPath(paths.FirstShoot),
-                        flywheel.shootFlywheel(),
                         new Delay(testingDelay),
-                        safeShoot(),
+                        transfer(),
                         new Delay(shootFarDelay),
-                        stopShoot(),
+                        stopTransfer(),
                         intake(),
-                        spinIndexerFast(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerSlow(),
                         new FollowPath(paths.SecondIntake),
                         new Delay(intakeDelay),
                         intakeStop(),
-                        spinIndexerSlow(),
+                        stopIndexer(),
+                        new Delay(testing),
+                        spinIndexerFast(),
 //                        sort(),
                         new FollowPath(paths.SecondShoot),
                         new Delay(testingDelay),
-                        safeShoot(),
+                        transfer(),
                         new Delay(shootFarDelay),
-                        stopShoot(),
+                        stopTransfer(),
                         new FollowPath((paths.GoToWall)),
-                        flywheel.stopFlywheel(),
+                        flywheel.changeBool(),
                         storeValues()
 //                        intake(),
 //                        spinIndexerFast()
@@ -327,7 +329,7 @@ public class BlueFarAuto extends BaseOpMode {
 //                        intakeStop(),
 //                        sort(),
 //                        new FollowPath(paths.ShootLast),
-//                        safeShoot(),
+//                        safeTransfer(),
 //                        new Delay(shootFarDelay),
 //                        stopShoot(),
 //                        new FollowPath(paths.LeaveShootingZone)
