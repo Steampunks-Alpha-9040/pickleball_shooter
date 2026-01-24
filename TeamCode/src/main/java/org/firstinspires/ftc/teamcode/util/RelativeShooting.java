@@ -11,6 +11,8 @@ public class RelativeShooting {
     private double effectiveDistance; // required ball exit velocity
     private double turretTarget;// turret angle relative to robot
 
+    public static boolean runRelative = true;
+
     public RelativeShooting() {}
 
     public void update() {
@@ -68,13 +70,11 @@ public class RelativeShooting {
         turretTarget = phi + turretLead - heading;
         turretTarget = Math.atan2(Math.sin(turretTarget),Math.cos(turretTarget));
 
-        if (vShot <= 0) {
+        if (vShot <= 0 || !runRelative) {
             turretTarget = phi - heading;
             effectiveDistance = distance;
         }
     }
-
-    // ---------------- GETTERS ----------------
 
     public double getDistance(){
         return distance;
@@ -87,7 +87,9 @@ public class RelativeShooting {
         return turretTarget;
     }
 
-    // ---------------- HELPERS ----------------
+    public static void changeRunRelativeMethod(){
+        runRelative = !runRelative;
+    }
 
     private double calculateRobotGoalAngle(double posX, double posY) {
         double offsetX = 0;

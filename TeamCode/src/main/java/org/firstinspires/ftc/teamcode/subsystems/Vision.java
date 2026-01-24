@@ -7,6 +7,8 @@ import com.qualcomm.hardware.limelightvision.Limelight3A;
 import org.firstinspires.ftc.robotcore.external.navigation.Pose3D;
 import org.firstinspires.ftc.teamcode.Constants;
 
+import dev.nextftc.core.commands.Command;
+import dev.nextftc.core.commands.utility.InstantCommand;
 import dev.nextftc.core.subsystems.Subsystem;
 import dev.nextftc.ftc.ActiveOpMode;
 
@@ -20,6 +22,8 @@ public class Vision implements Subsystem {
     private double heading;
 
     private boolean poseValid = false;
+
+    public static boolean runVision = true;
 
     @Override
     public void initialize() {
@@ -72,17 +76,22 @@ public class Vision implements Subsystem {
         heading = (Math.toRadians(botpose.getOrientation().getYaw()) - Math.PI/2) + turretHeading;
         heading = Math.atan2(Math.sin(heading), Math.cos(heading));
 
-        poseValid = true;
+        if(!runVision){
+            poseValid = false;
+        } else {
+            poseValid = true;
+        }
 
-        ActiveOpMode.telemetry().addData("turretHeading: ", turretHeading);
 
-        ActiveOpMode.telemetry().addData("VisionValid: ", hasValidPose());
+//        ActiveOpMode.telemetry().addData("turretHeading: ", turretHeading);
+
+//        ActiveOpMode.telemetry().addData("VisionValid: ", hasValidPose());
         ActiveOpMode.telemetry().addData("VisionX: ", getX());
-        ActiveOpMode.telemetry().addData("VisionXRaw: ", botpose.getPosition().x);
+//        ActiveOpMode.telemetry().addData("VisionXRaw: ", botpose.getPosition().x);
         ActiveOpMode.telemetry().addData("VisionY: ", getY());
-        ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
+//        ActiveOpMode.telemetry().addData("VisionYRaw: ", botpose.getPosition().y);
         ActiveOpMode.telemetry().addData("VisionHeading: ", Math.toDegrees(getHeading()));
-        ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
+//        ActiveOpMode.telemetry().addData("VisionHeadingRaw: ", Math.toRadians(botpose.getOrientation().getYaw()));
 
     }
 
@@ -104,5 +113,13 @@ public class Vision implements Subsystem {
 
     public Pose getPose(){
         return new Pose(getX(), getY(), getHeading());
+    }
+
+    public void changeRunVisionMethod(){
+        runVision = !runVision;
+    }
+
+    public Command changeRunVision(){
+        return new InstantCommand(() -> changeRunVisionMethod());
     }
 }

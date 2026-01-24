@@ -33,7 +33,7 @@ public class TeleOpBLUE extends BaseOpMode {
         drivebase.setFollower(PedroComponent.follower());
         // Auto ends on 63.307, 7.811, 90
 //        drivebase.getFollower().setStartingPose(new Pose(63.307, 7.811, Math.toRadians(90)));
-        drivebase.getFollower().setStartingPose(new Pose(72+Constants.robotWidth/2, 72-Constants.robotLength/2, Math.toRadians(90)));
+        drivebase.getFollower().setStartingPose(new Pose(48+Constants.robotWidth/2, 96-Constants.robotLength/2, Math.toRadians(90)));
         drivebase.INSTANCE.getBR().setCurrentPosition(0);
         drivebase.INSTANCE.getFL().setCurrentPosition(0);
 
@@ -64,6 +64,15 @@ public class TeleOpBLUE extends BaseOpMode {
                 .whenBecomesTrue(
                         drivebase.resetPose(0)
                 );
+        Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().x())
+                .whenBecomesTrue(
+                        flywheel.changeRunRelative()
+                );
+        Gamepads.gamepad1().rightBumper().and(Gamepads.gamepad1().b())
+                .whenBecomesTrue(
+                        flywheel.changeRunRelative()
+                );
+
 
 
         //Gamepad 2
@@ -73,7 +82,6 @@ public class TeleOpBLUE extends BaseOpMode {
                 ).whenBecomesFalse(
                         feeder.turnWheelsOff()
                 );
-
         Gamepads.gamepad2().x().toggleOnBecomesTrue()
                 .whenBecomesTrue(
                         flywheel.changeBool()
