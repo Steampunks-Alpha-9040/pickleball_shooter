@@ -95,7 +95,7 @@ public class BlueFarAuto extends BaseOpMode {
 
     @Override
     public void onUpdate(){
-        storeValues();
+
         telemetry.update();
     }
 
@@ -272,7 +272,7 @@ public class BlueFarAuto extends BaseOpMode {
     }
 
     double shootFarDelay = 3.3;
-    double Beginning = 1000;
+    double Beginning = 1.5;
     double intakeDelay = 0.5;
 
     double testingDelay = 1;

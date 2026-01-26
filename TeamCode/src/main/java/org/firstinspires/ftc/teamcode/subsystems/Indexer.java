@@ -164,7 +164,7 @@ public class Indexer implements Subsystem {
 
     public Command spinIndexerSlow(){
         return new InstantCommand(() -> {
-            power = 0.4;
+            power = 0.37;
         });
     }
     public Command spinIndexerFast(){
